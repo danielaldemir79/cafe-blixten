@@ -1,11 +1,10 @@
-
 # ☕ Café Blixten
 
 Gruppprojekt i kursen Publiceringsverktyg och UX på TUC Yrkeshögskola.
 
 Vi bygger en modern, responsiv och tillgänglig webbplats för ett fiktivt café. Webbplatsen utvecklas med Umbraco och ska göra det enkelt för personalen att hantera meny, nyheter, erbjudanden och annat innehåll.
 
-**Projektperiod:** 15 oktober – 13 november 2026  
+**Projektperiod:** 15 oktober till 13 november 2026  
 **Teknik:** Umbraco 17, .NET 10, Razor, Sass, GitHub och uSync 17  
 **Kontaktperson:** Jenny Khranovska
 
@@ -31,15 +30,19 @@ Alla utvecklar lokalt och har sin egen SQLite-databas och sitt eget administrat�
 ## 2. Gemensam checklista
 
 ### Förberedelser
+
 - [x] Caféets namn bestämt
 - [x] Kontaktperson och ansvarsområden utsedda
 - [x] Privat GitHub-repository skapat
 - [x] Umbraco och uSync installerade på första datorn
-- [ ] Grundprojektet pushat till GitHub
-- [ ] Alla kan starta projektet lokalt
-- [ ] GitHub Projects och Scrum-tavla skapade
+- [x] Grundprojektet pushat till GitHub
+- [x] GitHub Projects och Scrum-tavla skapade
+- [x] Arbetsuppgifter skapade och fördelade
+- [x] Gruppmedlemmarna inbjudna
+- [ ] Alla har verifierat att de kan starta projektet lokalt
 
 ### Utveckling
+
 - [ ] Sidträd med minst fem sidor
 - [ ] Minst två egna innehållstyper
 - [ ] Minst en publicerad instans per innehållstyp
@@ -48,6 +51,7 @@ Alla utvecklar lokalt och har sin egen SQLite-databas och sitt eget administrat�
 - [ ] SEO-fält, rubrikstruktur och interna länkar
 
 ### UX och redovisning
+
 - [ ] Nielsens tio heuristiker granskade
 - [ ] Användartester genomförda
 - [ ] Tangentbord och tillgänglighet testade
@@ -65,7 +69,7 @@ Alla utvecklar lokalt och har sin egen SQLite-databas och sitt eget administrat�
 
 Alla ansvarar för att testa och dokumentera sina ändringar. Vid behov hjälper vi varandra över ansvarsområdena.
 
-## 4. GitHub och uSync – vårt dagliga arbetssätt
+## 4. GitHub och uSync: vårt dagliga arbetssätt
 
 **GitHub delar koden. uSync delar Umbracos CMS-struktur.**
 
@@ -85,7 +89,7 @@ Alla ansvarar för att testa och dokumentera sina ändringar. Vid behov hjälper
 4. Har du endast ändrat Razor, Sass, CSS eller C# behövs ingen uSync-export.
 5. Kontrollera filerna med `git status`.
 6. Gör commit och push till din branch.
-7. Skapa en pull request och låt en annan gruppmedlem granska innan ändringarna förs in i `main`.
+7. Skapa en Pull Request och be en annan gruppmedlem granska ändringarna innan de förs in i `main`.
 
 ### Viktiga uSync-regler
 
@@ -98,17 +102,41 @@ Alla ansvarar för att testa och dokumentera sina ändringar. Vid behov hjälper
 
 ## 5. Scrum och samarbete
 
-Vi arbetar med en förenklad Scrum-modell med korta sprintar och gemensam uppgiftstavla i GitHub Projects.
+Vi använder **GitHub Projects** för att planera, fördela och följa upp utvecklingen av Café Blixten.
 
-**Daily Scrum:** Vi har en avstämning varje planerad arbetsdag, cirka 10–15 minuter. Alla berättar vad de gjort, vad de ska göra och om något hindrar arbetet.
+Vår projekttavla heter **Café Blixten Scrum**. Arbetsuppgifterna skapas som GitHub Issues och tilldelas ansvariga gruppmedlemmar.
 
-**Närvaro:** Vi dokumenterar närvaro vid möten i en separat fil, `docs/narvaro.md`. Frånvaro meddelas gruppen och berörda uppgifter uppdateras.
+### Arbetsflöde i GitHub Projects
 
-**Uppgiftstavla:** Backlog → Todo → In Progress → Review → Done.
+| Kolumn | Betydelse |
+|---|---|
+| Backlog | Uppgifter som ska prioriteras och planeras |
+| Todo | Uppgifter som är redo att påbörjas |
+| In Progress | Uppgifter som någon arbetar med |
+| Review | Uppgifter som väntar på granskning eller test |
+| Done | Uppgifter som är färdiga och godkända |
 
-Varje uppgift ska ha en ansvarig person, tydlig beskrivning och ett förväntat resultat.
+Varje uppgift ska ha en tydlig beskrivning, en ansvarig person och ett förväntat resultat.
 
-Efter varje sprint går vi igenom vad som blivit klart, vad som återstår och vilka förbättringar som behövs i samarbetet.
+Gruppmedlemmarna ansvarar för att hålla sina uppgifter uppdaterade och flytta dem till rätt kolumn när arbetets status förändras.
+
+### Daily Scrum
+
+Vi har en kort avstämning varje planerad arbetsdag, cirka 10 till 15 minuter.
+
+Vi går igenom vad vi har gjort, vad vi planerar att göra och om något hindrar arbetet.
+
+### Närvaro
+
+Vi dokumenterar närvaro vid möten i `docs/narvaro.md`. Frånvaro meddelas gruppen och berörda uppgifter uppdateras.
+
+### Sprintar och uppföljning
+
+Vi arbetar med en förenklad Scrum-modell med korta sprintar.
+
+Efter varje sprint går vi igenom vilka uppgifter som blivit färdiga, vad som återstår och vilka förbättringar vi kan göra i samarbetet.
+
+GitHub Projects används också som underlag för att visa arbetsprocessen vid den muntliga redovisningen.
 
 ## 6. Planerat sidträd
 
@@ -131,8 +159,10 @@ En uppgift är färdig när den:
 - Följer projektets design och struktur.
 - Har relevanta uSync-filer exporterade.
 - Är committad och pushad till rätt branch.
-- Är granskad och godkänd genom en pull request.
-- Är sammanslagen med `main` och markerad som Done.
+- Är granskad och godkänd genom en Pull Request när uppgiften innehåller kodändringar.
+- Är sammanslagen med `main` när kodändringar ingår.
+- Har uppdaterad dokumentation vid behov.
+- Är markerad som Done i GitHub Projects.
 
 Vi arbetar med responsiv design, grundläggande SEO och WCAG 2.2 som riktlinje för tillgänglighet.
 
@@ -140,20 +170,34 @@ Vi granskar webbplatsen med Nielsens tio heuristiker och genomför användartest
 
 ## 8. Gemensamma regler
 
-- Ingen arbetar direkt i `main` med större ändringar.
+- Vi arbetar i egna branches och undviker direkta ändringar i `main`.
 - Commits ska ha tydliga svenska beskrivningar.
-- Vi granskar pull requests innan merge.
+- Minst en annan gruppmedlem ska granska kodändringar innan en Pull Request sammanfogas.
 - Vi samordnar ändringar som påverkar gemensamma Document Types.
 - Vi pushar aldrig lösenord, hemliga nycklar, lokala databaser eller personliga inställningar.
 - Vi meddelar gruppen tidigt om något blockerar arbetet.
 - Viktiga tekniska beslut dokumenteras.
 
-**Kvar att åtgärda:** Projektets NuGet-säkerhetsvarningar för ImageSharp och System.Security.Cryptography.Pkcs ska utredas och hanteras före eventuell publik driftsättning.
+**Branchskydd:** Eftersom projektet ligger i ett privat repository där branchskydd inte verkställs med nuvarande GitHub-abonnemang bygger arbetsflödet på gruppens gemensamma överenskommelse. Alla ansvarar för att följa reglerna för branches och Pull Requests.
+
+### NuGet och säkerhet
+
+Vi har granskat projektets NuGet-beroenden och genomfört en säkerhetsuppdatering.
+
+`System.Security.Cryptography.Pkcs` uppdaterades från version 10.0.0 till 10.0.13. Därmed försvann två säkerhetsvarningar. Ändringen verifierades med `dotnet restore` och `dotnet build` och sammanfogades via Pull Request #33.
+
+Fem säkerhetsvarningar återstår för `SixLabors.ImageSharp`, som används av Umbraco 17.7.1.
+
+Vi testade ImageSharp 3.2.0, men samma fem säkerhetsvarningar kvarstod. Teständringen återställdes därför.
+
+Kvarvarande ImageSharp-sårbarheter följs upp separat. En större uppgradering ska inte genomföras utan att kompatibiliteten med Umbracos bildhantering har kontrollerats och testats.
 
 ## 9. Redovisning
 
 **13 november 2026**
 
 Vi demonstrerar webbplatsen, förklarar våra tekniska och designmässiga val samt visar hur användartester och tillgänglighetsgranskning har förbättrat resultatet.
+
+Vi visar även hur vi har organiserat arbetet med GitHub Projects, Issues, branches, Pull Requests och uSync.
 
 Målet är både en fungerande caféwebbplats och ett strukturerat grupparbete där varje medlem kan visa sin egen insats.
