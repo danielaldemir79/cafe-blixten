@@ -1,0 +1,27 @@
+
+# Build files
+bin/
+obj/
+
+# IDE och operativsystem
+.vs/
+.vscode/
+.idea/
+*.user
+.DS_Store
+Thumbs.db
+
+# Lokal databas och Umbraco-data
+/umbraco/Data/
+/umbraco/Logs/
+/wwwroot/media/
+
+# Lokala inställningar och hemligheter
+appsettings.Local.json
+appsettings.*.Local.json
+*.pfx
+
+# Tillfälliga filer
+*.log
+
+# OBS: Ignorera inte uSync/
