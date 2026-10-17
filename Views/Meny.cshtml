@@ -1,0 +1,73 @@
+﻿@using System.Linq
+@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.Meny>
+
+@{
+    Layout = null;
+
+    var blockList = Model.Value<BlockListModel>("produkter");
+
+    var grupper = blockList?
+        .Select(block => block.Content)
+        .GroupBy(produkt => produkt.Value<string>("kategori") ?? "Övrigt");
+}
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@Model.Name - Café Blixten</title>
+</head>
+
+<body>
+    <main>
+        <h1>@Model.Name</h1>
+
+        @if (grupper != null && grupper.Any())
+        {
+            foreach (var grupp in grupper)
+            {
+                <section>
+                    <h2>@grupp.Key</h2>
+
+                    @foreach (var produkt in grupp)
+                    {
+                        var namn = produkt.Value<string>("namn");
+                        var pris = produkt.Value<decimal?>("pris");
+                        var beskrivning = produkt.Value<string>("beskrivning");
+                        var bild = produkt.Value<MediaWithCrops>("bild");
+
+                        <article>
+                            <div>
+                                <span>@namn</span>
+
+                                @if (pris.HasValue)
+                                {
+                                    <span> — @pris.Value.ToString("0.##") kr</span>
+                                }
+                            </div>
+
+                            @if (!string.IsNullOrWhiteSpace(beskrivning))
+                            {
+                                <p>@beskrivning</p>
+                            }
+
+                            @if (bild != null)
+                            {
+                                <img src="@bild.Url()" alt="@(namn ?? "Produktbild")" />
+                            }
+                        </article>
+                    }
+                </section>
+            }
+        }
+        else
+        {
+            <p>Menyn uppdateras snart.</p>
+        }
+    </main>
+</body>
+</html>
