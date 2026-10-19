@@ -25,3 +25,6 @@ appsettings.*.Local.json
 *.log
 
 # OBS: Ignorera inte uSync/
+
+# Node / Sass
+node_modules/
