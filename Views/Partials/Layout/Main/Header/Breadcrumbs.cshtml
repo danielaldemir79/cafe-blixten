@@ -1,0 +1,25 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+<div class="breadcrumb-container">
+  @{
+    var crumbs = Model.AncestorsOrSelf().Reverse().ToList();
+  }
+  <nav class="breadcrumb" aria-label="Brödsmulor">
+    <ol class="breadcrumb-list">
+      @foreach (var crumb in crumbs)
+      {
+        var isCurrent = crumb.Id == Model.Id;
+        <li class="breadcrumb-item">
+          @if (isCurrent)
+          {
+            <span class="breadcrumb-current" aria-current="page">@crumb.Name</span>
+          }
+          else
+          {
+            <a href="@crumb.Url()" class="breadcrumb-link">@crumb.Name</a>
+          }
+        </li>
+      }
+    </ol>
+  </nav>
+</div>

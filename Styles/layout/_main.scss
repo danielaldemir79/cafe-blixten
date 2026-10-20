@@ -1,0 +1,108 @@
+@use "../abstracts/mixins" as m;
+
+#Main {
+  #MainHeader {
+    position: sticky;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    min-height: 80px;
+    padding: 0.75rem;
+    background-color: m.color("primary");
+
+    > .header-left {
+      display: flex;
+      height: 100%;
+
+      > .header-left-container {
+        display: flex;
+        flex-direction: row;
+        
+        > .toggle-sidebar-button-container {
+          @include m.for-size(tablet-landscape-up) {
+            display: none;
+          }
+
+          > button {
+            display: block;
+            width: 2rem;
+            height: 100%;
+
+            > svg {
+              fill: m.color("secondary");
+            }
+          }
+        }
+      }
+    }
+  }
+
+  > .main-container {
+    min-height: calc(100vh - 80px - 40px);
+    max-height: calc(100vh - 80px - 40px);
+    padding: 0.75rem;
+    overflow-y: auto;
+  }
+}
+
+#Breadcrumbs {
+  position: relative;
+  display: flex;
+  padding-block: 0.75rem;
+  background-color: m.color("smoke");
+
+  > .breadcrumb-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+
+    > .breadcrumb {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+
+      > .breadcrumb-list {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        > .breadcrumb-item {
+          display: flex;
+          align-items: center;
+          margin: 0;
+          padding: 0 0.75rem;
+          font-size: 0.75rem;
+          line-height: 1rem;
+
+          > .breadcrumb-link {
+            display: block;
+            margin: 0;
+            padding: 0;
+            font-size: 0.75rem;
+            line-height: 1rem;
+            text-decoration: none;
+            color: m.color("primary");
+          }
+
+          > .breadcrumb-current {
+            display: block;
+            margin: 0;
+            padding: 0;
+            font-size: 0.75rem;
+            line-height: 1rem;
+            text-decoration: none;
+            color: m.color("secondary");
+          }
+        }
+      }
+    }
+  }
+}

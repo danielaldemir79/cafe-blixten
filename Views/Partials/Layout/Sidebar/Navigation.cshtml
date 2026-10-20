@@ -1,0 +1,32 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+  var home = Model.Root();
+  var pages = new List<IPublishedContent>{  home };
+  pages.AddRange(home.Children().Where(x => x.IsVisible()));
+}
+
+<nav id="SidebarNavigation" class="sidebar-navigation">
+  <div class="sidebar-navigation-container">
+    <ul class="sidebar-navigation-list">
+      @foreach (var item in pages)
+      {
+        var isActive = item.Id == home.Id
+          ? Model.Id == home.Id
+          : Model.IsDescendantOrSelf(item);
+
+        <li class="sidebar-navigation-item">
+          <a href="@item.Url()"
+            class="sidebar-navigation-link"
+            aria-current="@(isActive ? "page" : null)">
+            <span class="sidebar-navigation-link-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z" />
+              </svg>
+            </span>
+            <span class="sidebar-navigation-link-text">@item.Name</span>
+          </a>
+        </li>
+      }
+    </ul>
+  </div>
+</nav>

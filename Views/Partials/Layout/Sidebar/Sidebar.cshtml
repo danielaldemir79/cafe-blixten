@@ -1,0 +1,8 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+<aside id="Sidebar" class="sidebar">
+  <div class="sidebar-container">
+    @await Html.PartialAsync("Layout/Sidebar/Header")
+    @await Html.PartialAsync("Layout/Sidebar/Navigation")
+  </div>
+</aside>

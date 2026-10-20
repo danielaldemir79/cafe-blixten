@@ -1,0 +1,22 @@
+@use "../abstracts/mixins" as m;
+
+body {
+  display: grid;
+  min-height: 100vh;
+  max-height: 100vh;
+  grid-template-areas: "Main";
+  grid-template-columns: 1fr;
+
+  @include m.for-size(tablet-landscape-up) {
+    grid-template-areas: "Sidebar Main";
+    grid-template-columns: 280px 1fr;
+  }
+}
+
+#Main {
+  grid-area: Main;
+}
+
+#Sidebar {
+  grid-area: Sidebar;
+}
