@@ -6,6 +6,10 @@
   var SearchClickArea = document.getElementById("SearchClickArea");
   var searchOverlay = document.getElementsByClassName("search-overlay")[0];
 
+  var mainContainer = document.querySelector("#Main > .main-container");
+  var backToTopLink = document.getElementsByClassName("back-to-top-link")[0];
+  var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   ToggleSidebarButton.addEventListener("click", function (event) {
     event.preventDefault();
     document.getElementById("Sidebar").classList.toggle("open");
@@ -57,6 +61,19 @@
   searchOverlay.addEventListener("click", function (event) {
     event.preventDefault();
     closeSearch();
+  });
+
+  backToTopLink.addEventListener("click", function (event) {
+    event.preventDefault();
+
+    mainContainer.scrollTo({
+      top: 0,
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+    });
+
+    var main = document.getElementById("Main");
+    main.setAttribute("tabindex", "-1");
+    main.focus({ preventScroll: true });
   });
 
   // ---------- Live-sök ----------
