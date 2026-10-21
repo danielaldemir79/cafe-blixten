@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Café Blixten – footer-design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #2f3e34;
+    --primary-light: #3a4c40;
+    --primary-dark: #26322a;
+    --secondary: #c96f4a;
+    --onyx: #111111;
+    --smoke: #f3f3f3;
+    --muted: #c2c7c3;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Roboto", sans-serif;
+    background: #1b1b1b;
+    color: var(--onyx);
+    padding: 24px 16px 48px;
+  }
+
+  /* ---------- Förhandsvisningskontroller (inte en del av designen) ---------- */
+  .preview-bar {
+    display: flex; gap: 8px; justify-content: center; align-items: center;
+    margin-bottom: 20px; color: #ddd; font-size: 14px; flex-wrap: wrap;
+  }
+  .preview-bar button {
+    font: inherit; padding: 8px 16px; border-radius: 999px; border: 1px solid #555;
+    background: transparent; color: #ddd; cursor: pointer;
+  }
+  .preview-bar button[aria-pressed="true"] { background: var(--secondary); border-color: var(--secondary); color: var(--onyx); }
+
+  .frame {
+    margin: 0 auto; max-width: 1280px; transition: max-width .35s ease;
+    border-radius: 12px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.5);
+  }
+  .frame.mobile { max-width: 390px; }
+
+  /* ---------- Sajtens skal (som på din skärmdump) ---------- */
+  .site { display: grid; grid-template-columns: 240px 1fr; background: var(--primary); min-height: 760px; }
+  .frame.mobile .site { grid-template-columns: 1fr; }
+  .sidebar { padding: 28px 20px; color: var(--smoke); }
+  .frame.mobile .sidebar { display: none; }
+  .brand-mark { display: flex; flex-direction: column; align-items: center; gap: 10px; padding-bottom: 22px; border-bottom: 1px solid rgba(243,243,243,.15); }
+  .brand-mark svg { width: 64px; height: 64px; }
+  .brand-mark span { font-family: "Fira Sans"; font-weight: 700; font-size: 20px; }
+  .nav-item { display: flex; align-items: center; gap: 12px; padding: 22px 12px 0; font-size: 15px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--secondary); }
+
+  .main { display: flex; flex-direction: column; min-width: 0; }
+  .topbar { height: 70px; display: flex; align-items: center; justify-content: center; padding: 0 16px; }
+  .fake-search { width: min(560px, 100%); height: 40px; border-radius: 999px; background: #fff; color: #777; display: flex; align-items: center; padding: 0 20px; font-size: 15px; }
+  .crumbs { background: var(--smoke); padding: 12px 14px; font-size: 13px; color: var(--secondary); }
+  .content { background: #fff; flex: 1; padding: 40px 32px; }
+  .placeholder { height: 14px; border-radius: 7px; background: #ececec; margin-bottom: 14px; }
+
+  /* =====================================================================
+     FOOTER-DESIGNEN
+     ===================================================================== */
+  .site-footer {
+    background: var(--primary-dark);
+    color: var(--smoke);
+    position: relative;
+  }
+
+  /* Orange "blixt"-linje överst – kopplar till varumärket */
+  .site-footer::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--secondary) 0 120px, rgba(201,111,74,.25) 120px);
+  }
+
+  /* --- Inbjudande "CTA"-band --- */
+  .footer-cta {
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    padding: 36px 40px; border-bottom: 1px solid rgba(243,243,243,.1); flex-wrap: wrap;
+  }
+  .footer-cta h2 { font-family: "Fira Sans"; font-weight: 600; font-size: 26px; line-height: 1.2; }
+  .footer-cta h2 em { font-style: normal; color: var(--secondary); }
+  .footer-cta p { color: var(--muted); margin-top: 6px; font-size: 15px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: 999px;
+    background: var(--secondary); color: var(--onyx); font-weight: 500; text-decoration: none; font-size: 15px;
+    white-space: nowrap;
+  }
+  .btn svg { width: 18px; height: 18px; }
+
+  /* --- Kolumner --- */
+  .footer-grid {
+    display: grid; grid-template-columns: 1.3fr 1fr 1fr 0.8fr; gap: 40px;
+    padding: 40px;
+  }
+  .frame.mobile .footer-grid { grid-template-columns: 1fr; gap: 32px; padding: 32px 24px; }
+  .frame.mobile .footer-cta { padding: 28px 24px; }
+  .frame.mobile .footer-cta h2 { font-size: 22px; }
+
+  .footer-heading {
+    font-family: "Fira Sans"; font-weight: 600; font-size: 13px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--smoke); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .footer-heading::before { content: ""; width: 14px; height: 2px; background: var(--secondary); }
+
+  .footer-brand .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .footer-brand .logo svg { width: 40px; height: 40px; }
+  .footer-brand .logo span { font-family: "Fira Sans"; font-weight: 700; font-size: 22px; }
+  .footer-brand p { color: var(--muted); font-size: 15px; line-height: 1.6; max-width: 32ch; }
+
+  .socials { display: flex; gap: 10px; margin-top: 20px; }
+  .socials a {
+    display: inline-flex; align-items: center; justify-content: center; padding: 0 14px; height: 36px;
+    border-radius: 999px; border: 1px solid rgba(243,243,243,.25); color: var(--smoke);
+    text-decoration: none; font-size: 13px;
+  }
+  .socials a:hover { border-color: var(--secondary); color: var(--secondary); }
+
+  /* Öppettider */
+  .hours { list-style: none; font-size: 15px; }
+  .hours li { display: flex; justify-content: space-between; gap: 16px; padding: 7px 0; border-bottom: 1px dashed rgba(243,243,243,.12); color: var(--muted); }
+  .hours li.today { color: var(--smoke); font-weight: 500; }
+  .hours li.today span:first-child::after {
+    content: "Idag"; margin-left: 8px; font-size: 11px; padding: 2px 8px; border-radius: 999px;
+    background: var(--secondary); color: var(--onyx); font-weight: 500; vertical-align: 1px;
+  }
+  .open-now { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; font-size: 14px; color: var(--smoke); }
+  .open-now i { width: 8px; height: 8px; border-radius: 50%; background: #7bd88f; box-shadow: 0 0 0 4px rgba(123,216,143,.2); }
+
+  /* Kontakt */
+  .contact { list-style: none; font-size: 15px; }
+  .contact li { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; color: var(--muted); line-height: 1.5; }
+  .contact svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; color: var(--secondary); }
+  .contact a { color: var(--smoke); text-decoration: none; border-bottom: 1px solid rgba(243,243,243,.3); }
+
+  /* Länkar */
+  .links { list-style: none; font-size: 15px; }
+  .links li { margin-bottom: 10px; }
+  .links a { color: var(--muted); text-decoration: none; }
+  .links a:hover { color: var(--smoke); }
+
+  /* --- Bottenrad --- */
+  .footer-bottom {
+    display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+    padding: 18px 40px; background: rgba(0,0,0,.18); font-size: 13px; color: var(--muted);
+  }
+  .frame.mobile .footer-bottom { padding: 18px 24px; flex-direction: column; align-items: flex-start; }
+  .legal { display: flex; gap: 18px; flex-wrap: wrap; }
+  .legal a { color: var(--muted); text-decoration: none; }
+  .to-top {
+    display: inline-flex; align-items: center; gap: 6px; color: var(--smoke); text-decoration: none;
+  }
+  .to-top svg { width: 16px; height: 16px; }
+
+  /* Fokusmarkering (WCAG) */
+  .site-footer a:focus-visible { outline: 3px solid var(--secondary); outline-offset: 3px; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div class="preview-bar" role="group" aria-label="Förhandsvisning">
+  <span>Förhandsvisning:</span>
+  <button type="button" data-view="desktop" aria-pressed="true">Desktop</button>
+  <button type="button" data-view="mobile" aria-pressed="false">Mobil</button>
+</div>
+
+<div class="frame" id="Frame">
+  <div class="site">
+    <!-- Sidebar (som på din sajt) -->
+    <aside class="sidebar">
+      <div class="brand-mark">
+        <svg viewBox="0 0 64 64" fill="none" stroke="#f3f3f3" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">
+          <path d="M12 30h32v6a16 16 0 0 1-16 16h0a16 16 0 0 1-16-16z"/>
+          <path d="M44 33h4a6 6 0 0 1 0 12h-5"/>
+          <path d="M31 8l-7 13h8l-6 12" stroke="#c96f4a"/>
+        </svg>
+        <span>Café Blixten</span>
+      </div>
+      <div class="nav-item"><i class="dot"></i> Hem</div>
+    </aside>
+
+    <div class="main">
+      <div class="topbar"><div class="fake-search">Sök...</div></div>
+      <div class="crumbs">Hem</div>
+      <div class="content" aria-hidden="true">
+        <div class="placeholder" style="width:40%;height:22px"></div>
+        <div class="placeholder" style="width:90%"></div>
+        <div class="placeholder" style="width:82%"></div>
+        <div class="placeholder" style="width:70%"></div>
+      </div>
+
+      <!-- ===================== FOOTER ===================== -->
+      <footer class="site-footer">
+
+        <div class="footer-cta">
+          <div>
+            <h2>Sugen på en <em>laddad</em> kopp?</h2>
+            <p>Välkommen in – vi har nybryggt och nybakat varje dag.</p>
+          </div>
+          <a class="btn" href="#">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            Hitta hit
+          </a>
+        </div>
+
+        <div class="footer-grid">
+          <section class="footer-brand" aria-labelledby="f-about">
+            <div class="logo">
+              <svg viewBox="0 0 64 64" fill="none" stroke="#f3f3f3" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">
+                <path d="M12 30h32v6a16 16 0 0 1-16 16h0a16 16 0 0 1-16-16z"/>
+                <path d="M44 33h4a6 6 0 0 1 0 12h-5"/>
+                <path d="M31 8l-7 13h8l-6 12" stroke="#c96f4a"/>
+              </svg>
+              <span id="f-about">Café Blixten</span>
+            </div>
+            <p>Kaffekoppar &amp; fika med en extra gnista. Lokalrostat kaffe, hembakat och en plats att landa på.</p>
+            <div class="socials">
+              <a href="#">Instagram</a>
+              <a href="#">Facebook</a>
+            </div>
+          </section>
+
+          <section aria-labelledby="f-hours">
+            <h3 class="footer-heading" id="f-hours">Öppettider</h3>
+            <ul class="hours">
+              <li><span>Mån–Fre</span><span>07–18</span></li>
+              <li class="today"><span>Lördag</span><span>09–17</span></li>
+              <li><span>Söndag</span><span>10–16</span></li>
+            </ul>
+            <p class="open-now"><i aria-hidden="true"></i> Öppet nu</p>
+          </section>
+
+          <section aria-labelledby="f-contact">
+            <h3 class="footer-heading" id="f-contact">Hitta oss</h3>
+            <ul class="contact">
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>Exempelgatan 12<br>123 45 Exempelstad</span>
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
+                <a href="#">012-345 67 89</a>
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
+                <a href="#">hej@cafeblixten.se</a>
+              </li>
+            </ul>
+          </section>
+
+          <nav aria-labelledby="f-nav">
+            <h3 class="footer-heading" id="f-nav">Utforska</h3>
+            <ul class="links">
+              <li><a href="#">Meny</a></li>
+              <li><a href="#">Evenemang</a></li>
+              <li><a href="#">Om oss</a></li>
+              <li><a href="#">Jobba hos oss</a></li>
+            </ul>
+          </nav>
+        </div>
+
+        <div class="footer-bottom">
+          <span>© 2026 Café Blixten</span>
+          <div class="legal">
+            <a href="#">Tillgänglighet</a>
+            <a href="#">Integritetspolicy</a>
+            <a href="#">Cookies</a>
+          </div>
+          <a class="to-top" href="#">
+            Till toppen
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg>
+          </a>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll("[data-view]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.getElementById("Frame").classList.toggle("mobile", btn.dataset.view === "mobile");
+      document.querySelectorAll("[data-view]").forEach(function (b) {
+        b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+      });
+    });
+  });
+</script>
+</body>
+</html>

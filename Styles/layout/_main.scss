@@ -1,6 +1,7 @@
 @use "../abstracts/mixins" as m;
 
 #Main {
+
   #MainHeader {
     position: sticky;
     display: flex;
@@ -9,7 +10,7 @@
     justify-content: space-between;
     min-height: 70px;
     padding: 0.75rem;
-    background-color: m.color("primary");
+    background-color: m.darken("primary", 20%);
 
     > .header-left {
       display: flex;
@@ -94,8 +95,12 @@
   > .main-container {
     min-height: calc(100vh - 70px - 40px);
     max-height: calc(100vh - 70px - 40px);
-    padding: 0.75rem;
     overflow-y: auto;
+
+    > .main-content {
+      min-height: calc(100vh - 70px - 40px);
+      padding: 1rem;
+    }
   }
 }
 
@@ -157,6 +162,255 @@
           }
         }
       }
+    }
+  }
+}
+
+#Footer {
+  position: relative;
+  background-color: m.darken("primary", 20%);
+
+  > .footer-container {
+    > .footer-top {
+      display: flex;
+      flex-direction: row;
+      padding: 3rem 4rem;
+      border-bottom: 1px solid m.lighten("primary", 5%);
+
+      > .left {
+        flex: 1;
+        color: #fff;
+
+        > h1 {
+          > span {
+            color: m.color("secondary");
+          }
+        }
+
+        > p {
+          display: block;
+          padding: 0.25rem 0;
+          color: m.lighten("primary", 40%);
+        }
+      }
+
+      > .right {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+        flex: 1;
+
+        > a {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0.75rem 2rem;
+          border-radius: 5rem;
+          background-color: m.color("secondary");
+          color: m.color("primary");
+
+          &:hover {
+            background-color: m.lighten("secondary", 5%);
+          }
+
+          > svg {
+            display: block;
+            margin-right: 0.5rem;
+          }
+        }
+      }
+    }
+
+    >.footer-bottom {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      padding: 4rem 2rem;
+
+      @include m.for-size(desktop-up) {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      @include m.for-size(phone-only) {
+        grid-template-columns: 1fr;
+      }
+
+      > .content-row {
+        a {
+          position: relative;
+          display: flex;
+          color: m.color("secondary");
+        }
+      }
+
+      > .row {
+        flex: 1 0 auto;
+        padding: 0 2rem;
+        color: m.color("smoke");
+
+        &:first-child {
+          flex: 0 0 25%;
+        }
+
+        h3 {
+          display: flex;
+          align-items: center;
+          margin-bottom: 1rem;
+
+          &::before {
+            content: "";
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 1rem;
+            height: 1px;
+            margin-right: 0.5rem;
+            color: m.color("secondary");
+            background-color: m.color("secondary");
+          }
+        }
+      }
+
+      > .first-row {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+
+        > .logo {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 1rem;
+
+          > a {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 70px;
+            border-radius: 5rem;
+            color: #fff;
+            text-decoration: none;
+
+            > img {
+              display: block;
+              flex: 0 0 70px;
+              object-fit: contain;
+              object-position: center;
+            }
+
+            > h1 {
+              display: flex;
+              width: 100%;
+              height: 100%;
+              align-items: center;
+              margin: {
+                top: 0.5rem;
+              }
+              padding: 0;
+              font-size: 1.5rem;
+              font-weight: bold;
+              line-height: 1.5rem;
+              text-align: center;
+              color: #fff;
+            }
+          }
+        }
+
+        > .text {
+          color: m.lighten("primary", 40%);
+        }
+      }
+
+      > .second-row {
+        > ul {
+          list-style: none;
+
+          > li {
+            display: flex;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid m.lighten("primary", 5%);
+
+            > span {
+              flex: 1;
+
+              &:last-child {
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+              }
+            }
+          }
+        }
+
+        > p {
+          display: flex;
+          flex-direction: row;
+          padding: 1rem 0;
+
+          &::before {
+            content: "";
+            display: block;
+            width: 0.75rem;
+            height: 0.75rem;
+            margin-right: 0.5rem;
+            border: 3px solid green;
+            border-radius: 100%;
+            background-color: lighten(green, 30%);
+          }
+        }
+      }
+
+      > .third-row {
+        > div {
+          display: flex;
+          flex-direction: row;
+          padding: 0.75rem 0;
+
+          > svg {
+            margin-right: 1rem;
+            color: m.color("secondary");
+          }
+        }
+      }
+
+      > .fourth-row {
+        > ul {
+          list-style: none;
+
+          > li {
+            > a {
+              display: flex;
+              align-items: center;
+              justify-content: flex-start;
+              color: m.lighten("primary", 40%);
+
+              &[aria-current="page"] {
+                color: m.color("secondary");
+
+                &::before {
+                  content: "";
+                  display: block;
+                  width: 0.5rem;
+                  height: 0.5rem;
+                  margin-right: 0.5rem;
+                  border-radius: 100%;
+                  background-color: m.color("secondary");
+                }
+              }
+
+              &:hover {
+                color: m.color("secondary");
+              }
+            }
+          }
+        }
+      }
+    }
+
+    > .footer-copyright {
+      padding: 2rem;
+      background-color: m.darken("primary", 40%);
     }
   }
 }

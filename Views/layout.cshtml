@@ -23,7 +23,10 @@
 		<main id="Main">
 			@await Html.PartialAsync("Layout/Main/Header/Header")
 			<div class="main-container">
-				@RenderBody()
+				<div class="main-content">
+					@RenderBody()
+				</div>
+				@await Html.PartialAsync("Layout/Main/Footer/Footer")
 			</div>
 		</main>
 		@await Html.PartialAsync("Layout/Search/Search")
