@@ -6,12 +6,14 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    min-height: 80px;
+    justify-content: space-between;
+    min-height: 70px;
     padding: 0.75rem;
     background-color: m.color("primary");
 
     > .header-left {
       display: flex;
+      flex: 0 0 70px;
       height: 100%;
 
       > .header-left-container {
@@ -35,11 +37,63 @@
         }
       }
     }
+
+    > .header-middle {
+      display: flex;
+      flex: 0 0 60%;
+      align-items: center;
+      justify-content: center;
+
+      @include m.for-size(tablet-landscape-up) {
+        flex: 0 0 40%;
+      }
+
+      > .search-container {
+        display: flex;
+        width: 100%;
+
+        > .search-click-area {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          padding: 1.25rem;
+          border: none;
+          font: inherit;
+          text-align: left;
+          border-radius: 5rem;
+          background-color: #fff;
+          cursor: pointer;
+
+          &::before {
+            content: "Sök...";
+            position: absolute;
+            display: flex;
+            align-items: center;
+            top: 0;
+            left: 1.25rem;
+            width: 100%;
+            height: 100%;
+            color: darken(#fff, 40%);
+          }
+
+          &:hover {
+            background-color: darken(#fff, 5%);
+          }
+        }
+      }
+    }
+
+    > .header-right {
+      display: flex;
+      flex: 0 0 70px;
+      align-items: center;
+      justify-content: flex-end;
+    }
   }
 
   > .main-container {
-    min-height: calc(100vh - 80px - 40px);
-    max-height: calc(100vh - 80px - 40px);
+    min-height: calc(100vh - 70px - 40px);
+    max-height: calc(100vh - 70px - 40px);
     padding: 0.75rem;
     overflow-y: auto;
   }

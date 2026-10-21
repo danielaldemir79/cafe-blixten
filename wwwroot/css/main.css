@@ -1,7 +1,9 @@
+@charset "UTF-8";
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  z-index: 0;
 }
 
 body {
@@ -22,6 +24,13 @@ button {
   color: inherit;
   font: inherit;
   cursor: pointer;
+}
+
+input {
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -58,12 +67,14 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
-  min-height: 80px;
+  justify-content: space-between;
+  min-height: 70px;
   padding: 0.75rem;
   background-color: #2f3e34;
 }
 #Main #MainHeader > .header-left {
   display: flex;
+  flex: 0 0 70px;
   height: 100%;
 }
 #Main #MainHeader > .header-left > .header-left-container {
@@ -83,9 +94,56 @@ body {
 #Main #MainHeader > .header-left > .header-left-container > .toggle-sidebar-button-container > button > svg {
   fill: #c96f4a;
 }
+#Main #MainHeader > .header-middle {
+  display: flex;
+  flex: 0 0 60%;
+  align-items: center;
+  justify-content: center;
+}
+@media (min-width: 900px) {
+  #Main #MainHeader > .header-middle {
+    flex: 0 0 40%;
+  }
+}
+#Main #MainHeader > .header-middle > .search-container {
+  display: flex;
+  width: 100%;
+}
+#Main #MainHeader > .header-middle > .search-container > .search-click-area {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 1.25rem;
+  border: none;
+  font: inherit;
+  text-align: left;
+  border-radius: 5rem;
+  background-color: #fff;
+  cursor: pointer;
+}
+#Main #MainHeader > .header-middle > .search-container > .search-click-area::before {
+  content: "Sök...";
+  position: absolute;
+  display: flex;
+  align-items: center;
+  top: 0;
+  left: 1.25rem;
+  width: 100%;
+  height: 100%;
+  color: #999999;
+}
+#Main #MainHeader > .header-middle > .search-container > .search-click-area:hover {
+  background-color: rgb(95%, 95%, 95%);
+}
+#Main #MainHeader > .header-right {
+  display: flex;
+  flex: 0 0 70px;
+  align-items: center;
+  justify-content: flex-end;
+}
 #Main > .main-container {
-  min-height: calc(100vh - 80px - 40px);
-  max-height: calc(100vh - 80px - 40px);
+  min-height: calc(100vh - 70px - 40px);
+  max-height: calc(100vh - 70px - 40px);
   padding: 0.75rem;
   overflow-y: auto;
 }
@@ -300,6 +358,174 @@ body {
   text-align: center;
 }
 
+#Search {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  z-index: 100;
+}
+#Search > .search-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 100;
+}
+#Search.open {
+  visibility: visible;
+}
+#Search > .close-button-container {
+  display: flex;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  right: 0;
+  width: 70px;
+  height: 70px;
+  z-index: 110;
+}
+#Search #CloseSearch {
+  position: relative;
+  width: 50%;
+  height: 50%;
+}
+#Search #CloseSearch > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: #fff;
+}
+#Search > .search-container {
+  position: relative;
+  z-index: 101;
+  width: 100%;
+  padding: 1rem 1rem 0;
+}
+@media (min-width: 900px) {
+  #Search > .search-container {
+    width: calc(100% - 280px);
+    margin-left: auto;
+    padding: 1rem 2rem 0;
+  }
+}
+#Search .search-form {
+  display: flex;
+  align-items: center;
+  max-width: 60%;
+  margin: 0 auto;
+  padding: 0.25rem 0.25rem 0.25rem 1.5rem;
+  border-radius: 5rem;
+  background-color: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+#Search .search-form:focus-within {
+  outline: 3px solid #c96f4a;
+  outline-offset: 2px;
+}
+@media (min-width: 900px) {
+  #Search .search-form {
+    max-width: 50%;
+  }
+}
+#Search .search-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: 1rem;
+  color: #111111;
+}
+#Search .search-input:focus {
+  outline: none;
+}
+#Search .search-input::placeholder {
+  color: #6b6b6b;
+}
+#Search .search-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  border: none;
+  border-radius: 50%;
+  background-color: #2f3e34;
+  color: #F3F3F3;
+  cursor: pointer;
+}
+#Search .search-submit > svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+#Search .search-submit:hover {
+  background-color: rgb(28.6024464832%, 37.7308868502%, 31.6452599388%);
+}
+#Search .search-submit:focus-visible {
+  outline: 3px solid #c96f4a;
+  outline-offset: 2px;
+}
+#Search .search-results-panel {
+  display: none;
+  max-width: 60%;
+  max-height: 60vh;
+  margin: 0.75rem auto 0;
+  padding: 0.75rem;
+  overflow-y: auto;
+  border-radius: 1rem;
+  background-color: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+@media (min-width: 900px) {
+  #Search .search-results-panel {
+    max-width: 50%;
+  }
+}
+#Search.has-results .search-results-panel {
+  display: block;
+}
+#Search .search-status {
+  padding: 0.25rem 0.75rem 0.5rem;
+  font-size: 0.875rem;
+  color: #595959;
+}
+#Search .search-results {
+  list-style: none;
+}
+#Search .search-result-link {
+  display: block;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  color: #111111;
+  text-decoration: none;
+}
+#Search .search-result-link:hover, #Search .search-result-link:focus-visible {
+  background-color: #F3F3F3;
+  color: #2f3e34;
+  outline: none;
+  box-shadow: inset 4px 0 0 #c96f4a;
+}
+#Search #CloseSearch {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+#Search #CloseSearch:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
 .d-none {
   display: none;
 }
@@ -328,6 +554,18 @@ body {
 
 .d-inline-flex {
   display: inline-flex;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .relative {
@@ -394,4 +632,4 @@ body {
   background-color: #A08794;
 }
 
-/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22../../Styles/base/_reset.scss%22,%22../../Styles/abstracts/_variables.scss%22,%22../../Styles/base/_typography.scss%22,%22../../Styles/layout/_page.scss%22,%22../../Styles/abstracts/_mixins.scss%22,%22../../Styles/layout/_main.scss%22,%22../../Styles/layout/_sidebar.scss%22,%22../../Styles/utilities/_display.scss%22,%22../../Styles/utilities/_position.scss%22,%22../../Styles/utilities/_colors.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%22AAEA;EACE;EACA;EACA;;;AAGF;EACE;EACA;EACA,aCDU;;;ADIZ;EACE;;;AAGF;EACE;EACA;EACA;EACA;EACA;EACA;EACA;;;AEvBF;EACE,aDMa;ECLb;EACA;EACA;;;ACJF;EACE;EACA;EACA;EACA;EACA;;ACGE;EDRJ;IAQI;IACA;;;;AAIJ;EACE;;;AAGF;EACE;;;AEjBA;EACE;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;;AAEA;EACE;EACA;;ADRJ;ECUI;IAEI;;;AAGF;EACE;EACA;EACA;;AAEA;EACE;;AAQZ;EACE;EACA;EACA;EACA;;;AAIJ;EACE;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;EACA;EACA;EACA;;AAGF;EACE;EACA;EACA;EACA;EACA;EACA;EACA;;;ACnGZ;EACE;EACA;EAEA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;;AAGF;EACE;EACA;EACA;;AFbA;EERJ;IAyBI;IACA;IACA;IACA;IACA;;;;AAIJ;EACE;;AAEA;EACE;;AAEA;EACE;EACA;EACA;EACA;EACA;EACA;;AFrCF;EE+BA;IASI;;;AAGF;EACE;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;;AAKN;EACE;EAEE;EAEF;;AAEA;EACE;EACA;EACA;;AAEA;EACE;EACA;EACA;;AAGF;EACE;EACA;EACA;EAEE;EAEF;EACA;EACA;EACA;EACA;EACA;;;AASN;EACE;EACA;EAEE;;AAGF;EACE;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;;AAKF;EACE;EACA;EACA;;AAEA;EACE;;AAKN;EACE;;AAGF;EACE;EACA;EACA;EACA;EACA;EACA;;;AC/KZ;EACE;;;AAGF;EACE;;;AAGF;EACE;;;AAGF;EACE;;;AAGF;EACE;;AAEA;EACE;;AAGF;EACE;;;AAIJ;EACE;;;AC9BF;EACE;;;AAGF;EACE;;;AAGF;EACE;;;AAGF;EACE;;;ACXA;EACE,ORJK;;;AQMP;EACE,kBRPK;;;AQGP;EACE,ORJK;;;AQMP;EACE,kBRPK;;;AQGP;EACE,ORJK;;;AQMP;EACE,kBRPK;;;AQGP;EACE,ORJK;;;AQMP;EACE,kBRPK;;;AQGP;EACE,ORJK;;;AQMP;EACE,kBRPK;;;AQGP;EACE,ORJK;;;AQMP;EACE,kBRPK%22,%22file%22:%22main.css%22%7D */
+/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22../../Styles/base/_reset.scss%22,%22../../Styles/abstracts/_variables.scss%22,%22../../Styles/base/_typography.scss%22,%22../../Styles/layout/_page.scss%22,%22../../Styles/abstracts/_mixins.scss%22,%22../../Styles/layout/_main.scss%22,%22../../Styles/layout/_sidebar.scss%22,%22../../Styles/layout/_search.scss%22,%22../../Styles/utilities/_display.scss%22,%22../../Styles/utilities/_position.scss%22,%22../../Styles/utilities/_colors.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%22;AAEA;EACE;EACA;EACA;EACA;;;AAGF;EACE;EACA;EACA,aCFU;;;ADKZ;EACE;;;AAGF;EACE;EACA;EACA;EACA;EACA;EACA;EACA;;;AAGF;EACE;EACA;EACA;EACA;;;AE/BF;EACE,aDMa;ECLb;EACA;EACA;;;ACJF;EACE;EACA;EACA;EACA;EACA;;ACGE;EDRJ;IAQI;IACA;;;;AAIJ;EACE;;;AAGF;EACE;;;AEjBA;EACE;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;;AAEA;EACE;EACA;;ADVJ;ECYI;IAEI;;;AAGF;EACE;EACA;EACA;;AAEA;EACE;;AAOV;EACE;EACA;EACA;EACA;;ADlCF;EC8BA;IAOI;;;AAGF;EACE;EACA;;AAEA;EACE;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAGF;EACE;;AAMR;EACE;EACA;EACA;EACA;;AAIJ;EACE;EACA;EACA;EACA;;;AAIJ;EACE;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;EACA;EACA;EACA;;AAGF;EACE;EACA;EACA;EACA;EACA;EACA;EACA;;;ACzJZ;EACE;EACA;EAEA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;;AAGF;EACE;EACA;EACA;;AFbA;EERJ;IAyBI;IACA;IACA;IACA;IACA;;;;AAIJ;EACE;;AAEA;EACE;;AAEA;EACE;EACA;EACA;EACA;EACA;EACA;;AFrCF;EE+BA;IASI;;;AAGF;EACE;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;;AAKN;EACE;EAEE;EAEF;;AAEA;EACE;EACA;EACA;;AAEA;EACE;EACA;EACA;;AAGF;EACE;EACA;EACA;EAEE;EAEF;EACA;EACA;EACA;EACA;EACA;;;AASN;EACE;EACA;EAEE;;AAGF;EACE;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;;AAKF;EACE;EACA;EACA;;AAEA;EACE;;AAKN;EACE;;AAGF;EACE;EACA;EACA;EACA;EACA;EACA;;;AC/KZ;EACE;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAGF;EACE;;AAGF;EACE;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAGF;EACE;EACA;EACA;;AAEA;EACE;EACA;EACA;EACA;;AAIJ;EACE;EACA;EACA;EACA;;AH/CA;EG2CF;IAOI;IACA;IACA;;;AAIJ;EACE;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;;AHpEF;EGwDF;IAgBI;;;AAIJ;EACE;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;;AAGF;EACE;;AAIJ;EACE;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACE;EACA;;AAGF;EACE;;AAGF;EACE;EACA;;AAIJ;EACE;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AHpIA;EG2HF;IAYI;;;AAIJ;EACE;;AAGF;EACE;EACA;EACA;;AAGF;EACE;;AAGF;EACE;EACA;EACA;EACA;EACA;;AAEA;EAEE;EACA;EACA;EACA;;AAIJ;EACE;EACA;EACA;;AAEA;EACE;EACA;;;ACxLN;EACE;;;AAGF;EACE;;;AAGF;EACE;;;AAGF;EACE;;;AAGF;EACE;;AAEA;EACE;;AAGF;EACE;;;AAIJ;EACE;;;AAIF;EACE;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;;AC3CF;EACE;;;AAGF;EACE;;;AAGF;EACE;;;AAGF;EACE;;;ACXA;EACE,OTJK;;;ASMP;EACE,kBTPK;;;ASGP;EACE,OTJK;;;ASMP;EACE,kBTPK;;;ASGP;EACE,OTJK;;;ASMP;EACE,kBTPK;;;ASGP;EACE,OTJK;;;ASMP;EACE,kBTPK;;;ASGP;EACE,OTJK;;;ASMP;EACE,kBTPK;;;ASGP;EACE,OTJK;;;ASMP;EACE,kBTPK%22,%22file%22:%22main.css%22%7D */
