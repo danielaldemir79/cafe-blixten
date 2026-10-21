@@ -5,21 +5,42 @@
   var SidebarCloseButton = document.getElementById("SidebarClose");
   var SearchClickArea = document.getElementById("SearchClickArea");
   var searchOverlay = document.getElementsByClassName("search-overlay")[0];
+  var Sidebar = document.getElementById("Sidebar");
 
+  // För att kunna scrolla till toppen
   var mainContainer = document.querySelector("#Main > .main-container");
   var backToTopLink = document.getElementsByClassName("back-to-top-link")[0];
   var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  function closeSidebar() {
+    Sidebar.classList.remove("open");
+  }
+
+  Sidebar.addEventListener("click", function (event) {
+    if (event.target.closest("a")) {
+      closeSidebar();
+    }
+  });
+
+  window.addEventListener("pageshow", function (event) {
+    if (event.persisted) {
+      closeSidebar();
+    }
+  });
+
+  // Toggla sidomenyn på mobila enheter
   ToggleSidebarButton.addEventListener("click", function (event) {
     event.preventDefault();
     document.getElementById("Sidebar").classList.toggle("open");
   });
 
+  // Stäng sidomenyn på mobila enheter
   SidebarCloseButton.addEventListener("click", function (event) {
     event.preventDefault();
     document.getElementById("Sidebar").classList.remove("open");
   });
 
+  // Stäng sidomenyn på mobila enheter om sidomenyn är öppen, och om skärmen är mindre än 900px
   window.addEventListener("resize", function (event) {
     if (window.matchMedia("(max-width: 900px)").matches
       && document.getElementById("Sidebar").classList.contains("open")) {
@@ -27,9 +48,11 @@
     }
   });
 
+  // Sökelement
   var Search = document.getElementById("Search");
   var SearchInput = document.getElementById("SearchInput");
 
+  // Öppna sökfältet
   function openSearch() {
     Search.classList.add("open");
     SearchClickArea.setAttribute("aria-expanded", "true");
@@ -40,6 +63,7 @@
     });
   }
 
+  // Stäng sökfältet
   function closeSearch() {
     if (!Search.classList.contains("open")) return;
     Search.classList.remove("open");
@@ -48,21 +72,25 @@
     SearchClickArea.focus(); // tillbaka till knappen som öppnade sökningen
   }
 
+  // Öppna sökfältet, om knappen är tryckt
   SearchClickArea.addEventListener("click", function (event) {
     event.preventDefault();
     openSearch();
   });
 
+  // Stäng sökfältet, om knappen är tryckt
   document.getElementById("CloseSearch").addEventListener("click", function (event) {
     event.preventDefault();
     closeSearch();
   });
 
+  // Stäng sökfältet, om man trycker på overlayen
   searchOverlay.addEventListener("click", function (event) {
     event.preventDefault();
     closeSearch();
   });
 
+  // Scrolla till toppen
   backToTopLink.addEventListener("click", function (event) {
     event.preventDefault();
 

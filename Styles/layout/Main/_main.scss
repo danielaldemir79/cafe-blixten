@@ -1,0 +1,14 @@
+@use "../../abstracts/mixins" as m;
+
+#Main {
+  > .main-container {
+    min-height: calc(100vh - 70px - 40px);
+    max-height: calc(100vh - 70px - 40px);
+    overflow-y: auto;
+
+    > .main-content {
+      min-height: calc(100vh - 70px - 40px);
+      padding: 1rem;
+    }
+  }
+}
