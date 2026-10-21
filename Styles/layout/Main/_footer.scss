@@ -7,8 +7,15 @@
   > .footer-container {
     > .footer-top {
       display: flex;
-      flex-direction: row;
-      padding: 3rem 4rem;
+      flex-direction: column;
+      gap: 1.5rem;
+      padding: 2rem 1.5rem;
+
+      @include m.for-size(tablet-portrait-up) {
+        flex-direction: row;
+        align-items: center;
+        padding: 3rem 4rem;
+      }
       border-bottom: 1px solid m.lighten("primary", 5%);
 
       > .left {
@@ -32,8 +39,12 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: flex-end;
+        justify-content: flex-start;
         flex: 1;
+
+        @include m.for-size(tablet-portrait-up) {
+          justify-content: flex-end;
+        }
 
         > a {
           display: flex;
@@ -58,16 +69,17 @@
 
     >.footer-bottom {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      overflow-wrap: anywhere; // långa e-postadresser bryts i stället för att trycka ut sidan
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 1rem;
       padding: 4rem 2rem;
 
       @include m.for-size(desktop-up) {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
       }
 
       @include m.for-size(phone-only) {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
       }
 
       > .content-row {
@@ -255,12 +267,22 @@
 
     > .footer-copyright {
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       align-items: center;
       justify-content: space-between;
       padding: 1.5rem 2rem;
       color: m.lighten("primary", 40%);
       background-color: m.darken("primary", 40%);
+
+      @include m.for-size(tablet-portrait-up) {
+        flex-direction: row;
+      }
+
+      @include m.for-size(phone-only) {
+        > div {
+          padding: 0.75rem 0;
+        }
+      }
 
       > .accessibility-links {
         display: flex;

@@ -6,9 +6,11 @@
 
   position: fixed;
   width: 100%;
-  height: 100vh;
   top: 0;
+  bottom: 0; // top + bottom = alltid hela skärmhöjden, även på mobil
   left: -100%;
+  overflow-y: auto; // långa menyer går att scrolla
+  overflow-x: hidden;
   visibility: hidden;
   transition: left 0.3s ease-in-out;
   z-index: 10;
@@ -28,7 +30,8 @@
     position: relative;
     width: 280px;
     left: auto;
-    height: auto;
+    bottom: auto;
+    overflow-y: visible;
     visibility: visible;
   }
 }
