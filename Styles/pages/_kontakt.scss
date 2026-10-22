@@ -9,10 +9,10 @@
   display: grid;
   gap: 1.5rem;
   grid-template-areas:
-    "map"
     "intro"
     "address"
-    "directions";
+    "directions"
+    "map";
   max-width: 1200px;
   margin: clamp(2rem, 5vw, 4rem) auto;
   padding: var(--pad-y) var(--pad-x);
@@ -186,7 +186,7 @@
   // Kartan går ända ut till kortets kant
   &__map {
     grid-area: map;
-    margin: calc(-1 * var(--pad-y)) calc(-1 * var(--pad-x)) 0;
+    margin: 0 calc(-1 * var(--pad-x)) calc(-1 * var(--pad-y));
     aspect-ratio: 4 / 3;
 
     @include m.for-size(tablet-landscape-up) {
