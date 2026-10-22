@@ -1,0 +1,40 @@
+@use "../abstracts/variables" as v;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: v.$font-body;
+  overflow: hidden;
+}
+
+img,
+svg {
+  max-width: 100%; // bilder och ikoner får aldrig bli bredare än sin behållare
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+input {
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+}

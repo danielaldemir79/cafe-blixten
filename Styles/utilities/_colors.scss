@@ -1,0 +1,10 @@
+@use "../abstracts/variables" as v;
+
+@each $name, $color in v.$colors {
+  .color-#{name} {
+    color: $color;
+  }
+  .bg-#{name} {
+    background-color: $color;
+  }
+}

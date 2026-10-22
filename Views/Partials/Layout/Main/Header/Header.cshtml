@@ -1,0 +1,10 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+<header id="MainHeader" class="main-header">
+  @await Html.PartialAsync("Layout/Main/Header/Left")
+  @await Html.PartialAsync("Layout/Main/Header/Middle")
+  @await Html.PartialAsync("Layout/Main/Header/Right")
+</header>
+<header id="Breadcrumbs">
+  @await Html.PartialAsync("Layout/Main/Header/Breadcrumbs")
+</header>

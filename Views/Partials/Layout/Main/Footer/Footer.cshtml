@@ -1,0 +1,101 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+  var home = Model.Root();
+  var pages = new List<IPublishedContent>{  home };
+  pages.AddRange(home.Children().Where(x => x.IsVisible()));
+}
+
+<footer id="Footer" class="footer">
+  <div class="footer-container">
+    <div class="footer-top">
+      <div class="left">
+        <h1>Sugen på en <span>laddad</span> kopp?</h1>
+        <p>Välkommen in — vi har nybryggt och nybakat varje dag.
+      </div>
+      <div class="right">
+        <a href="#">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin preview-icon"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>Hitta hit</span>
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="first-row row">
+        <div class="logo">
+          <a href="/">
+            <img src="/logo/Logo - White.svg" alt="Logo" />
+            <h1>Café Blixten</h1>
+          </a>
+        </div>
+        <div class="text">
+          <p>Kaffe & fika med en extra gnista.<br />
+          Lokalrostat kaffe, hembakat och en
+          plats att landa på</p>
+        </div>
+      </div>
+      <div class="second-row row content-row">
+        <h3>Öppettider</h3>
+        <ul>
+          <li><span>Mån-Fre</span><span>07-18</span></li>
+          <li><span>Lördag</span><span>07-18</span></li>
+          <li><span>Söndag</span><span>07-16</span></li>
+        </ul>
+        <p>Öppet nu</p>
+      </div>
+      <div class="third-row row content-row">
+        <h3>Hitta oss</h3>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin preview-icon"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+          <p>Exempelgatan 12<br />
+          123 45 Exempelstad</p>
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone preview-icon"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/></svg>
+          <a href="#">012 - 345 67 89</a>
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail preview-icon"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+          <a href="#">info@cafeblixten.se</a>
+        </div>
+      </div>
+      <div class="fourth-row row content-row">
+        <h3>Utforska</h3>
+        <ul>
+          @foreach (var item in pages)
+          {
+            var isCurrent = item.Id == home.Id
+              ? Model.Id == home.Id
+              : Model.IsDescendantOrSelf(item);
+
+            <li class="footer-navigation-item">
+              <a href="@item.Url()"
+                class="footer-navigation-link"
+                aria-current="@(isCurrent ? "page" : null)">
+                <span class="footer-navigation-link-icon" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z" />
+                  </svg>
+                </span>
+                <span class="footer-navigation-link-text">@item.Name</span>
+              </a>
+            </li>
+          }
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <div>
+        <p>© Café Blixten 2022</p>
+      </div>
+      <div class="accessibility-links">
+        <a href="#">Tillgänglighet</a>
+        <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot preview-icon"><circle cx="12" cy="12" r="1"/></svg></span>
+        <a href="#">Integritetspolicy</a>
+        <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot preview-icon"><circle cx="12" cy="12" r="1"/></svg></span>
+        <a href="#">Cookies</a>
+      </div>
+      <div class="top-link">
+        <a class="back-to-top-link" href="#">Till toppen <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up preview-icon"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>

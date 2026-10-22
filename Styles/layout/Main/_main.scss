@@ -1,0 +1,22 @@
+@use "../../abstracts/mixins" as m;
+
+#Main {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+
+  > .main-container {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+
+    > .main-content {
+      flex-shrink: 0;
+      min-height: 100%;
+      padding: 1rem;
+    }
+  }
+}

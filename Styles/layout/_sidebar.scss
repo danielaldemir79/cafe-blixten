@@ -1,0 +1,187 @@
+@use "../abstracts/mixins" as m;
+
+#Sidebar {
+  padding: 1.5rem;
+  background-color: m.color("primary");
+
+  position: fixed;
+  width: 100%;
+  top: 0;
+  bottom: 0; // top + bottom = alltid hela skärmhöjden, även på mobil
+  left: -100%;
+  overflow-y: auto; // långa menyer går att scrolla
+  overflow-x: hidden;
+  visibility: hidden;
+  transition: left 0.3s ease-in-out;
+  z-index: 10;
+
+  &.open {
+    left: 0;
+    visibility: visible;
+  }
+
+  > .sidebar-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+
+  @include m.for-size(tablet-landscape-up) {
+    position: relative;
+    width: 280px;
+    left: auto;
+    bottom: auto;
+    overflow-y: visible;
+    visibility: visible;
+  }
+}
+
+#Sidebar #SidebarHeader {
+  display: flex;
+
+  > .sidebar-header-container {
+    width: 100%;
+
+    > .close-container {
+      position: absolute;
+      display: flex;
+      top: 0.75rem;
+      right: 0.75rem;
+      width: 32px;
+      height: 32px;
+
+      @include m.for-size(tablet-landscape-up) {
+        display: none;
+      }
+
+      > .sidebar-close {
+        display: block;
+        width: 2rem;
+        height: 2rem;
+        margin: 0;
+        padding: 0;
+        border: none;
+        background-color: transparent;
+        color: #fff;
+
+        > svg {
+          display: block;
+          width: 100%;
+          height: 100%;
+          fill: #fff;
+        }
+      }
+    }
+
+    > .logo-container {
+      display: flex;
+      padding: {
+        bottom: 1.5rem;
+      }
+      border-bottom: 1px solid m.lighten("primary", 15%);
+
+      > .logo-link {
+        display: block;
+        width: 100%;
+        height: 100%;
+
+        > img {
+          display: block;
+          width: 100%;
+          height: 100px;
+        }
+
+        > h1 {
+          display: block;
+          width: 100%;
+          height: 100%;
+          margin: {
+            top: 0.5rem;
+          }
+          padding: 0;
+          font-size: 1.5rem;
+          font-weight: bold;
+          line-height: 1.5rem;
+          text-align: center;
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+
+#SidebarNavigation {
+  > .sidebar-navigation-container {
+    > .sidebar-navigation-list {
+      list-style: none;
+      margin: 0;
+      padding: {
+        top: 1rem;
+      }
+
+      > .sidebar-navigation-item {
+        display: flex;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+
+        > .sidebar-navigation-link {
+          display: flex;
+          width: 100%;
+          align-items: center;
+          margin: 0;
+          padding: 0.75rem 1rem;
+          border-radius: 0.5rem;
+          color: #fff;
+
+          > .sidebar-navigation-link-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 0.75rem;
+            height: 0.75rem;
+            margin-right: 0.75rem;
+            border-radius: 50%;
+            background-color: m.darken("primary", 10%);
+            color: #fff;
+            font-size: 1.2rem;
+            line-height: 1.5rem;
+            text-align: center;
+
+            > svg {
+              display: block;
+              width: 1.5rem;
+              height: 1.5rem;
+              fill: #fff;
+            }
+          }
+
+          &[aria-current="page"] {
+            > .sidebar-navigation-link-icon {
+              color: m.color("secondary");
+              background-color: m.color("secondary");
+              fill: m.color("secondary");
+
+              > svg {
+                fill: m.color("secondary");
+              }
+            }
+          }
+
+          &:hover {
+            background-color: m.lighten("primary", 5%);
+          }
+
+          > .sidebar-navigation-link-text {
+            display: block;
+            margin: 0;
+            padding: 0;
+            font-size: 1rem;
+            line-height: 1.5rem;
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+}
