@@ -1,0 +1,161 @@
+@use "../abstracts/mixins" as m;
+@use "../abstracts/variables" as v;
+
+// Listor som används som layout (ul.grid) ska inte ha punkter eller indrag
+ul[role="list"] {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.startsida {
+  max-width: 75rem;
+  margin-inline: auto;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+    color: m.color("primary");
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    color: m.color("primary");
+  }
+
+  p {
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
+// ---------- Hero ----------
+.hero {
+  align-items: center;
+  padding: 2rem;
+  border-radius: 1rem;
+  background-color: m.color("smoke");
+
+  @include m.for-size(tablet-landscape-up) {
+    padding: 3rem;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.1;
+    color: m.color("primary");
+  }
+
+  .hero-ingress {
+    font-size: 1.125rem;
+    max-width: 40ch;
+  }
+
+  .hero-bild img {
+    aspect-ratio: 4 / 3;
+    border-radius: 0.75rem;
+  }
+}
+
+// ---------- Knapp ----------
+.knapp {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  background-color: m.color("secondary");
+  color: #fff;
+  font-family: v.$font-heading;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: m.darken("secondary", 15%);
+  }
+
+  &:focus-visible {
+    outline: 3px solid m.color("primary");
+    outline-offset: 3px;
+  }
+}
+
+// ---------- Kort (Veckans fika, event, nyheter) ----------
+.kort {
+  gap: 0;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid m.darken("smoke", 8%);
+  border-radius: 0.75rem;
+  background-color: #fff;
+
+  > img {
+    aspect-ratio: 16 / 10;
+  }
+
+  .kort-innehall {
+    padding: 1.25rem;
+  }
+
+  h3 a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: underline;
+    }
+  }
+
+  .kort-datum {
+    font-size: 0.875rem;
+    color: m.color("secondary");
+  }
+
+  .kort-pris {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: m.color("secondary");
+  }
+
+  // Bild och text bredvid varandra (Veckans fika)
+  &--liggande {
+    gap: 0;
+    align-items: stretch;
+
+    > img {
+      aspect-ratio: auto;
+      height: 100%;
+      min-height: 14rem;
+    }
+
+    .kort-innehall {
+      justify-content: center;
+      padding: 2rem;
+    }
+  }
+}
+
+// ---------- Besök oss ----------
+.besok {
+  padding: 2rem;
+  border-radius: 1rem;
+  background-color: m.color("primary");
+  color: #fff;
+
+  h2,
+  h3 {
+    color: #fff;
+  }
+
+  .oppettider {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
