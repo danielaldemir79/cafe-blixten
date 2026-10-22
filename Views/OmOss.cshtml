@@ -1,6 +1,34 @@
-﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+﻿@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Strings
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.OmOss>
-@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+
 @{
-	Layout = "layout.cshtml";
+    Layout = "layout.cshtml";
+
+    var rubrik = Model.Value<string>("rubrik");
+    var text = Model.Value<IHtmlEncodedString>("text");
+    var bild = Model.Value<MediaWithCrops>("bild");
 }
+
+<section class="about-page">
+    <div class="about-page__content">
+        <h1>@(string.IsNullOrWhiteSpace(rubrik) ? Model.Name : rubrik)</h1>
+
+        @if (text != null)
+        {
+            <div class="about-page__text">
+                @text
+            </div>
+        }
+    </div>
+
+    @if (bild != null)
+    {
+        <div class="about-page__image">
+            <img src="@bild.Url()"
+                 alt="@bild.Name"
+                 loading="lazy" />
+        </div>
+    }
+</section>
