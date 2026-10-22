@@ -1,0 +1,206 @@
+@use "../abstracts/mixins" as m;
+
+.find-page {
+  --pad-y: clamp(2rem, 5vw, 5rem);
+  --pad-x: clamp(1.25rem, 4vw, 4rem);
+
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-areas:
+    "map"
+    "intro"
+    "address"
+    "directions";
+  max-width: 1200px;
+  margin: clamp(2rem, 5vw, 4rem) auto;
+  padding: var(--pad-y) var(--pad-x);
+  overflow: hidden;
+  border-radius: 2rem;
+  background-color: #ffffff;
+  box-shadow: 0 1.5rem 4rem rgba(47, 62, 52, 0.1);
+
+  // Stor, blek kartnål som dekoration
+  &::before {
+    position: absolute;
+    z-index: -1;
+    bottom: -3rem;
+    left: -3rem;
+    width: 16rem;
+    height: 16rem;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232f3e34' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E") no-repeat center / contain;
+    opacity: 0.06;
+    content: "";
+  }
+
+  // Tunn orange rand överst
+  &::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 0.4rem;
+    background-color: m.color(secondary);
+    content: "";
+  }
+
+  @include m.for-size(tablet-landscape-up) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "intro map"
+      "address map"
+      "directions map";
+    align-items: start;
+  }
+
+  &__intro {
+    grid-area: intro;
+  }
+
+  h1 {
+    color: m.color(primary);
+    font-size: clamp(2.25rem, 4vw, 3.75rem);
+    line-height: 1.08;
+
+    &::after {
+      display: block;
+      width: 4rem;
+      height: 0.3rem;
+      margin-top: 1.25rem;
+      border-radius: 999px;
+      background-color: m.color(secondary);
+      content: "";
+    }
+  }
+
+  &__ingress {
+    max-width: 42rem;
+    margin-top: 1.25rem;
+    color: m.color(primary);
+    font-size: 1.15rem;
+    font-weight: 500;
+    line-height: 1.7;
+  }
+
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    color: m.color(primary);
+    font-size: 1.5rem;
+
+    &::before {
+      width: 1rem;
+      height: 2px;
+      background-color: m.color(secondary);
+      content: "";
+    }
+
+    &:has(svg)::before {
+      display: none;
+    }
+
+    svg {
+      flex-shrink: 0;
+      color: m.color(secondary);
+    }
+  }
+
+  &__hours,
+  &__address,
+  &__directions {
+    padding: 1.75rem;
+    border-radius: 1rem;
+    background-color: m.color(smoke);
+  }
+
+  &__hours {
+    grid-area: hours;
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #d9d9d9;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  &__address {
+    grid-area: address;
+
+    address {
+      margin-bottom: 1.25rem;
+      font-style: normal;
+      font-size: 1.1rem;
+    }
+  }
+
+  &__directions {
+    grid-area: directions;
+
+    ul {
+      display: grid;
+      gap: 0.6rem;
+      margin: 0;
+      padding-left: 1.25rem;
+      line-height: 1.6;
+    }
+
+    li::marker {
+      color: m.color(secondary);
+    }
+  }
+
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 3rem;
+    padding: 0 1.75rem;
+    border-radius: 999px;
+    background-color: m.color(secondary);
+    color: m.color(primary);
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-decoration: none;
+
+    &:hover {
+      background-color: m.lighten("secondary", 10%);
+    }
+
+    &:focus-visible {
+      outline: 3px solid m.color(primary);
+      outline-offset: 3px;
+    }
+  }
+
+  // Kartan går ända ut till kortets kant
+  &__map {
+    grid-area: map;
+    margin: calc(-1 * var(--pad-y)) calc(-1 * var(--pad-x)) 0;
+    aspect-ratio: 4 / 3;
+
+    @include m.for-size(tablet-landscape-up) {
+      align-self: stretch;
+      min-height: 30rem;
+      margin: calc(-1 * var(--pad-y)) calc(-1 * var(--pad-x)) calc(-1 * var(--pad-y)) 0;
+      aspect-ratio: auto;
+    }
+
+    iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  }
+}
