@@ -1,3 +1,4 @@
+@use "sass:color";
 @use "../../abstracts/mixins" as m;
 
 #Footer {
@@ -202,7 +203,7 @@
             margin-right: 0.5rem;
             border: 3px solid green;
             border-radius: 100%;
-            background-color: lighten(green, 30%);
+            background-color: color.adjust(green, $lightness: 30%);
           }
         }
       }

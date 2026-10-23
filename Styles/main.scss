@@ -6,6 +6,9 @@
 @use "layout/sidebar";
 @use "layout/search";
 @use "layout/Main";
+@use "layout/primitives";
+
+@use "pages/startsida";
 
 @use "pages/about";
 @use "pages/menu";
