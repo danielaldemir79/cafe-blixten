@@ -894,7 +894,7 @@ body {
 }
 
 .find-page {
-  --pad-y: clamp(2rem, 5vw, 5rem);
+  --pad-y: clamp(1.5rem, 3vw, 3rem);
   --pad-x: clamp(1.25rem, 4vw, 4rem);
   position: relative;
   isolation: isolate;
@@ -902,7 +902,7 @@ body {
   gap: 1.5rem;
   grid-template-areas: "intro" "address" "directions" "map";
   max-width: 1200px;
-  margin: clamp(2rem, 5vw, 4rem) auto;
+  margin: clamp(0.25rem, 2.5vw, 2rem) auto;
   padding: var(--pad-y) var(--pad-x);
   overflow: hidden;
   border-radius: 2rem;
@@ -932,7 +932,7 @@ body {
 @media (min-width: 900px) {
   .find-page {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-areas: "intro map" "address map" "directions map";
+    grid-template-areas: "intro map" "address map" "directions directions";
     align-items: start;
   }
 }
@@ -941,25 +941,25 @@ body {
 }
 .find-page h1 {
   color: #2f3e34;
-  font-size: clamp(2.25rem, 4vw, 3.75rem);
+  font-size: clamp(2rem, 3.5vw, 3rem);
   line-height: 1.08;
 }
 .find-page h1::after {
   display: block;
   width: 4rem;
   height: 0.3rem;
-  margin-top: 1.25rem;
+  margin-top: 1rem;
   border-radius: 999px;
   background-color: #c96f4a;
   content: "";
 }
 .find-page__ingress {
   max-width: 42rem;
-  margin-top: 1.25rem;
+  margin-top: 1rem;
   color: #2f3e34;
-  font-size: 1.15rem;
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
   font-weight: 500;
-  line-height: 1.7;
+  line-height: 1.6;
 }
 .find-page h2 {
   display: flex;
@@ -996,8 +996,13 @@ body {
   padding: 0;
 }
 .find-page__hours li {
-  padding: 0.6rem 0;
+  padding: 0.5rem 0;
   border-bottom: 1px solid #d9d9d9;
+}
+@media (min-width: 900px) {
+  .find-page__hours li {
+    padding: 0.6rem 0;
+  }
 }
 .find-page__hours li:last-child {
   border-bottom: none;
@@ -1019,6 +1024,12 @@ body {
   margin: 0;
   padding-left: 1.25rem;
   line-height: 1.6;
+}
+@media (min-width: 900px) {
+  .find-page__directions ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 2.5rem;
+  }
 }
 .find-page__directions li::marker {
   color: #c96f4a;
@@ -1137,8 +1148,10 @@ body {
 @media (min-width: 900px) {
   .find-page__map {
     align-self: stretch;
-    min-height: 30rem;
-    margin: calc(-1 * var(--pad-y)) calc(-1 * var(--pad-x)) calc(-1 * var(--pad-y)) 0;
+    min-height: 24rem;
+    margin: calc(-1 * var(--pad-y)) calc(-1 * var(--pad-x)) 0 0;
+    overflow: hidden;
+    border-bottom-left-radius: 1rem;
     aspect-ratio: auto;
   }
 }

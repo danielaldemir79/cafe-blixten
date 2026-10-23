@@ -1,7 +1,7 @@
 @use "../abstracts/mixins" as m;
 
 .find-page {
-  --pad-y: clamp(2rem, 5vw, 5rem);
+  --pad-y: clamp(1.5rem, 3vw, 3rem);
   --pad-x: clamp(1.25rem, 4vw, 4rem);
 
   position: relative;
@@ -14,7 +14,7 @@
     "directions"
     "map";
   max-width: 1200px;
-  margin: clamp(2rem, 5vw, 4rem) auto;
+  margin: clamp(0.25rem, 2.5vw, 2rem) auto;
   padding: var(--pad-y) var(--pad-x);
   overflow: hidden;
   border-radius: 2rem;
@@ -50,7 +50,7 @@
     grid-template-areas:
       "intro map"
       "address map"
-      "directions map";
+      "directions directions";
     align-items: start;
   }
 
@@ -60,14 +60,14 @@
 
   h1 {
     color: m.color(primary);
-    font-size: clamp(2.25rem, 4vw, 3.75rem);
+    font-size: clamp(2rem, 3.5vw, 3rem);
     line-height: 1.08;
 
     &::after {
       display: block;
       width: 4rem;
       height: 0.3rem;
-      margin-top: 1.25rem;
+      margin-top: 1rem;
       border-radius: 999px;
       background-color: m.color(secondary);
       content: "";
@@ -76,11 +76,11 @@
 
   &__ingress {
     max-width: 42rem;
-    margin-top: 1.25rem;
+    margin-top: 1rem;
     color: m.color(primary);
-    font-size: 1.15rem;
+    font-size: clamp(1rem, 1.5vw, 1.15rem);
     font-weight: 500;
-    line-height: 1.7;
+    line-height: 1.6;
   }
 
   h2 {
@@ -126,8 +126,12 @@
     }
 
     li {
-      padding: 0.6rem 0;
+      padding: 0.5rem 0;
       border-bottom: 1px solid #d9d9d9;
+
+      @include m.for-size(tablet-landscape-up) {
+        padding: 0.6rem 0;
+      }
 
       &:last-child {
         border-bottom: none;
@@ -154,6 +158,11 @@
       margin: 0;
       padding-left: 1.25rem;
       line-height: 1.6;
+
+      @include m.for-size(tablet-landscape-up) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: 2.5rem;
+      }
     }
 
     li::marker {
@@ -300,10 +309,13 @@
     margin: 0 calc(-1 * var(--pad-x)) calc(-1 * var(--pad-y));
     aspect-ratio: 4 / 3;
 
+    // På datorn slutar kartan ovanför "Så hittar du hit"
     @include m.for-size(tablet-landscape-up) {
       align-self: stretch;
-      min-height: 30rem;
-      margin: calc(-1 * var(--pad-y)) calc(-1 * var(--pad-x)) calc(-1 * var(--pad-y)) 0;
+      min-height: 24rem;
+      margin: calc(-1 * var(--pad-y)) calc(-1 * var(--pad-x)) 0 0;
+      overflow: hidden;
+      border-bottom-left-radius: 1rem;
       aspect-ratio: auto;
     }
 
