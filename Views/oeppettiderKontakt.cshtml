@@ -1,0 +1,173 @@
+﻿@using System.Globalization
+@using System.Text.RegularExpressions
+@using Umbraco.Cms.Core.Models.Blocks
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.OppettiderKontakt>
+
+@{
+    Layout = "layout.cshtml";
+
+    var ingress = Model.Value<string>("ingress");
+    var telefon = Model.Value<string>("telefon");
+    var epost = Model.Value<string>("ePost");
+    var hittaOss = Model.Root().Children().FirstOrDefault(x => x.ContentType.Alias == "hittaOss");
+    var adress = hittaOss?.Value<string>("adress");
+
+    // Veckodagar i samma ordning som DayOfWeek (söndag = 0)
+    var veckodagar = new[] { "Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag" };
+
+    var rader = (Model.Value<BlockListModel>("oppettider") ?? Enumerable.Empty<BlockListItem>())
+        .Select(block => new
+        {
+            Dag = block.Content.Value<string>("dag") ?? "",
+            Oppnar = block.Content.Value<string>("oppnar"),
+            Stanger = block.Content.Value<string>("stanger"),
+            Stangt = block.Content.Value<bool>("stangt")
+        })
+        .ToList();
+
+    // Tiden i Sverige, oavsett var servern står
+    var nu = DateTime.UtcNow;
+    try
+    {
+        nu = TimeZoneInfo.ConvertTimeFromUtc(nu, TimeZoneInfo.FindSystemTimeZoneById("Europe/Stockholm"));
+    }
+    catch (TimeZoneNotFoundException)
+    {
+        nu = DateTime.Now;
+    }
+
+    var idag = veckodagar[(int)nu.DayOfWeek];
+    var klockan = TimeOnly.FromDateTime(nu);
+
+    TimeOnly? Tid(string text) =>
+        TimeOnly.TryParseExact(text, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var tid) ? tid : null;
+
+    // Räkna ut "Öppet nu" eller "Stängt nu"
+    var arOppet = false;
+    var statusText = "";
+    var dagensRad = rader.FirstOrDefault(r => r.Dag == idag);
+
+    if (dagensRad != null && !dagensRad.Stangt && Tid(dagensRad.Oppnar) is TimeOnly oppnarIdag && Tid(dagensRad.Stanger) is TimeOnly stangerIdag)
+    {
+        if (klockan >= oppnarIdag && klockan < stangerIdag)
+        {
+            arOppet = true;
+            statusText = $"stänger {dagensRad.Stanger}";
+        }
+        else if (klockan < oppnarIdag)
+        {
+            statusText = $"öppnar {dagensRad.Oppnar}";
+        }
+    }
+
+    if (!arOppet && statusText == "")
+    {
+        for (var steg = 1; steg <= 7; steg++)
+        {
+            var dag = veckodagar[((int)nu.DayOfWeek + steg) % 7];
+            var rad = rader.FirstOrDefault(r => r.Dag == dag);
+
+            if (rad != null && !rad.Stangt && Tid(rad.Oppnar) != null)
+            {
+                statusText = steg == 1 ? $"öppnar i morgon {rad.Oppnar}" : $"öppnar {dag.ToLower()} {rad.Oppnar}";
+                break;
+            }
+        }
+    }
+
+    var telefonLank = string.IsNullOrWhiteSpace(telefon) ? null : Regex.Replace(telefon, @"[^\d+]", "");
+}
+
+<section class="find-page find-page--kontakt">
+    <div class="find-page__intro">
+        <h1>@Model.Name</h1>
+
+        @if (!string.IsNullOrWhiteSpace(ingress))
+        {
+            <p class="find-page__ingress">@ingress</p>
+        }
+    </div>
+
+    @if (rader.Any())
+    {
+        <div class="find-page__hours">
+            <h2>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+                Öppettider
+            </h2>
+
+            @if (statusText != "")
+            {
+                <p class="find-page__status @(arOppet ? "find-page__status--open" : "find-page__status--closed")">
+                    <span class="find-page__status-dot" aria-hidden="true"></span>
+                    <strong>@(arOppet ? "Öppet nu" : "Stängt nu")</strong>
+                    <span>· @statusText</span>
+                </p>
+            }
+
+            <ul>
+                @foreach (var rad in rader)
+                {
+                    var arIdag = rad.Dag == idag;
+
+                    <li class="@(arIdag ? "find-page__day find-page__day--today" : "find-page__day")">
+                        <span>
+                            @rad.Dag
+                            @if (arIdag)
+                            {
+                                <span class="find-page__today">Idag</span>
+                            }
+                        </span>
+                        @if (rad.Stangt)
+                        {
+                            <span>Stängt</span>
+                        }
+                        else
+                        {
+                            <span><time datetime="@rad.Oppnar">@rad.Oppnar</time><span aria-hidden="true">–</span><span class="visually-hidden"> till </span><time datetime="@rad.Stanger">@rad.Stanger</time></span>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+
+    @if (telefonLank != null || !string.IsNullOrWhiteSpace(epost))
+    {
+        <div class="find-page__contact">
+            <h2>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" /></svg>
+                Kontakt
+            </h2>
+
+            <ul>
+                @if (telefonLank != null)
+                {
+                    <li><a href="tel:@telefonLank">@telefon</a></li>
+                }
+                @if (!string.IsNullOrWhiteSpace(epost))
+                {
+                    <li><a href="mailto:@epost">@epost</a></li>
+                }
+            </ul>
+        </div>
+    }
+
+    @if (hittaOss != null)
+    {
+        <div class="find-page__findus">
+            <h2>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" /></svg>
+                Hitta hit
+            </h2>
+
+            @if (!string.IsNullOrWhiteSpace(adress))
+            {
+                <address>@adress</address>
+            }
+
+            <a class="find-page__button" href="@hittaOss.Url()">Karta och vägbeskrivning</a>
+        </div>
+    }
+</section>
