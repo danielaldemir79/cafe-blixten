@@ -1,0 +1,39 @@
+// Gör att --gap och --min bara gäller elementet de sätts på,
+// och inte ärvs vidare till nästlade .stack/.grid/.split
+@property --gap {
+  syntax: "*";
+  inherits: false;
+}
+
+@property --min {
+  syntax: "*";
+  inherits: false;
+}
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap, 0);
+}
+
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap, 1rem);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--min, 16rem), 100%), 1fr));
+  gap: var(--gap, 1rem);
+}
+
+.split {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap, 2rem);
+
+  > * {
+    flex: 1 1 20rem;
+  }
+}
