@@ -1,0 +1,129 @@
+@use "../abstracts/mixins" as m;
+
+/* Breadcrumb behövs inte på själva menysidan */
+body:has(.menu-page) #Breadcrumbs {
+  display: none;
+}
+
+.menu-page {
+  max-width: 1200px;
+  margin: 0 auto clamp(2rem, 5vw, 4rem);
+  padding: clamp(1rem, 3vw, 2rem) clamp(1.25rem, 4vw, 4rem) clamp(2rem, 5vw, 4rem);
+
+  /* Sidans huvudrubrik */
+  h1 {
+    margin-bottom: 2.5rem;
+    color: m.color(primary);
+    font-size: clamp(2.25rem, 4vw, 3.75rem);
+    line-height: 1.08;
+
+    &::after {
+      display: block;
+      width: 4rem;
+      height: 0.3rem;
+      margin-top: 1.25rem;
+      border-radius: 999px;
+      background-color: m.color(secondary);
+      content: "";
+    }
+  }
+
+  /* Kaffe, Lunch, Kampanj */
+  &__category {
+    max-width: 52rem;
+    margin-bottom: 3.5rem;
+
+    h2 {
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid m.color(secondary);
+      color: m.color(brown);
+      font-size: clamp(1.6rem, 3vw, 2rem);
+      font-weight: 700;
+      line-height: 1.2;
+    }
+  }
+
+  &__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* En produkt: namn, pris och beskrivning staplade; bild till höger på större skärmar */
+  &__item {
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 0.35rem;
+    margin: 0;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid rgba(47, 62, 52, 0.15);
+
+    &:last-child {
+      border-bottom: 0;
+    }
+
+    &--has-image {
+      row-gap: 0.75rem;
+
+      @include m.for-size(tablet-portrait-up) {
+        grid-template-columns: 1fr 7rem;
+        column-gap: 1.5rem;
+        row-gap: 0.35rem;
+        align-content: start;
+
+        .menu-page__item-header,
+        .menu-page__item-description {
+          grid-column: 1;
+        }
+
+        .menu-page__item-image {
+          grid-column: 2;
+          grid-row: 1 / span 2;
+        }
+      }
+    }
+  }
+
+  /* Produktnamn med pris direkt under */
+  &__item-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  &__item-name {
+    margin: 0;
+    color: m.color(primary);
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  &__item-price {
+    flex-shrink: 0;
+    color: m.color(brown);
+    font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* Produktbeskrivning */
+  &__item-description {
+    max-width: 36rem;
+    margin: 0;
+    color: m.lighten(onyx, 35%);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* Produktbild om sådan finns */
+  &__item-image {
+    display: block;
+    width: 100%;
+    max-width: 7rem;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 1rem;
+  }
+}
