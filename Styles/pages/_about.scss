@@ -1,0 +1,52 @@
+@use "../abstracts/mixins" as m;
+
+.about-page {
+  &__content {
+    max-width: 42rem;
+  }
+
+  h1 {
+    margin-bottom: 1.75rem;
+    color: m.color(primary);
+    font-size: clamp(2.25rem, 4vw, 3.75rem);
+    line-height: 1.08;
+    text-wrap: balance;
+
+    &::after {
+      display: block;
+      width: 4rem;
+      height: 0.3rem;
+      margin-top: 1.25rem;
+      border-radius: 999px;
+      background-color: m.color(secondary);
+      content: "";
+    }
+  }
+
+  &__text {
+    display: grid;
+    gap: 1rem;
+    color: m.color(onyx);
+    font-size: 1.05rem;
+    line-height: 1.7;
+
+    p:first-child {
+      color: m.color(primary);
+      font-size: 1.15rem;
+      font-weight: 500;
+    }
+  }
+
+  &__image {
+    overflow: hidden;
+    border: 0.5rem solid #ffffff;
+    border-radius: 1.5rem;
+    box-shadow: 0 1.25rem 3rem rgba(47, 62, 52, 0.18);
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+  }
+}

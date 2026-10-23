@@ -32,34 +32,6 @@ ul[role="list"] {
   }
 }
 
-// ---------- Hero ----------
-.hero {
-  align-items: center;
-  padding: 2rem;
-  border-radius: 1rem;
-  background-color: m.color("smoke");
-
-  @include m.for-size(tablet-landscape-up) {
-    padding: 3rem;
-  }
-
-  h1 {
-    font-size: clamp(2rem, 5vw, 3.25rem);
-    line-height: 1.1;
-    color: m.color("primary");
-  }
-
-  .hero-ingress {
-    font-size: 1.125rem;
-    max-width: 40ch;
-  }
-
-  .hero-bild img {
-    aspect-ratio: 4 / 3;
-    border-radius: 0.75rem;
-  }
-}
-
 // ---------- Knapp ----------
 .knapp {
   display: inline-block;

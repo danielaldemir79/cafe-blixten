@@ -14,7 +14,6 @@ Thumbs.db
 # Lokal databas och Umbraco-data
 /umbraco/Data/
 /umbraco/Logs/
-/wwwroot/media/
 
 # Lokala inställningar och hemligheter
 appsettings.Local.json
