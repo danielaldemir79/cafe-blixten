@@ -1,6 +1,49 @@
-﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+﻿@using System.Globalization
+@using Umbraco.Cms.Core.Models
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.NyttHosOss>
-@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+
 @{
-	Layout = null;
+    Layout = "layout.cshtml";
+
+    var rubrik = Model.Value<string>("rubrik");
+    var text = Model.Value<string>("text");
+    var datum = Model.Value<DateTime?>("datum");
+    var bild = Model.Value<MediaWithCrops>("bild");
+    var aktuellt = Model.Parent;
+    var svenskKultur = CultureInfo.GetCultureInfo("sv-SE");
 }
+
+<article class="news-detail" aria-labelledby="news-detail-title">
+    <a class="news-detail__back" href="@(aktuellt?.Url() ?? "/")">
+        &larr; Tillbaka till Aktuellt
+    </a>
+
+    <div class="news-detail__content">
+        <span class="news-detail__label">Nyhet</span>
+
+        <h1 id="news-detail-title">
+            @(string.IsNullOrWhiteSpace(rubrik) ? Model.Name : rubrik)
+        </h1>
+
+        @if (datum.HasValue)
+        {
+            <time class="news-detail__date"
+                  datetime="@datum.Value.ToString("yyyy-MM-dd")">
+                @datum.Value.ToString("d MMMM yyyy", svenskKultur)
+            </time>
+        }
+
+        @if (bild != null)
+        {
+            <img class="news-detail__image"
+                 src="@bild.Url()"
+                 alt="@bild.Name" />
+        }
+
+        @if (!string.IsNullOrWhiteSpace(text))
+        {
+            <p class="news-detail__description">@text</p>
+        }
+    </div>
+</article>

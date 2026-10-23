@@ -1,6 +1,46 @@
-﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+﻿@using Umbraco.Cms.Core.Models
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.VeckansFika>
-@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+
 @{
-	Layout = null;
+    Layout = "layout.cshtml";
+
+    var namn = Model.Value<string>("namn");
+    var beskrivning = Model.Value<string>("beskrivning");
+    var pris = Model.Value<decimal?>("pris");
+    var bild = Model.Value<MediaWithCrops>("bild");
+    var aktuellt = Model.Parent;
 }
+
+<article class="news-detail" aria-labelledby="news-detail-title">
+    <a class="news-detail__back" href="@(aktuellt?.Url() ?? "/")">
+        &larr; Tillbaka till Aktuellt
+    </a>
+
+    <div class="news-detail__content">
+        <span class="news-detail__label">Veckans fika</span>
+
+        <h1 id="news-detail-title">
+            @(string.IsNullOrWhiteSpace(namn) ? Model.Name : namn)
+        </h1>
+
+        @if (bild != null)
+        {
+            <img class="news-detail__image"
+                 src="@bild.Url()"
+                 alt="@bild.Name" />
+        }
+
+        @if (!string.IsNullOrWhiteSpace(beskrivning))
+        {
+            <p class="news-detail__description">@beskrivning</p>
+        }
+
+        @if (pris.HasValue)
+        {
+            <p class="news-detail__price">
+                @pris.Value.ToString("0.##") kr
+            </p>
+        }
+    </div>
+</article>
