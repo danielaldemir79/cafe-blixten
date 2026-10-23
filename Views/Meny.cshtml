@@ -5,69 +5,63 @@
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.Meny>
 
 @{
-    Layout = null;
+  Layout = "layout.cshtml";
 
-    var blockList = Model.Value<BlockListModel>("produkter");
+  var blockList = Model.Value<BlockListModel>("produkter");
 
-    var grupper = blockList?
-        .Select(block => block.Content)
-        .GroupBy(produkt => produkt.Value<string>("kategori") ?? "Övrigt");
+  var grupper = blockList?
+      .Select(block => block.Content)
+      .GroupBy(produkt => produkt.Value<string>("kategori") ?? "Övrigt")
+      .ToList();
 }
 
-<!DOCTYPE html>
-<html lang="sv">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@Model.Name - Café Blixten</title>
-</head>
 
-<body>
-    <main>
-        <h1>@Model.Name</h1>
+<section class="menu-page" aria-labelledby="menu-page-title">
+  <h1 id="menu-page-title">@Model.Name</h1>
 
-        @if (grupper != null && grupper.Any())
-        {
-            foreach (var grupp in grupper)
-            {
-                <section>
-                    <h2>@grupp.Key</h2>
+  @if (grupper != null && grupper.Any())
+  {
+    for (var i = 0; i < grupper.Count; i++)
+    {
+      var grupp = grupper[i];
+      <section class="menu-page__category" aria-labelledby="meny-kategori-@i">
+        <h2 id="meny-kategori-@i">@grupp.Key</h2>
 
-                    @foreach (var produkt in grupp)
-                    {
-                        var namn = produkt.Value<string>("namn");
-                        var pris = produkt.Value<decimal?>("pris");
-                        var beskrivning = produkt.Value<string>("beskrivning");
-                        var bild = produkt.Value<MediaWithCrops>("bild");
+        <ul class="menu-page__list">
+          @foreach (var produkt in grupp)
+          {
+            var namn = produkt.Value<string>("namn");
+            var pris = produkt.Value<decimal?>("pris");
+            var beskrivning = produkt.Value<string>("beskrivning");
+            var bild = produkt.Value<MediaWithCrops>("bild");
 
-                        <article>
-                            <div>
-                                <span>@namn</span>
+            <li class="menu-page__item@(bild != null ? " menu-page__item--has-image" : "")">
+              <div class="menu-page__item-header">
+                <h3 class="menu-page__item-name">@namn</h3>
 
-                                @if (pris.HasValue)
-                                {
-                                    <span> — @pris.Value.ToString("0.##") kr</span>
-                                }
-                            </div>
+                @if (pris.HasValue)
+                {
+                  <span class="menu-page__item-price">@pris.Value.ToString("0.##")&nbsp;kr</span>
+                }
+              </div>
 
-                            @if (!string.IsNullOrWhiteSpace(beskrivning))
-                            {
-                                <p>@beskrivning</p>
-                            }
+              @if (!string.IsNullOrWhiteSpace(beskrivning))
+              {
+                <p class="menu-page__item-description">@beskrivning</p>
+              }
 
-                            @if (bild != null)
-                            {
-                                <img src="@bild.Url()" alt="@(namn ?? "Produktbild")" />
-                            }
-                        </article>
-                    }
-                </section>
-            }
-        }
-        else
-        {
-            <p>Menyn uppdateras snart.</p>
-        }
-    </main>
-</body>
-</html>
+              @if (bild != null)
+              {
+                <img class="menu-page__item-image" src="@bild.Url()" alt="" loading="lazy" />
+              }
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  }
+  else
+  {
+    <p>Menyn uppdateras snart.</p>
+  }
+</section>

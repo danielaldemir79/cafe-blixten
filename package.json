@@ -2,7 +2,7 @@
   "name": "cafe-blixten",
   "private": true,
   "scripts": {
-    "build:css": "sass Styles/main.scss wwwroot/css/main.css --style=compressed --no-source-map",
+    "build:css": "sass Styles/main.scss wwwroot/css/main.css --style=expanded --no-source-map",
     "watch:css": "sass Styles/main.scss wwwroot/css/main.css --watch --embed-source-map"
   },
   "devDependencies": {
