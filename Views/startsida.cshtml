@@ -7,6 +7,15 @@
 	var heroRubrik = Model.Value<string>("heroRubrik");
 	var heroIngress = Model.Value<string>("heroIngress");
 	var heroBild = Model.Value<MediaWithCrops>("heroBild");
+	// Bild vald i Umbraco går först. Annars används standardbilden i wwwroot/images,
+	// så att alla får samma hero-bild direkt efter pull/import.
+	var heroBildUrl = heroBild?.GetCropUrl(width: 900);
+	var heroBildAlt = heroBild?.Name;
+	if (string.IsNullOrWhiteSpace(heroBildUrl))
+	{
+		heroBildUrl = "/images/pexels-nathanjhilton-30173526.jpg";
+		heroBildAlt = "Kafé med bardisk där gäster beställer vid kassan";
+	}
 	// Fungerar oavsett om Multi URL Picker har max 1 länk eller fler
 	var heroKnapp = Model.Value<Link>("heroKnapp")
 		?? Model.Value<IEnumerable<Link>>("heroKnapp")?.FirstOrDefault();
@@ -56,12 +65,9 @@
 			}
 		</div>
 
-		@if (heroBild != null)
-		{
-			<div class="hero-bild">
-				<img src="@heroBild.GetCropUrl(width: 900)" alt="@heroBild.Name" />
-			</div>
-		}
+		<div class="hero-bild">
+			<img src="@heroBildUrl" alt="@heroBildAlt" />
+		</div>
 	</section>
 
 	@* ================= VECKANS FIKA ================= *@
