@@ -9,7 +9,15 @@
     var beskrivning = Model.Value<string>("beskrivning");
     var pris = Model.Value<decimal?>("pris");
     var bild = Model.Value<MediaWithCrops>("bild");
+    var bildUrl = bild?.Url();
+    var bildAlt = bild?.Name;
     var aktuellt = Model.Parent;
+
+    if (string.IsNullOrWhiteSpace(bildUrl))
+    {
+      bildUrl = "/images/cafe-blixten-kanelbullar.png";
+      bildAlt = "Kaffe och nybakade kanelbullar";
+    }
 }
 
 <article class="news-detail" aria-labelledby="news-detail-title">
@@ -24,12 +32,9 @@
             @(string.IsNullOrWhiteSpace(namn) ? Model.Name : namn)
         </h1>
 
-        @if (bild != null)
-        {
-            <img class="news-detail__image"
-                 src="@bild.Url()"
-                 alt="@bild.Name" />
-        }
+        <img class="news-detail__image"
+             src="@bildUrl"
+             alt="@bildAlt" />
 
         @if (!string.IsNullOrWhiteSpace(beskrivning))
         {

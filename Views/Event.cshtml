@@ -10,8 +10,17 @@
     var beskrivning = Model.Value<string>("beskrivning");
     var datum = Model.Value<DateTime?>("datum");
     var bild = Model.Value<MediaWithCrops>("bild");
+    var bildUrl = bild?.Url();
+    var bildAlt = bild?.Name;
     var aktuellt = Model.Parent;
     var svenskKultur = CultureInfo.GetCultureInfo("sv-SE");
+
+    if (string.IsNullOrWhiteSpace(bildUrl))
+    {
+        bildUrl = "/images/cafe-blixten-livemusik.png";
+        bildAlt = "Mysig cafékväll med fika och livemusik";
+    }
+
 }
 
 <article class="news-detail" aria-labelledby="news-detail-title">
@@ -34,12 +43,9 @@
             </time>
         }
 
-        @if (bild != null)
-        {
-            <img class="news-detail__image"
-                 src="@bild.Url()"
-                 alt="@bild.Name" />
-        }
+        <img class="news-detail__image"
+            src="@bildUrl"
+            alt="@bildAlt" />
 
         @if (!string.IsNullOrWhiteSpace(beskrivning))
         {

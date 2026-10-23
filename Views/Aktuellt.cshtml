@@ -65,13 +65,36 @@
                 var pris = post.Value<decimal?>("pris");
                 var bild = post.Value<MediaWithCrops>("bild");
 
+                var bildUrl = bild?.Url();
+                var bildAlt = bild?.Name;
+
+                if (string.IsNullOrWhiteSpace(bildUrl))
+                {
+                    (bildUrl, bildAlt) = typ switch
+                    {
+                        "event" => (
+                            "/images/cafe-blixten-livemusik.png",
+                            "Mysig cafékväll med fika och livemusik"
+                        ),
+                        "nyttHosOss" => (
+                            "/images/cafe-blixten-hostmeny.png",
+                            "Höstfika med kaffe, bakverk och säsongens smaker"
+                        ),
+                        "veckansFika" => (
+                            "/images/cafe-blixten-kanelbullar.png",
+                            "Kaffe och nybakade kanelbullar"
+                        ),
+                        _ => (bildUrl, bildAlt)
+                    };
+                }
+
                 <article class="news-card">
-                    @if (bild != null)
+                    @if (!string.IsNullOrWhiteSpace(bildUrl))
                     {
                         <img class="news-card__image"
-                             src="@bild.Url()"
-                             alt="@bild.Name"
-                             loading="lazy" />
+                            src="@bildUrl"
+                            alt="@bildAlt"
+                            loading="lazy" />
                     }
 
                     <div class="news-card__content">
