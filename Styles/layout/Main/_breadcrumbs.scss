@@ -30,12 +30,21 @@
         list-style: none;
 
         > .breadcrumb-item {
+          position: relative;
           display: flex;
           align-items: center;
           margin: 0;
           padding: 0 0.75rem;
           font-size: 0.75rem;
           line-height: 1rem;
+
+          &:not(:first-child)::before {
+            content: "●";
+            position: absolute;
+            left: -0.4rem;
+            margin: 0 0.25rem;
+            color: m.color("primary");
+          }
 
           > .breadcrumb-link {
             display: block;

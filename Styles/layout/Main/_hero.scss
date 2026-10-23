@@ -1,0 +1,54 @@
+@use "../../abstracts/mixins" as m;
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  gap: clamp(2.5rem, 5vw, 5rem);
+  align-items: center;
+  max-width: 1200px;
+  margin: clamp(2rem, 5vw, 4rem) auto;
+  padding: clamp(2rem, 5vw, 5rem) clamp(1.25rem, 4vw, 4rem);
+  overflow: hidden;
+  border-radius: 2rem;
+  background: linear-gradient(135deg, #ffffff 55%, #f8f2e8 100%);
+  box-shadow: 0 1.5rem 4rem rgba(47, 62, 52, 0.1);
+
+  @include m.for-size(tablet-landscape-up) {
+    grid-template-columns: minmax(0, 1fr) minmax(22rem, 0.9fr);
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: -7rem;
+    right: -6rem;
+    width: 15rem;
+    height: 15rem;
+    border-radius: 50%;
+    background-color: rgba(201, 111, 74, 0.12);
+  }
+
+  img {
+    border-radius: 0.75rem;
+  }
+
+  h1 {
+    margin-bottom: 1.75rem;
+    color: m.color(primary);
+    font-size: clamp(2.25rem, 4vw, 3.75rem);
+    line-height: 1.08;
+    text-wrap: balance;
+
+    &::after {
+      content: "";
+      display: block;
+      width: 4rem;
+      height: 0.3rem;
+      margin-top: 1.25rem;
+      border-radius: 999px;
+      background-color: m.color(secondary);
+    }
+  }
+}

@@ -794,12 +794,20 @@ body {
   list-style: none;
 }
 #Breadcrumbs > .breadcrumb-container > .breadcrumb > .breadcrumb-list > .breadcrumb-item {
+  position: relative;
   display: flex;
   align-items: center;
   margin: 0;
   padding: 0 0.75rem;
   font-size: 0.75rem;
   line-height: 1rem;
+}
+#Breadcrumbs > .breadcrumb-container > .breadcrumb > .breadcrumb-list > .breadcrumb-item:not(:first-child)::before {
+  content: "●";
+  position: absolute;
+  left: -0.4rem;
+  margin: 0 0.25rem;
+  color: #2f3e34;
 }
 #Breadcrumbs > .breadcrumb-container > .breadcrumb > .breadcrumb-list > .breadcrumb-item > .breadcrumb-link {
   display: block;
@@ -820,7 +828,7 @@ body {
   color: #c96f4a;
 }
 
-.about-page {
+.hero {
   position: relative;
   isolation: isolate;
   display: grid;
@@ -834,7 +842,13 @@ body {
   background: linear-gradient(135deg, #ffffff 55%, #f8f2e8 100%);
   box-shadow: 0 1.5rem 4rem rgba(47, 62, 52, 0.1);
 }
-.about-page::before {
+@media (min-width: 900px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr) minmax(22rem, 0.9fr);
+  }
+}
+.hero::before {
+  content: "";
   position: absolute;
   z-index: -1;
   top: -7rem;
@@ -843,13 +857,167 @@ body {
   height: 15rem;
   border-radius: 50%;
   background-color: rgba(201, 111, 74, 0.12);
+}
+.hero img {
+  border-radius: 0.75rem;
+}
+.hero h1 {
+  margin-bottom: 1.75rem;
+  color: #2f3e34;
+  font-size: clamp(2.25rem, 4vw, 3.75rem);
+  line-height: 1.08;
+  text-wrap: balance;
+}
+.hero h1::after {
   content: "";
+  display: block;
+  width: 4rem;
+  height: 0.3rem;
+  margin-top: 1.25rem;
+  border-radius: 999px;
+  background-color: #c96f4a;
 }
-@media (min-width: 900px) {
-  .about-page {
-    grid-template-columns: minmax(0, 1fr) minmax(22rem, 0.9fr);
-  }
+
+@property --gap {
+  syntax: "*";
+  inherits: false;
 }
+@property --min {
+  syntax: "*";
+  inherits: false;
+}
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap, 0);
+}
+
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap, 1rem);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--min, 16rem), 100%), 1fr));
+  gap: var(--gap, 1rem);
+}
+
+.split {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap, 2rem);
+}
+.split > * {
+  flex: 1 1 20rem;
+}
+
+ul[role=list] {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.startsida img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+.startsida h2 {
+  font-size: 1.75rem;
+  color: #2f3e34;
+}
+.startsida h3 {
+  font-size: 1.25rem;
+  color: #2f3e34;
+}
+.startsida p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.knapp {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  background-color: #c96f4a;
+  color: #fff;
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+.knapp:hover {
+  background-color: rgb(70.6028368794%, 35.4964539007%, 21.0638297872%);
+}
+.knapp:focus-visible {
+  outline: 3px solid #2f3e34;
+  outline-offset: 3px;
+}
+
+.kort {
+  gap: 0;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid rgb(87.6705882353%, 87.6705882353%, 87.6705882353%);
+  border-radius: 0.75rem;
+  background-color: #fff;
+}
+.kort > img {
+  aspect-ratio: 16/10;
+}
+.kort .kort-innehall {
+  padding: 1.25rem;
+}
+.kort h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+.kort h3 a:hover, .kort h3 a:focus-visible {
+  text-decoration: underline;
+}
+.kort .kort-datum {
+  font-size: 0.875rem;
+  color: #c96f4a;
+}
+.kort .kort-pris {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #c96f4a;
+}
+.kort--liggande {
+  gap: 0;
+  align-items: stretch;
+}
+.kort--liggande > img {
+  aspect-ratio: auto;
+  height: 100%;
+  min-height: 14rem;
+}
+.kort--liggande .kort-innehall {
+  justify-content: center;
+  padding: 2rem;
+}
+
+.besok {
+  padding: 2rem;
+  border-radius: 1rem;
+  background-color: #2f3e34;
+  color: #fff;
+}
+.besok h2,
+.besok h3 {
+  color: #fff;
+}
+.besok .oppettider {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
 .about-page__content {
   max-width: 42rem;
 }
@@ -1170,7 +1338,6 @@ body:has(.menu-page) #Breadcrumbs {
 .menu-page {
   max-width: 1200px;
   margin: 0 auto clamp(2rem, 5vw, 4rem);
-  padding: clamp(1rem, 3vw, 2rem) clamp(1.25rem, 4vw, 4rem) clamp(2rem, 5vw, 4rem);
   /* Sidans huvudrubrik */
 }
 .menu-page h1 {
