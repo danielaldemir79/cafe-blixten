@@ -1,7 +1,17 @@
 ﻿@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
 	Layout = "layout.cshtml";
+
+	var svenska = new System.Globalization.CultureInfo("sv-SE");
+
+	// ---- Sidor under Hem som startsidan länkar till ----
+	var undersidor = Model.Children().ToList();
+	var menySida = undersidor.FirstOrDefault(x => x.ContentType.Alias == "meny");
+	var aktuelltSida = undersidor.FirstOrDefault(x => x.ContentType.Alias == "aktuellt");
+	var hittaOss = undersidor.FirstOrDefault(x => x.ContentType.Alias == "hittaOss");
+	var kontaktSida = undersidor.FirstOrDefault(x => x.ContentType.Alias == "oppettiderKontakt");
 
 	// ---- Hero: fält direkt på Startsida-dokumenttypen ----
 	var heroRubrik = Model.Value<string>("heroRubrik");
@@ -20,6 +30,34 @@
 	var heroKnapp = Model.Value<Link>("heroKnapp")
 		?? Model.Value<IEnumerable<Link>>("heroKnapp")?.FirstOrDefault();
 
+	// Primär knapp: länken från Umbraco, annars menysidan
+	var primarUrl = heroKnapp?.Url ?? menySida?.Url();
+	var primarText = heroKnapp?.Name ?? "Se menyn";
+	var primarTarget = heroKnapp?.Target;
+
+	// ---- Dagens öppettider från "Öppettider & kontakt" ----
+	var nu = DateTime.UtcNow;
+	try
+	{
+		nu = TimeZoneInfo.ConvertTimeFromUtc(nu, TimeZoneInfo.FindSystemTimeZoneById("Europe/Stockholm"));
+	}
+	catch (TimeZoneNotFoundException)
+	{
+		nu = DateTime.Now;
+	}
+	var veckodagar = new[] { "Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag" };
+	var dagensBlock = kontaktSida?.Value<BlockListModel>("oppettider")?
+		.Select(block => block.Content)
+		.FirstOrDefault(rad => rad.Value<string>("dag") == veckodagar[(int)nu.DayOfWeek]);
+
+	string? idagText = null;
+	if (dagensBlock != null)
+	{
+		idagText = dagensBlock.Value<bool>("stangt")
+			? "Idag har vi stängt"
+			: $"Idag öppet {dagensBlock.Value<string>("oppnar")}–{dagensBlock.Value<string>("stanger")}";
+	}
+
 	// ---- Innehåll som hämtas automatiskt från sidorna under Hem ----
 	var allaUndersidor = Model.Descendants().ToList();
 
@@ -30,38 +68,68 @@
 		.Where(x => x.ContentType.Alias == "event")
 		.Where(x => x.Value<DateTime?>("datum") >= DateTime.Today)
 		.OrderBy(x => x.Value<DateTime?>("datum"))
-		.Take(3)
 		.ToList();
 
 	var senasteNyheter = allaUndersidor
 		.Where(x => x.ContentType.Alias == "nyttHosOss")
 		.OrderByDescending(x => x.Value<DateTime?>("datum"))
+		.ToList();
+
+	// "På gång": kommande evenemang först, sedan de senaste nyheterna, max tre kort
+	var pagang = kommandeEvent
+		.Select(x => new
+		{
+			Sida = x,
+			Etikett = "Evenemang",
+			Rubrik = x.Value<string>("namn"),
+			Text = x.Value<string>("beskrivning"),
+			Datum = x.Value<DateTime?>("datum"),
+			DatumFormat = "d MMMM, 'kl.' HH:mm"
+		})
+		.Concat(senasteNyheter.Select(x => new
+		{
+			Sida = x,
+			Etikett = "Nyhet",
+			Rubrik = x.Value<string>("rubrik"),
+			Text = x.Value<string>("text"),
+			Datum = x.Value<DateTime?>("datum"),
+			DatumFormat = "d MMMM yyyy"
+		}))
 		.Take(3)
 		.ToList();
 
-	var hittaOss = Model.Children()
-		.FirstOrDefault(x => x.ContentType.Alias == "hittaOss");
-
-	var svenska = new System.Globalization.CultureInfo("sv-SE");
+	var adress = hittaOss?.Value<string>("adress");
 }
 
-<div class="startsida stack" style="--gap: 3rem;">
+<div class="startsida">
 
 	@* ================= HERO ================= *@
-	<section class="hero">
-		<div class="hero-text stack">
-			<h1>@(heroRubrik ?? Model.Name)</h1>
+	<section class="hero startsida-hero" aria-labelledby="startsida-rubrik">
+		<div class="hero-text">
+			<h1 id="startsida-rubrik">@(heroRubrik ?? Model.Name)</h1>
 
 			@if (!string.IsNullOrWhiteSpace(heroIngress))
 			{
 				<p class="hero-ingress">@heroIngress</p>
 			}
 
-			@if (heroKnapp != null)
+			<div class="cluster">
+				@if (primarUrl != null)
+				{
+					<a class="knapp" href="@primarUrl" target="@primarTarget">@primarText</a>
+				}
+				@if (hittaOss != null)
+				{
+					<a class="knapp knapp--sekundar" href="@hittaOss.Url()">Hitta hit</a>
+				}
+			</div>
+
+			@if (idagText != null)
 			{
-				<div class="cluster">
-					<a class="knapp" href="@heroKnapp.Url" target="@heroKnapp.Target">@(heroKnapp.Name ?? "Läs mer")</a>
-				</div>
+				<p class="startsida-idag">
+					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+					@idagText
+				</p>
 			}
 		</div>
 
@@ -75,127 +143,105 @@
 	{
 		var fikaBild = veckansFika.Value<MediaWithCrops>("bild");
 		var fikaPris = veckansFika.Value<decimal?>("pris");
+		var fikaNamn = veckansFika.Value<string>("namn");
+		var fikaBeskrivning = veckansFika.Value<string>("beskrivning");
 
-		<section class="startsida-sektion stack" aria-labelledby="rubrik-fika">
-			<h2 id="rubrik-fika">Veckans fika</h2>
-
-			<article class="kort kort--liggande split">
+		<section class="startsida-sektion" aria-labelledby="rubrik-fika">
+			<article class="news-card startsida-fika">
 				@if (fikaBild != null)
 				{
-					<img src="@fikaBild.GetCropUrl(width: 600)" alt="@veckansFika.Value("namn")" />
+					<img class="startsida-fika__bild" src="@fikaBild.GetCropUrl(width: 800)" alt="@fikaNamn" />
 				}
-				<div class="kort-innehall stack">
-					<h3>@veckansFika.Value("namn")</h3>
+				else
+				{
+					<div class="startsida-fika__bild startsida-fika__bild--tom" aria-hidden="true">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v2" /><path d="M14 2v2" /><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1" /><path d="M6 2v2" /></svg>
+					</div>
+				}
+
+				<div class="news-card__content">
+					<span class="news-card__label" id="rubrik-fika">Veckans fika</span>
+					<h2 class="news-card__title">@fikaNamn</h2>
+					@if (!string.IsNullOrWhiteSpace(fikaBeskrivning))
+					{
+						<p class="news-card__description">@fikaBeskrivning</p>
+					}
 					@if (fikaPris.HasValue)
 					{
-						<p class="kort-pris">@fikaPris.Value.ToString("0.##") kr</p>
+						<p class="startsida-fika__pris">@fikaPris.Value.ToString("0.##") kr</p>
 					}
-					<p>@veckansFika.Value("beskrivning")</p>
 				</div>
 			</article>
 		</section>
 	}
 
-	@* ================= KOMMANDE EVENEMANG ================= *@
-	@if (kommandeEvent.Any())
+	@* ================= PÅ GÅNG ================= *@
+	@if (pagang.Any())
 	{
-		<section class="startsida-sektion stack" aria-labelledby="rubrik-event">
-			<h2 id="rubrik-event">Kommande evenemang</h2>
-
-			<ul class="grid" style="--min: 15rem;" role="list">
-				@foreach (var ev in kommandeEvent)
+		<section class="startsida-sektion" aria-labelledby="rubrik-pagang">
+			<div class="startsida-sektion__huvud">
+				<h2 id="rubrik-pagang">På gång</h2>
+				@if (aktuelltSida != null)
 				{
-					var datum = ev.Value<DateTime?>("datum");
-					var bild = ev.Value<MediaWithCrops>("bild");
-
-					<li>
-						<article class="kort stack">
-							@if (bild != null)
-							{
-								<img src="@bild.GetCropUrl(width: 500)" alt="" />
-							}
-							<div class="kort-innehall stack" style="--gap: 0.5rem;">
-								@if (datum.HasValue)
-								{
-									<time class="kort-datum" datetime="@datum.Value.ToString("yyyy-MM-ddTHH:mm")">
-										@datum.Value.ToString("d MMMM, HH:mm", svenska)
-									</time>
-								}
-								<h3><a href="@ev.Url()">@ev.Value("namn")</a></h3>
-								<p>@ev.Value("beskrivning")</p>
-							</div>
-						</article>
-					</li>
+					<a class="startsida-sektion__lank" href="@aktuelltSida.Url()">Se allt i @aktuelltSida.Name <span aria-hidden="true">→</span></a>
 				}
-			</ul>
-		</section>
-	}
-
-	@* ================= NYTT HOS OSS ================= *@
-	@if (senasteNyheter.Any())
-	{
-		<section class="startsida-sektion stack" aria-labelledby="rubrik-nyheter">
-			<h2 id="rubrik-nyheter">Nytt hos oss</h2>
-
-			<ul class="grid" style="--min: 15rem;" role="list">
-				@foreach (var nyhet in senasteNyheter)
-				{
-					var datum = nyhet.Value<DateTime?>("datum");
-					var bild = nyhet.Value<MediaWithCrops>("bild");
-
-					<li>
-						<article class="kort stack">
-							@if (bild != null)
-							{
-								<img src="@bild.GetCropUrl(width: 500)" alt="" />
-							}
-							<div class="kort-innehall stack" style="--gap: 0.5rem;">
-								@if (datum.HasValue)
-								{
-									<time class="kort-datum" datetime="@datum.Value.ToString("yyyy-MM-dd")">
-										@datum.Value.ToString("d MMMM yyyy", svenska)
-									</time>
-								}
-								<h3><a href="@nyhet.Url()">@nyhet.Value("rubrik")</a></h3>
-								<p>@nyhet.Value("text")</p>
-							</div>
-						</article>
-					</li>
-				}
-			</ul>
-		</section>
-	}
-
-	@* ================= ÖPPETTIDER & HITTA HIT ================= *@
-	@if (hittaOss != null)
-	{
-		var oppettider = hittaOss.Value<string>("ppettider");
-		var adress = hittaOss.Value<string>("adress");
-
-		<section class="startsida-sektion besok split" aria-labelledby="rubrik-besok">
-			<div class="stack">
-				<h2 id="rubrik-besok">Välkommen in</h2>
-				@if (!string.IsNullOrWhiteSpace(adress))
-				{
-					<p>@adress</p>
-				}
-				<div class="cluster">
-					<a class="knapp" href="@hittaOss.Url()">Hitta hit</a>
-				</div>
 			</div>
 
-			@if (!string.IsNullOrWhiteSpace(oppettider))
-			{
-				<div class="stack" style="--gap: 0.5rem;">
-					<h3>Öppettider</h3>
-					<ul class="oppettider" role="list">
-						@foreach (var rad in oppettider.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
-						{
-							<li>@rad</li>
-						}
-					</ul>
-				</div>
-			}
+			<ul class="startsida-grid" role="list">
+				@foreach (var post in pagang)
+				{
+					var bild = post.Sida.Value<MediaWithCrops>("bild");
+
+					<li>
+						<article class="news-card">
+							@if (bild != null)
+							{
+								<img class="news-card__image" src="@bild.GetCropUrl(width: 600)" alt="" />
+							}
+							<div class="news-card__content">
+								<span class="news-card__label">@post.Etikett</span>
+								<h3 class="news-card__title"><a href="@post.Sida.Url()">@post.Rubrik</a></h3>
+								@if (post.Datum.HasValue)
+								{
+									<time class="news-card__date" datetime="@post.Datum.Value.ToString("yyyy-MM-ddTHH:mm")">
+										@post.Datum.Value.ToString(post.DatumFormat, svenska)
+									</time>
+								}
+								@if (!string.IsNullOrWhiteSpace(post.Text))
+								{
+									<p class="news-card__description">@post.Text</p>
+								}
+							</div>
+						</article>
+					</li>
+				}
+			</ul>
+		</section>
+	}
+
+	@* ================= VÄLKOMMEN IN ================= *@
+	@if (hittaOss != null || kontaktSida != null)
+	{
+		<section class="startsida-besok" aria-labelledby="rubrik-besok">
+			<div class="startsida-besok__text">
+				<h2 id="rubrik-besok">Välkommen in</h2>
+				<p>Slå dig ner med en nybryggd kopp och något gott från disken.</p>
+				@if (!string.IsNullOrWhiteSpace(adress))
+				{
+					<address>@adress</address>
+				}
+			</div>
+
+			<div class="cluster">
+				@if (hittaOss != null)
+				{
+					<a class="knapp" href="@hittaOss.Url()">Hitta hit</a>
+				}
+				@if (kontaktSida != null)
+				{
+					<a class="knapp knapp--ljus" href="@kontaktSida.Url()">Öppettider &amp; kontakt</a>
+				}
+			</div>
 		</section>
 	}
 
