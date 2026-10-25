@@ -3,6 +3,80 @@
   var home = Model.Root();
   var pages = new List<IPublishedContent>{  home };
   pages.AddRange(home.Children().Where(x => x.IsVisible()));
+
+  // ---- Öppettider från sidan "Öppettider & kontakt" ----
+  var kontaktsida = home.Children().FirstOrDefault(x => x.ContentType.Alias == "oppettiderKontakt");
+
+  // ---- Kontaktuppgifter: telefon och e-post från "Öppettider & kontakt", adress från "Hitta oss" ----
+  // (samma källor som oeppettiderKontakt.cshtml använder)
+  var hittaOss = home.Children().FirstOrDefault(x => x.ContentType.Alias == "hittaOss");
+  var telefon = kontaktsida?.Value<string>("telefon");
+  var telefonLank = string.IsNullOrWhiteSpace(telefon)
+    ? null
+    : System.Text.RegularExpressions.Regex.Replace(telefon, @"[^\d+]", "");
+  var epost = kontaktsida?.Value<string>("ePost");
+
+  // "Ågatan 39, 582 22 Linköping" visas på två rader: gatan och postort
+  var adressRader = (hittaOss?.Value<string>("adress") ?? "")
+    .Split(',', 2, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+  var oppettider = (kontaktsida?.Value<Umbraco.Cms.Core.Models.Blocks.BlockListModel>("oppettider")
+      ?? Enumerable.Empty<Umbraco.Cms.Core.Models.Blocks.BlockListItem>())
+    .Select(block => new
+    {
+      Dag = block.Content.Value<string>("dag") ?? "",
+      Oppnar = block.Content.Value<string>("oppnar"),
+      Stanger = block.Content.Value<string>("stanger"),
+      Stangt = block.Content.Value<bool>("stangt")
+    })
+    .Where(rad => rad.Dag != "")
+    .ToList();
+
+  // Slå ihop dagar i följd med samma tider, t.ex. "Mån–Fre 07:00–18:00"
+  var grupper = new List<(string Dagar, string Tider)>();
+  for (var i = 0; i < oppettider.Count; )
+  {
+    var forsta = oppettider[i];
+    var j = i;
+    while (j + 1 < oppettider.Count
+      && oppettider[j + 1].Stangt == forsta.Stangt
+      && oppettider[j + 1].Oppnar == forsta.Oppnar
+      && oppettider[j + 1].Stanger == forsta.Stanger)
+    {
+      j++;
+    }
+
+    var sista = oppettider[j];
+    var dagar = i == j
+      ? forsta.Dag
+      : $"{forsta.Dag[..Math.Min(3, forsta.Dag.Length)]}–{sista.Dag[..Math.Min(3, sista.Dag.Length)]}";
+    var tider = forsta.Stangt ? "Stängt" : $"{forsta.Oppnar}–{forsta.Stanger}";
+
+    grupper.Add((dagar, tider));
+    i = j + 1;
+  }
+
+  // "Öppet nu" / "Stängt nu" utifrån svensk tid
+  var nu = DateTime.UtcNow;
+  try
+  {
+    nu = TimeZoneInfo.ConvertTimeFromUtc(nu, TimeZoneInfo.FindSystemTimeZoneById("Europe/Stockholm"));
+  }
+  catch (TimeZoneNotFoundException)
+  {
+    nu = DateTime.Now;
+  }
+
+  var veckodagar = new[] { "Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag" };
+  var idag = oppettider.FirstOrDefault(rad => rad.Dag == veckodagar[(int)nu.DayOfWeek]);
+  var klockan = TimeOnly.FromDateTime(nu);
+
+  var arOppet = idag != null
+    && !idag.Stangt
+    && TimeOnly.TryParse(idag.Oppnar, out var oppnar)
+    && TimeOnly.TryParse(idag.Stanger, out var stanger)
+    && klockan >= oppnar
+    && klockan < stanger;
 }
 
 <footer id="Footer" class="footer">
@@ -13,7 +87,7 @@
         <p>Välkommen in — vi har nybryggt och nybakat varje dag.
       </div>
       <div class="right">
-        <a href="#">
+        <a href="@(hittaOss?.Url() ?? "#")">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin preview-icon"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
           <span>Hitta hit</span>
         </a>
@@ -35,28 +109,54 @@
       </div>
       <div class="second-row row content-row">
         <h3>Öppettider</h3>
-        <ul>
-          <li><span>Mån-Fre</span><span>07-18</span></li>
-          <li><span>Lördag</span><span>07-18</span></li>
-          <li><span>Söndag</span><span>07-16</span></li>
-        </ul>
-        <p>Öppet nu</p>
+        @if (grupper.Any())
+        {
+          <ul>
+            @foreach (var grupp in grupper)
+            {
+              <li><span>@grupp.Dagar</span><span>@grupp.Tider</span></li>
+            }
+          </ul>
+          <p class="@(arOppet ? "is-open" : "is-closed")">@(arOppet ? "Öppet nu" : "Stängt nu")</p>
+        }
+        else if (kontaktsida != null)
+        {
+          <p class="is-closed">Öppettiderna uppdateras snart.</p>
+        }
+        @if (kontaktsida != null)
+        {
+          <a href="@kontaktsida.Url()">Alla öppettider och kontakt</a>
+        }
       </div>
       <div class="third-row row content-row">
         <h3>Hitta oss</h3>
-        <div>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin preview-icon"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
-          <p>Exempelgatan 12<br />
-          123 45 Exempelstad</p>
-        </div>
-        <div>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone preview-icon"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/></svg>
-          <a href="#">012 - 345 67 89</a>
-        </div>
-        <div>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail preview-icon"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
-          <a href="#">info@cafeblixten.se</a>
-        </div>
+        @if (adressRader.Length > 0)
+        {
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin preview-icon"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+            <p>
+              @adressRader[0]
+              @if (adressRader.Length > 1)
+              {
+                <br />@adressRader[1]
+              }
+            </p>
+          </div>
+        }
+        @if (telefonLank != null)
+        {
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone preview-icon"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/></svg>
+            <a href="tel:@telefonLank">@telefon</a>
+          </div>
+        }
+        @if (!string.IsNullOrWhiteSpace(epost))
+        {
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail preview-icon"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+            <a href="mailto:@epost">@epost</a>
+          </div>
+        }
       </div>
       <div class="fourth-row row content-row">
         <h3>Utforska</h3>
