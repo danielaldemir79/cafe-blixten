@@ -1,6 +1,137 @@
-﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+﻿@using System.Globalization
+@using System.Linq
+@using Umbraco.Cms.Core.Models
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.Aktuellt>
-@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+
 @{
-	Layout = null;
+    Layout = "layout.cshtml";
+
+    var rubrik = Model.Value<string>("rubrik");
+    var ingress = Model.Value<string>("ingress");
+    var svenskKultur = CultureInfo.GetCultureInfo("sv-SE");
+
+    var inlagg = Model.Children()
+        .Where(inlagg => inlagg.IsVisible())
+        .OrderByDescending(inlagg =>
+            inlagg.Value<DateTime?>("datum") ?? inlagg.CreateDate)
+        .ToList();
 }
+
+<section class="news-page" aria-labelledby="news-page-title">
+    <header class="news-page__header">
+        <h1 id="news-page-title">
+            @(string.IsNullOrWhiteSpace(rubrik) ? Model.Name : rubrik)
+        </h1>
+
+        @if (!string.IsNullOrWhiteSpace(ingress))
+        {
+            <p class="news-page__intro">@ingress</p>
+        }
+    </header>
+
+    @if (inlagg.Any())
+    {
+        <div class="news-page__grid">
+            @foreach (var post in inlagg)
+            {
+                var typ = post.ContentType.Alias;
+
+                var titel = typ switch
+                {
+                    "nyttHosOss" => post.Value<string>("rubrik"),
+                    "event" => post.Value<string>("namn"),
+                    "veckansFika" => post.Value<string>("namn"),
+                    _ => post.Name
+                };
+
+                var beskrivning = typ switch
+                {
+                    "nyttHosOss" => post.Value<string>("text"),
+                    "event" => post.Value<string>("beskrivning"),
+                    "veckansFika" => post.Value<string>("beskrivning"),
+                    _ => null
+                };
+
+                var etikett = typ switch
+                {
+                    "nyttHosOss" => "Nyhet",
+                    "event" => "Evenemang",
+                    "veckansFika" => "Veckans fika",
+                    _ => "Aktuellt"
+                };
+
+                var datum = post.Value<DateTime?>("datum");
+                var pris = post.Value<decimal?>("pris");
+                var bild = post.Value<MediaWithCrops>("bild");
+
+                var bildUrl = bild?.Url();
+                var bildAlt = bild?.Name;
+
+                if (string.IsNullOrWhiteSpace(bildUrl))
+                {
+                    (bildUrl, bildAlt) = typ switch
+                    {
+                        "event" => (
+                            "/images/cafe-blixten-livemusik.png",
+                            "Mysig cafékväll med fika och livemusik"
+                        ),
+                        "nyttHosOss" => (
+                            "/images/cafe-blixten-hostmeny.png",
+                            "Höstfika med kaffe, bakverk och säsongens smaker"
+                        ),
+                        "veckansFika" => (
+                            "/images/cafe-blixten-kanelbullar.png",
+                            "Kaffe och nybakade kanelbullar"
+                        ),
+                        _ => (bildUrl, bildAlt)
+                    };
+                }
+
+                <article class="news-card">
+                    @if (!string.IsNullOrWhiteSpace(bildUrl))
+                    {
+                        <img class="news-card__image"
+                            src="@bildUrl"
+                            alt="@bildAlt"
+                            loading="lazy" />
+                    }
+
+                    <div class="news-card__content">
+                        <span class="news-card__label">@etikett</span>
+
+                        <h2 class="news-card__title">
+                            <a href="@post.Url()">@titel</a>
+                        </h2>
+
+                        @if (datum.HasValue)
+                        {
+                            <time class="news-card__date"
+                                  datetime="@datum.Value.ToString("yyyy-MM-dd")">
+                                @datum.Value.ToString("d MMMM yyyy", svenskKultur)
+                            </time>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(beskrivning))
+                        {
+                            <p class="news-card__description">@beskrivning</p>
+                        }
+
+                        @if (pris.HasValue)
+                        {
+                            <p class="news-card__price">
+                                @pris.Value.ToString("0.##") kr
+                            </p>
+                        }
+                    </div>
+                </article>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="news-page__empty">
+            Det finns inget aktuellt innehåll just nu. Välkommen tillbaka snart!
+        </p>
+    }
+</section>

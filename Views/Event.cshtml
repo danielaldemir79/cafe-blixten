@@ -1,6 +1,55 @@
-﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+﻿@using System.Globalization
+@using Umbraco.Cms.Core.Models
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.Event>
-@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+
 @{
-	Layout = null;
+    Layout = "layout.cshtml";
+
+    var namn = Model.Value<string>("namn");
+    var beskrivning = Model.Value<string>("beskrivning");
+    var datum = Model.Value<DateTime?>("datum");
+    var bild = Model.Value<MediaWithCrops>("bild");
+    var bildUrl = bild?.Url();
+    var bildAlt = bild?.Name;
+    var aktuellt = Model.Parent;
+    var svenskKultur = CultureInfo.GetCultureInfo("sv-SE");
+
+    if (string.IsNullOrWhiteSpace(bildUrl))
+    {
+        bildUrl = "/images/cafe-blixten-livemusik.png";
+        bildAlt = "Mysig cafékväll med fika och livemusik";
+    }
+
 }
+
+<article class="news-detail" aria-labelledby="news-detail-title">
+    <a class="news-detail__back" href="@(aktuellt?.Url() ?? "/")">
+        &larr; Tillbaka till Aktuellt
+    </a>
+
+    <div class="news-detail__content">
+        <span class="news-detail__label">Evenemang</span>
+
+        <h1 id="news-detail-title">
+            @(string.IsNullOrWhiteSpace(namn) ? Model.Name : namn)
+        </h1>
+
+        @if (datum.HasValue)
+        {
+            <time class="news-detail__date"
+                  datetime="@datum.Value.ToString("yyyy-MM-dd")">
+                @datum.Value.ToString("d MMMM yyyy", svenskKultur)
+            </time>
+        }
+
+        <img class="news-detail__image"
+            src="@bildUrl"
+            alt="@bildAlt" />
+
+        @if (!string.IsNullOrWhiteSpace(beskrivning))
+        {
+            <p class="news-detail__description">@beskrivning</p>
+        }
+    </div>
+</article>
