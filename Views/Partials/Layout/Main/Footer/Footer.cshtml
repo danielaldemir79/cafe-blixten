@@ -3,6 +3,67 @@
   var home = Model.Root();
   var pages = new List<IPublishedContent>{  home };
   pages.AddRange(home.Children().Where(x => x.IsVisible()));
+
+  // ---- Öppettider från sidan "Öppettider & kontakt" ----
+  var kontaktsida = home.Children().FirstOrDefault(x => x.ContentType.Alias == "oppettiderKontakt");
+
+  var oppettider = (kontaktsida?.Value<Umbraco.Cms.Core.Models.Blocks.BlockListModel>("oppettider")
+      ?? Enumerable.Empty<Umbraco.Cms.Core.Models.Blocks.BlockListItem>())
+    .Select(block => new
+    {
+      Dag = block.Content.Value<string>("dag") ?? "",
+      Oppnar = block.Content.Value<string>("oppnar"),
+      Stanger = block.Content.Value<string>("stanger"),
+      Stangt = block.Content.Value<bool>("stangt")
+    })
+    .Where(rad => rad.Dag != "")
+    .ToList();
+
+  // Slå ihop dagar i följd med samma tider, t.ex. "Mån–Fre 07:00–18:00"
+  var grupper = new List<(string Dagar, string Tider)>();
+  for (var i = 0; i < oppettider.Count; )
+  {
+    var forsta = oppettider[i];
+    var j = i;
+    while (j + 1 < oppettider.Count
+      && oppettider[j + 1].Stangt == forsta.Stangt
+      && oppettider[j + 1].Oppnar == forsta.Oppnar
+      && oppettider[j + 1].Stanger == forsta.Stanger)
+    {
+      j++;
+    }
+
+    var sista = oppettider[j];
+    var dagar = i == j
+      ? forsta.Dag
+      : $"{forsta.Dag[..Math.Min(3, forsta.Dag.Length)]}–{sista.Dag[..Math.Min(3, sista.Dag.Length)]}";
+    var tider = forsta.Stangt ? "Stängt" : $"{forsta.Oppnar}–{forsta.Stanger}";
+
+    grupper.Add((dagar, tider));
+    i = j + 1;
+  }
+
+  // "Öppet nu" / "Stängt nu" utifrån svensk tid
+  var nu = DateTime.UtcNow;
+  try
+  {
+    nu = TimeZoneInfo.ConvertTimeFromUtc(nu, TimeZoneInfo.FindSystemTimeZoneById("Europe/Stockholm"));
+  }
+  catch (TimeZoneNotFoundException)
+  {
+    nu = DateTime.Now;
+  }
+
+  var veckodagar = new[] { "Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag" };
+  var idag = oppettider.FirstOrDefault(rad => rad.Dag == veckodagar[(int)nu.DayOfWeek]);
+  var klockan = TimeOnly.FromDateTime(nu);
+
+  var arOppet = idag != null
+    && !idag.Stangt
+    && TimeOnly.TryParse(idag.Oppnar, out var oppnar)
+    && TimeOnly.TryParse(idag.Stanger, out var stanger)
+    && klockan >= oppnar
+    && klockan < stanger;
 }
 
 <footer id="Footer" class="footer">
@@ -35,12 +96,24 @@
       </div>
       <div class="second-row row content-row">
         <h3>Öppettider</h3>
-        <ul>
-          <li><span>Mån-Fre</span><span>07-18</span></li>
-          <li><span>Lördag</span><span>07-18</span></li>
-          <li><span>Söndag</span><span>07-16</span></li>
-        </ul>
-        <p>Öppet nu</p>
+        @if (grupper.Any())
+        {
+          <ul>
+            @foreach (var grupp in grupper)
+            {
+              <li><span>@grupp.Dagar</span><span>@grupp.Tider</span></li>
+            }
+          </ul>
+          <p class="@(arOppet ? "is-open" : "is-closed")">@(arOppet ? "Öppet nu" : "Stängt nu")</p>
+        }
+        else if (kontaktsida != null)
+        {
+          <p class="is-closed">Öppettiderna uppdateras snart.</p>
+        }
+        @if (kontaktsida != null)
+        {
+          <a href="@kontaktsida.Url()">Alla öppettider och kontakt</a>
+        }
       </div>
       <div class="third-row row content-row">
         <h3>Hitta oss</h3>
