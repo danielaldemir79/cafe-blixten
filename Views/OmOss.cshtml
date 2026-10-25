@@ -9,6 +9,14 @@
     var rubrik = Model.Value<string>("rubrik");
     var text = Model.Value<IHtmlEncodedString>("text");
     var bild = Model.Value<MediaWithCrops>("bild");
+    var bildUrl = bild?.Url();
+    var bildAlt = bild?.Name;
+
+    if (string.IsNullOrWhiteSpace(bildUrl))
+    {
+        bildUrl = "/images/cafe-blixten-om-oss.png";
+        bildAlt = "Café Blixtens varma cafémiljö med kaffe och nybakat fika";
+    }
 }
 
 <section class="hero about-page">
@@ -23,12 +31,9 @@
         }
     </div>
 
-    @if (bild != null)
-    {
-        <div class="about-page__image">
-            <img src="@bild.Url()"
-                 alt="@bild.Name"
-                 loading="lazy" />
-        </div>
-    }
+    <div class="about-page__image">
+        <img src="@bildUrl"
+             alt="@bildAlt"
+             loading="lazy" />
+    </div>
 </section>
