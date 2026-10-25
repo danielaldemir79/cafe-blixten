@@ -671,6 +671,16 @@ body {
   border-radius: 100%;
   background-color: #1aff1a;
 }
+#Footer > .footer-container > .footer-bottom > .second-row > p.is-closed::before {
+  border-color: #b3261e;
+  background-color: rgb(93.104418801%, 60.6951871658%, 58.8563655127%);
+}
+#Footer > .footer-container > .footer-bottom > .second-row > a {
+  color: rgb(46.3313545602%, 59.3157042634%, 50.6594711279%);
+}
+#Footer > .footer-container > .footer-bottom > .second-row > a:hover, #Footer > .footer-container > .footer-bottom > .second-row > a:focus-visible {
+  color: #c96f4a;
+}
 #Footer > .footer-container > .footer-bottom > .third-row > div {
   display: flex;
   flex-direction: row;

@@ -205,6 +205,20 @@
             border-radius: 100%;
             background-color: color.adjust(green, $lightness: 30%);
           }
+
+          &.is-closed::before {
+            border-color: #b3261e;
+            background-color: color.adjust(#b3261e, $lightness: 35%);
+          }
+        }
+
+        > a {
+          color: m.lighten("primary", 40%);
+
+          &:hover,
+          &:focus-visible {
+            color: m.color("secondary");
+          }
         }
       }
 
