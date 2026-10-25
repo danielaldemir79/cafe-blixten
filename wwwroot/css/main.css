@@ -1061,6 +1061,275 @@ ul[role=list] {
   height: auto;
 }
 
+.find-page {
+  --pad-y: clamp(1.5rem, 3vw, 3rem);
+  --pad-x: clamp(1.25rem, 4vw, 4rem);
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-areas: "intro" "address" "directions" "map";
+  max-width: 1200px;
+  margin: clamp(0.25rem, 2.5vw, 2rem) auto;
+  padding: var(--pad-y) var(--pad-x);
+  overflow: hidden;
+  border-radius: 2rem;
+  background-color: #ffffff;
+  box-shadow: 0 1.5rem 4rem rgba(47, 62, 52, 0.1);
+}
+.find-page::before {
+  position: absolute;
+  z-index: -1;
+  bottom: -3rem;
+  left: -3rem;
+  width: 16rem;
+  height: 16rem;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232f3e34' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E") no-repeat center/contain;
+  opacity: 0.06;
+  content: "";
+}
+.find-page::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 0.4rem;
+  background-color: #c96f4a;
+  content: "";
+}
+@media (min-width: 900px) {
+  .find-page {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "intro map" "address map" "directions directions";
+    align-items: start;
+  }
+}
+.find-page__intro {
+  grid-area: intro;
+}
+.find-page h1 {
+  color: #2f3e34;
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  line-height: 1.08;
+}
+.find-page h1::after {
+  display: block;
+  width: 4rem;
+  height: 0.3rem;
+  margin-top: 1rem;
+  border-radius: 999px;
+  background-color: #c96f4a;
+  content: "";
+}
+.find-page__ingress {
+  max-width: 42rem;
+  margin-top: 1rem;
+  color: #2f3e34;
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
+  font-weight: 500;
+  line-height: 1.6;
+}
+.find-page h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  color: #2f3e34;
+  font-size: 1.5rem;
+}
+.find-page h2::before {
+  width: 1rem;
+  height: 2px;
+  background-color: #c96f4a;
+  content: "";
+}
+.find-page h2:has(svg)::before {
+  display: none;
+}
+.find-page h2 svg {
+  flex-shrink: 0;
+  color: #c96f4a;
+}
+.find-page__hours, .find-page__address, .find-page__directions {
+  padding: 1.75rem;
+  border-radius: 1rem;
+  background-color: #F3F3F3;
+}
+.find-page__hours {
+  grid-area: hours;
+}
+.find-page__hours ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.find-page__hours li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #d9d9d9;
+}
+@media (min-width: 900px) {
+  .find-page__hours li {
+    padding: 0.6rem 0;
+  }
+}
+.find-page__hours li:last-child {
+  border-bottom: none;
+}
+.find-page__address {
+  grid-area: address;
+}
+.find-page__address address {
+  margin-bottom: 1.25rem;
+  font-style: normal;
+  font-size: 1.1rem;
+}
+.find-page__directions {
+  grid-area: directions;
+}
+.find-page__directions ul {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding-left: 1.25rem;
+  line-height: 1.6;
+}
+@media (min-width: 900px) {
+  .find-page__directions ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 2.5rem;
+  }
+}
+.find-page__directions li::marker {
+  color: #c96f4a;
+}
+.find-page__button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 3rem;
+  padding: 0 1.75rem;
+  border-radius: 999px;
+  background-color: #c96f4a;
+  color: #2f3e34;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.find-page__button:hover {
+  background-color: rgb(80.9411764706%, 49.1764705882%, 36.1176470588%);
+}
+.find-page__button:focus-visible {
+  outline: 3px solid #2f3e34;
+  outline-offset: 3px;
+}
+.find-page--kontakt {
+  grid-template-areas: "intro" "hours" "contact" "findus";
+}
+.find-page--kontakt::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232f3e34' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpolyline points='12 6 12 12 16 14'/%3E%3C/svg%3E");
+}
+@media (min-width: 900px) {
+  .find-page--kontakt {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "intro intro" "hours contact" "hours findus";
+  }
+}
+.find-page__contact, .find-page__findus {
+  padding: 1.75rem;
+  border-radius: 1rem;
+  background-color: #F3F3F3;
+}
+.find-page__contact {
+  grid-area: contact;
+}
+.find-page__contact ul {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.find-page__contact a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: rgb(66.4497288277%, 33.4084272007%, 19.8247809762%);
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-underline-offset: 0.2em;
+}
+.find-page__contact a:focus-visible {
+  outline: 3px solid #2f3e34;
+  outline-offset: 3px;
+}
+.find-page__findus {
+  grid-area: findus;
+}
+.find-page__findus address {
+  margin-bottom: 1.25rem;
+  font-style: normal;
+  font-size: 1.1rem;
+}
+.find-page__day {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.find-page__day--today {
+  font-weight: 700;
+}
+.find-page__today {
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  background-color: #2f3e34;
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.find-page__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background-color: #ffffff;
+}
+.find-page__status-dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+}
+.find-page__status--open .find-page__status-dot {
+  border: 3px solid #2e7d32;
+  background-color: #66bb6a;
+}
+.find-page__status--closed .find-page__status-dot {
+  border: 3px solid #6b6b6b;
+  background-color: #cfcfcf;
+}
+.find-page__map {
+  grid-area: map;
+  margin: 0 calc(-1 * var(--pad-x)) calc(-1 * var(--pad-y));
+  aspect-ratio: 4/3;
+}
+@media (min-width: 900px) {
+  .find-page__map {
+    align-self: stretch;
+    min-height: 24rem;
+    margin: calc(-1 * var(--pad-y)) calc(-1 * var(--pad-x)) 0 0;
+    overflow: hidden;
+    border-bottom-left-radius: 1rem;
+    aspect-ratio: auto;
+  }
+}
+.find-page__map iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
 /* Breadcrumb behövs inte på själva menysidan */
 body:has(.menu-page) #Breadcrumbs {
   display: none;

@@ -1,0 +1,329 @@
+@use "../abstracts/mixins" as m;
+
+.find-page {
+  --pad-y: clamp(1.5rem, 3vw, 3rem);
+  --pad-x: clamp(1.25rem, 4vw, 4rem);
+
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-areas:
+    "intro"
+    "address"
+    "directions"
+    "map";
+  max-width: 1200px;
+  margin: clamp(0.25rem, 2.5vw, 2rem) auto;
+  padding: var(--pad-y) var(--pad-x);
+  overflow: hidden;
+  border-radius: 2rem;
+  background-color: #ffffff;
+  box-shadow: 0 1.5rem 4rem rgba(47, 62, 52, 0.1);
+
+  // Stor, blek kartnål som dekoration
+  &::before {
+    position: absolute;
+    z-index: -1;
+    bottom: -3rem;
+    left: -3rem;
+    width: 16rem;
+    height: 16rem;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232f3e34' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E") no-repeat center / contain;
+    opacity: 0.06;
+    content: "";
+  }
+
+  // Tunn orange rand överst
+  &::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 0.4rem;
+    background-color: m.color(secondary);
+    content: "";
+  }
+
+  @include m.for-size(tablet-landscape-up) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "intro map"
+      "address map"
+      "directions directions";
+    align-items: start;
+  }
+
+  &__intro {
+    grid-area: intro;
+  }
+
+  h1 {
+    color: m.color(primary);
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    line-height: 1.08;
+
+    &::after {
+      display: block;
+      width: 4rem;
+      height: 0.3rem;
+      margin-top: 1rem;
+      border-radius: 999px;
+      background-color: m.color(secondary);
+      content: "";
+    }
+  }
+
+  &__ingress {
+    max-width: 42rem;
+    margin-top: 1rem;
+    color: m.color(primary);
+    font-size: clamp(1rem, 1.5vw, 1.15rem);
+    font-weight: 500;
+    line-height: 1.6;
+  }
+
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    color: m.color(primary);
+    font-size: 1.5rem;
+
+    &::before {
+      width: 1rem;
+      height: 2px;
+      background-color: m.color(secondary);
+      content: "";
+    }
+
+    &:has(svg)::before {
+      display: none;
+    }
+
+    svg {
+      flex-shrink: 0;
+      color: m.color(secondary);
+    }
+  }
+
+  &__hours,
+  &__address,
+  &__directions {
+    padding: 1.75rem;
+    border-radius: 1rem;
+    background-color: m.color(smoke);
+  }
+
+  &__hours {
+    grid-area: hours;
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #d9d9d9;
+
+      @include m.for-size(tablet-landscape-up) {
+        padding: 0.6rem 0;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  &__address {
+    grid-area: address;
+
+    address {
+      margin-bottom: 1.25rem;
+      font-style: normal;
+      font-size: 1.1rem;
+    }
+  }
+
+  &__directions {
+    grid-area: directions;
+
+    ul {
+      display: grid;
+      gap: 0.6rem;
+      margin: 0;
+      padding-left: 1.25rem;
+      line-height: 1.6;
+
+      @include m.for-size(tablet-landscape-up) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: 2.5rem;
+      }
+    }
+
+    li::marker {
+      color: m.color(secondary);
+    }
+  }
+
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 3rem;
+    padding: 0 1.75rem;
+    border-radius: 999px;
+    background-color: m.color(secondary);
+    color: m.color(primary);
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-decoration: none;
+
+    &:hover {
+      background-color: m.lighten("secondary", 10%);
+    }
+
+    &:focus-visible {
+      outline: 3px solid m.color(primary);
+      outline-offset: 3px;
+    }
+  }
+
+  // Sidan Öppettider & kontakt: samma kort, egen uppställning och en klocka som dekoration
+  &--kontakt {
+    grid-template-areas:
+      "intro"
+      "hours"
+      "contact"
+      "findus";
+
+    &::before {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232f3e34' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpolyline points='12 6 12 12 16 14'/%3E%3C/svg%3E");
+    }
+
+    @include m.for-size(tablet-landscape-up) {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-areas:
+        "intro intro"
+        "hours contact"
+        "hours findus";
+    }
+  }
+
+  &__contact,
+  &__findus {
+    padding: 1.75rem;
+    border-radius: 1rem;
+    background-color: m.color(smoke);
+  }
+
+  &__contact {
+    grid-area: contact;
+
+    ul {
+      display: grid;
+      gap: 0.5rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.75rem;
+      color: m.darken("secondary", 20%);
+      font-size: 1.1rem;
+      font-weight: 500;
+      text-underline-offset: 0.2em;
+
+      &:focus-visible {
+        outline: 3px solid m.color(primary);
+        outline-offset: 3px;
+      }
+    }
+  }
+
+  &__findus {
+    grid-area: findus;
+
+    address {
+      margin-bottom: 1.25rem;
+      font-style: normal;
+      font-size: 1.1rem;
+    }
+  }
+
+  &__day {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+
+    &--today {
+      font-weight: 700;
+    }
+  }
+
+  &__today {
+    margin-left: 0.5rem;
+    padding: 0.1rem 0.6rem;
+    border-radius: 999px;
+    background-color: m.color(primary);
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  &__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    background-color: #ffffff;
+  }
+
+  &__status-dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+  }
+
+  &__status--open &__status-dot {
+    border: 3px solid #2e7d32;
+    background-color: #66bb6a;
+  }
+
+  &__status--closed &__status-dot {
+    border: 3px solid #6b6b6b;
+    background-color: #cfcfcf;
+  }
+
+  // Kartan går ända ut till kortets kant
+  &__map {
+    grid-area: map;
+    margin: 0 calc(-1 * var(--pad-x)) calc(-1 * var(--pad-y));
+    aspect-ratio: 4 / 3;
+
+    // På datorn slutar kartan ovanför "Så hittar du hit"
+    @include m.for-size(tablet-landscape-up) {
+      align-self: stretch;
+      min-height: 24rem;
+      margin: calc(-1 * var(--pad-y)) calc(-1 * var(--pad-x)) 0 0;
+      overflow: hidden;
+      border-bottom-left-radius: 1rem;
+      aspect-ratio: auto;
+    }
+
+    iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  }
+}

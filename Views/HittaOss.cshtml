@@ -1,6 +1,69 @@
-﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+﻿@using Umbraco.Cms.Core.Models
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.HittaOss>
-@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+
 @{
-	Layout = null;
+    Layout = "layout.cshtml";
+
+    var ingress = Model.Value<string>("ingress");
+    var adress = Model.Value<string>("adress");
+    var kartlank = Model.Value<Link>("kartlank");
+    var hittaHit = Model.Value<string>("hittaHit")?
+        .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 }
+
+<section class="find-page">
+    <div class="find-page__intro">
+        <h1>@Model.Name</h1>
+
+        @if (!string.IsNullOrWhiteSpace(ingress))
+        {
+            <p class="find-page__ingress">@ingress</p>
+        }
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(adress))
+    {
+        <div class="find-page__address">
+            <h2>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" /></svg>
+                Adress
+            </h2>
+            <address>@adress</address>
+
+            @if (kartlank != null)
+            {
+                <a class="find-page__button" href="@kartlank.Url" target="_blank" rel="noopener">
+                    @(string.IsNullOrWhiteSpace(kartlank.Name) ? "Öppna vägbeskrivning" : kartlank.Name)
+                    <span class="visually-hidden"> (öppnas i ny flik)</span>
+                </a>
+            }
+        </div>
+    }
+
+    @if (hittaHit != null && hittaHit.Any())
+    {
+        <div class="find-page__directions">
+            <h2>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="3 11 22 2 13 21 11 13 3 11" /></svg>
+                Så hittar du hit
+            </h2>
+            <ul>
+                @foreach (var rad in hittaHit)
+                {
+                    <li>@rad</li>
+                }
+            </ul>
+        </div>
+    }
+
+    @* Kartan ligger sist i koden så att tangentbordet når adress och knapp först. Placeringen på skärmen styrs av grid i _kontakt.scss. *@
+    @if (!string.IsNullOrWhiteSpace(adress))
+    {
+        <div class="find-page__map">
+            <iframe src="https://www.google.com/maps?q=@Uri.EscapeDataString(adress)&hl=sv&output=embed"
+                    title="Karta som visar var Café Blixten ligger"
+                    loading="lazy"></iframe>
+        </div>
+    }
+</section>
