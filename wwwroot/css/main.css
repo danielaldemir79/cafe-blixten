@@ -1123,22 +1123,10 @@ ul[role=list] {
 @media (min-width: 600px) {
   .startsida-fika__bild {
     flex: 0 0 40%;
+    min-width: 0;
     aspect-ratio: auto;
     min-height: 16rem;
   }
-}
-.startsida-fika__bild--tom {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: auto;
-  min-height: 10rem;
-  background: linear-gradient(135deg, #f8f2e8 0%, rgba(201, 111, 74, 0.18) 100%);
-  color: #c96f4a;
-}
-.startsida-fika__bild--tom svg {
-  width: 5rem;
-  height: 5rem;
 }
 .startsida-fika .news-card__content {
   justify-content: center;
