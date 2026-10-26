@@ -1489,14 +1489,14 @@ body:has(.menu-page) #Breadcrumbs {
   content: "";
 }
 .menu-page {
-  /* Kaffe, Lunch, Kampanj */
+  /* Kaffe, Lunch och Kampanj */
 }
 .menu-page__category {
   max-width: 52rem;
-  margin-bottom: 3.5rem;
+  margin-bottom: 4rem;
 }
 .menu-page__category h2 {
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   padding-bottom: 0.75rem;
   border-bottom: 2px solid #c96f4a;
   color: #7d4d2e;
@@ -1504,18 +1504,27 @@ body:has(.menu-page) #Breadcrumbs {
   font-weight: 700;
   line-height: 1.2;
 }
+.menu-page {
+  /* En gemensam bild för varje kategori */
+}
+.menu-page__category-image {
+  display: block;
+  width: 100%;
+  max-width: 22rem;
+  height: 11rem;
+  margin: 1rem 0 1.5rem;
+  object-fit: cover;
+  border-radius: 0.75rem;
+}
 .menu-page__list {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 .menu-page {
-  /* En produkt: namn, pris och beskrivning staplade; bild till höger på större skärmar */
+  /* Produkt */
 }
 .menu-page__item {
-  display: grid;
-  grid-template-columns: 1fr;
-  row-gap: 0.35rem;
   margin: 0;
   padding: 1.25rem 0;
   border-bottom: 1px solid rgba(47, 62, 52, 0.15);
@@ -1523,27 +1532,8 @@ body:has(.menu-page) #Breadcrumbs {
 .menu-page__item:last-child {
   border-bottom: 0;
 }
-.menu-page__item--has-image {
-  row-gap: 0.75rem;
-}
-@media (min-width: 600px) {
-  .menu-page__item--has-image {
-    grid-template-columns: 1fr 7rem;
-    column-gap: 1.5rem;
-    row-gap: 0.35rem;
-    align-content: start;
-  }
-  .menu-page__item--has-image .menu-page__item-header,
-  .menu-page__item--has-image .menu-page__item-description {
-    grid-column: 1;
-  }
-  .menu-page__item--has-image .menu-page__item-image {
-    grid-column: 2;
-    grid-row: 1/span 2;
-  }
-}
 .menu-page {
-  /* Produktnamn med pris direkt under */
+  /* Produktnamn och pris */
 }
 .menu-page__item-header {
   display: flex;
@@ -1569,21 +1559,27 @@ body:has(.menu-page) #Breadcrumbs {
 }
 .menu-page__item-description {
   max-width: 36rem;
-  margin: 0;
+  margin: 0.35rem 0 0;
   color: rgb(39.3333333333%, 39.3333333333%, 39.3333333333%);
   font-size: 0.95rem;
   line-height: 1.6;
 }
 .menu-page {
-  /* Produktbild om sådan finns */
+  /* Två kolumner på större skärmar */
 }
-.menu-page__item-image {
-  display: block;
-  width: 100%;
-  max-width: 7rem;
-  aspect-ratio: 1;
-  object-fit: cover;
-  border-radius: 1rem;
+@media (min-width: 600px) {
+  .menu-page {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 3rem;
+  }
+  .menu-page .hero {
+    grid-column: 1/-1;
+  }
+  .menu-page .menu-page__category {
+    width: 100%;
+    max-width: none;
+  }
 }
 
 .news-page {

@@ -9,17 +9,20 @@
 
   var blockList = Model.Value<BlockListModel>("produkter");
 
+  var bildKaffe = Model.Value<MediaWithCrops>("bildKaffe");
+  var bildLunch = Model.Value<MediaWithCrops>("bildLunch");
+  var bildKampanj = Model.Value<MediaWithCrops>("bildKampanj");
+
   var grupper = blockList?
       .Select(block => block.Content)
       .GroupBy(produkt => produkt.Value<string>("kategori") ?? "Övrigt")
       .ToList();
 }
 
-
 <section class="menu-page" aria-labelledby="menu-page-title">
   <section class="hero">
     <div class="hero-text">
-      <h1>Meny</h1>
+      <h1 id="menu-page-title">Meny</h1>
       <p class="hero-ingress">
         Något gott för varje stund – från nybryggt kaffe till lunch och fika.
       </p>
@@ -31,8 +34,22 @@
     for (var i = 0; i < grupper.Count; i++)
     {
       var grupp = grupper[i];
+
+      MediaWithCrops? kategoriBild = grupp.Key switch
+      {
+        "Kaffe" => bildKaffe,
+        "Lunch" => bildLunch,
+        "Kampanj" => bildKampanj,
+        _ => null
+      };
+
       <section class="menu-page__category" aria-labelledby="meny-kategori-@i">
         <h2 id="meny-kategori-@i">@grupp.Key</h2>
+
+        @if (kategoriBild != null)
+        {
+          <img class="menu-page__category-image" src="@kategoriBild.Url()" alt="" loading="lazy" />
+        }
 
         <ul class="menu-page__list">
           @foreach (var produkt in grupp)
@@ -40,26 +57,24 @@
             var namn = produkt.Value<string>("namn");
             var pris = produkt.Value<decimal?>("pris");
             var beskrivning = produkt.Value<string>("beskrivning");
-            var bild = produkt.Value<MediaWithCrops>("bild");
 
-            <li class="menu-page__item@(bild != null ? " menu-page__item--has-image" : "")">
+            <li class="menu-page__item">
               <div class="menu-page__item-header">
                 <h3 class="menu-page__item-name">@namn</h3>
 
                 @if (pris.HasValue)
                 {
-                  <span class="menu-page__item-price">@pris.Value.ToString("0.##")&nbsp;kr</span>
+                  <span class="menu-page__item-price">
+                    @pris.Value.ToString("0.##")&nbsp;kr
+                  </span>
                 }
               </div>
 
               @if (!string.IsNullOrWhiteSpace(beskrivning))
               {
-                <p class="menu-page__item-description">@beskrivning</p>
-              }
-
-              @if (bild != null)
-              {
-                <img class="menu-page__item-image" src="@bild.Url()" alt="" loading="lazy" />
+                <p class="menu-page__item-description">
+                  @beskrivning
+                </p>
               }
             </li>
           }

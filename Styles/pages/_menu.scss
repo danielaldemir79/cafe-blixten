@@ -8,7 +8,6 @@ body:has(.menu-page) #Breadcrumbs {
 .menu-page {
   max-width: 1200px;
   margin: 0 auto clamp(2rem, 5vw, 4rem);
-  //padding: clamp(1rem, 3vw, 2rem) clamp(1.25rem, 4vw, 4rem) clamp(2rem, 5vw, 4rem);
 
   /* Sidans huvudrubrik */
   h1 {
@@ -28,13 +27,13 @@ body:has(.menu-page) #Breadcrumbs {
     }
   }
 
-  /* Kaffe, Lunch, Kampanj */
+  /* Kaffe, Lunch och Kampanj */
   &__category {
     max-width: 52rem;
-    margin-bottom: 3.5rem;
+    margin-bottom: 4rem;
 
     h2 {
-      margin-bottom: 0.5rem;
+      margin-bottom: 1rem;
       padding-bottom: 0.75rem;
       border-bottom: 2px solid m.color(secondary);
       color: m.color(brown);
@@ -44,17 +43,25 @@ body:has(.menu-page) #Breadcrumbs {
     }
   }
 
+  /* En gemensam bild för varje kategori */
+  &__category-image {
+    display: block;
+    width: 100%;
+    max-width: 22rem;
+    height: 11rem;
+    margin: 1rem 0 1.5rem;
+    object-fit: cover;
+    border-radius: 0.75rem;
+  }
+
   &__list {
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  /* En produkt: namn, pris och beskrivning staplade; bild till höger på större skärmar */
+  /* Produkt */
   &__item {
-    display: grid;
-    grid-template-columns: 1fr;
-    row-gap: 0.35rem;
     margin: 0;
     padding: 1.25rem 0;
     border-bottom: 1px solid rgba(47, 62, 52, 0.15);
@@ -62,30 +69,9 @@ body:has(.menu-page) #Breadcrumbs {
     &:last-child {
       border-bottom: 0;
     }
-
-    &--has-image {
-      row-gap: 0.75rem;
-
-      @include m.for-size(tablet-portrait-up) {
-        grid-template-columns: 1fr 7rem;
-        column-gap: 1.5rem;
-        row-gap: 0.35rem;
-        align-content: start;
-
-        .menu-page__item-header,
-        .menu-page__item-description {
-          grid-column: 1;
-        }
-
-        .menu-page__item-image {
-          grid-column: 2;
-          grid-row: 1 / span 2;
-        }
-      }
-    }
   }
 
-  /* Produktnamn med pris direkt under */
+  /* Produktnamn och pris */
   &__item-header {
     display: flex;
     flex-direction: column;
@@ -111,19 +97,25 @@ body:has(.menu-page) #Breadcrumbs {
   /* Produktbeskrivning */
   &__item-description {
     max-width: 36rem;
-    margin: 0;
+    margin: 0.35rem 0 0;
     color: m.lighten(onyx, 35%);
     font-size: 0.95rem;
     line-height: 1.6;
   }
 
-  /* Produktbild om sådan finns */
-  &__item-image {
-    display: block;
-    width: 100%;
-    max-width: 7rem;
-    aspect-ratio: 1;
-    object-fit: cover;
-    border-radius: 1rem;
+  /* Två kolumner på större skärmar */
+  @include m.for-size(tablet-portrait-up) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 3rem;
+
+    .hero {
+      grid-column: 1 / -1;
+    }
+
+    .menu-page__category {
+      width: 100%;
+      max-width: none;
+    }
   }
 }
