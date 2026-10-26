@@ -2,6 +2,13 @@
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
 	Layout = null;
+
+  var seoTitel = Model.Value<string>("seoTitel");
+  var metabeskrivning = Model.Value<string>("metabeskrivning");
+
+  var sidtitel = string.IsNullOrWhiteSpace(seoTitel)
+      ? Model.Name
+      : seoTitel.Trim();
 }
 
 <!DOCTYPE html>
@@ -9,7 +16,12 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>@Model.Name | Café Blixten</title>
+		<title>@sidtitel | Café Blixten</title>
+
+    @if (!string.IsNullOrWhiteSpace(metabeskrivning))
+    {
+        <meta name="description" content="@metabeskrivning.Trim()" />
+    }
 
 		<script src="/js/main.js" asp-append-version="true" defer></script>
 
