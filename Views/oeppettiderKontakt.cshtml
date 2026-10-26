@@ -39,25 +39,75 @@
 
     var idag = veckodagar[(int)nu.DayOfWeek];
     var klockan = TimeOnly.FromDateTime(nu);
+    var sv = new CultureInfo("sv-SE");
 
     TimeOnly? Tid(string text) =>
         TimeOnly.TryParseExact(text, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var tid) ? tid : null;
 
+    // Datumfältet (Date Only) kan ge DateOnly eller DateTime
+    DateTime? LasDatum(object? varde) => varde switch
+    {
+        DateOnly d => d.ToDateTime(TimeOnly.MinValue),
+        DateTime d when d > DateTime.MinValue => d.Date,
+        _ => null
+    };
+
+    // Avvikande öppettider (helgdagar och lov), bara dagens och kommande
+    var avvikande = (Model.Value<BlockListModel>("avvikandeOppettider") ?? Enumerable.Empty<BlockListItem>())
+        .Select(block => new
+        {
+            Namn = block.Content.Value<string>("namn") ?? "",
+            Fran = LasDatum(block.Content.Value("datum")),
+            Till = LasDatum(block.Content.Value("datumTill")),
+            Oppnar = block.Content.Value<string>("oppnar"),
+            Stanger = block.Content.Value<string>("stanger"),
+            Stangt = block.Content.Value<bool>("stangt"),
+            Kommentar = block.Content.Value<string>("kommentar")
+        })
+        .Where(a => a.Fran.HasValue && (a.Till ?? a.Fran)!.Value >= nu.Date)
+        .OrderBy(a => a.Fran)
+        .ToList();
+
+    // På sidan visas bara det som börjar inom 30 dagar, så att listan hålls kort
+    var avvikandeSomVisas = avvikande.Where(a => a.Fran!.Value <= nu.Date.AddDays(30)).ToList();
+
+    // Gäller en avvikelse idag flyttas "Idag" från veckoschemat till den raden
+    bool GallerIdag(DateTime? fran, DateTime? till) => nu.Date >= fran && nu.Date <= (till ?? fran);
+    var avvikelseIdag = avvikande.Any(a => GallerIdag(a.Fran, a.Till));
+
+    // Tider för ett visst datum: avvikande tider går före veckoschemat.
+    // Om flera passar (t.ex. en röd dag mitt i ett lov) vinner den som börjar senast.
+    (bool Stangt, string? Oppnar, string? Stanger)? TiderFor(DateTime datum)
+    {
+        var avvikelse = avvikande
+            .Where(a => datum.Date >= a.Fran!.Value && datum.Date <= (a.Till ?? a.Fran)!.Value)
+            .OrderByDescending(a => a.Fran)
+            .FirstOrDefault();
+
+        if (avvikelse != null)
+        {
+            return (avvikelse.Stangt, avvikelse.Oppnar, avvikelse.Stanger);
+        }
+
+        var rad = rader.FirstOrDefault(r => r.Dag == veckodagar[(int)datum.DayOfWeek]);
+        return rad == null ? null : (rad.Stangt, rad.Oppnar, rad.Stanger);
+    }
+
     // Räkna ut "Öppet nu" eller "Stängt nu"
     var arOppet = false;
     var statusText = "";
-    var dagensRad = rader.FirstOrDefault(r => r.Dag == idag);
+    var tiderIdag = TiderFor(nu);
 
-    if (dagensRad != null && !dagensRad.Stangt && Tid(dagensRad.Oppnar) is TimeOnly oppnarIdag && Tid(dagensRad.Stanger) is TimeOnly stangerIdag)
+    if (tiderIdag is { Stangt: false } t && Tid(t.Oppnar ?? "") is TimeOnly oppnarIdag && Tid(t.Stanger ?? "") is TimeOnly stangerIdag)
     {
         if (klockan >= oppnarIdag && klockan < stangerIdag)
         {
             arOppet = true;
-            statusText = $"stänger {dagensRad.Stanger}";
+            statusText = $"stänger {t.Stanger}";
         }
         else if (klockan < oppnarIdag)
         {
-            statusText = $"öppnar {dagensRad.Oppnar}";
+            statusText = $"öppnar {t.Oppnar}";
         }
     }
 
@@ -65,12 +115,12 @@
     {
         for (var steg = 1; steg <= 7; steg++)
         {
-            var dag = veckodagar[((int)nu.DayOfWeek + steg) % 7];
-            var rad = rader.FirstOrDefault(r => r.Dag == dag);
+            var datum = nu.AddDays(steg);
 
-            if (rad != null && !rad.Stangt && Tid(rad.Oppnar) != null)
+            if (TiderFor(datum) is { Stangt: false } d && Tid(d.Oppnar ?? "") != null)
             {
-                statusText = steg == 1 ? $"öppnar i morgon {rad.Oppnar}" : $"öppnar {dag.ToLower()} {rad.Oppnar}";
+                var dag = veckodagar[(int)datum.DayOfWeek];
+                statusText = steg == 1 ? $"öppnar i morgon {d.Oppnar}" : $"öppnar {dag.ToLower()} {d.Oppnar}";
                 break;
             }
         }
@@ -109,7 +159,7 @@
             <ul>
                 @foreach (var rad in rader)
                 {
-                    var arIdag = rad.Dag == idag;
+                    var arIdag = rad.Dag == idag && !avvikelseIdag;
 
                     <li class="@(arIdag ? "find-page__day find-page__day--today" : "find-page__day")">
                         <span>
@@ -130,6 +180,48 @@
                     </li>
                 }
             </ul>
+
+            @if (avvikandeSomVisas.Any())
+            {
+                <h3 class="find-page__deviations-title">Avvikande öppettider</h3>
+                <ul>
+                    @foreach (var a in avvikandeSomVisas)
+                    {
+                        var fran = a.Fran!.Value;
+                        var till = (a.Till ?? a.Fran)!.Value;
+                        var galler = GallerIdag(a.Fran, a.Till);
+
+                        <li class="find-page__day find-page__deviation@(galler ? " find-page__day--today" : "")">
+                            <span>
+                                @a.Namn
+                                @if (galler)
+                                {
+                                    <span class="find-page__today">Idag</span>
+                                }
+                                <span class="find-page__deviation-date">
+                                    <time datetime="@fran.ToString("yyyy-MM-dd")">@fran.ToString("d MMMM", sv)</time>
+                                    @if (till > fran)
+                                    {
+                                        <span aria-hidden="true"> – </span><span class="visually-hidden"> till </span><time datetime="@till.ToString("yyyy-MM-dd")">@till.ToString("d MMMM", sv)</time>
+                                    }
+                                </span>
+                            </span>
+                            @if (a.Stangt)
+                            {
+                                <span>Stängt</span>
+                            }
+                            else
+                            {
+                                <span><time datetime="@a.Oppnar">@a.Oppnar</time><span aria-hidden="true">–</span><span class="visually-hidden"> till </span><time datetime="@a.Stanger">@a.Stanger</time></span>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(a.Kommentar))
+                            {
+                                <span class="find-page__deviation-note">@a.Kommentar</span>
+                            }
+                        </li>
+                    }
+                </ul>
+            }
         </div>
     }
 
