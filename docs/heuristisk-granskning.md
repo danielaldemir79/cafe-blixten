@@ -41,6 +41,17 @@ Vi har granskat webbplatsen utifrån Nielsens tio heuristiker. Kopplat till #26.
 - **Problem:** Webbläsarfliken visar inte caféets logga.
 - **Förslag:** Gör en favicon av loggan.
 
+### 8. Platshållartext på startsidan
+- **Heuristik:** Estetisk och minimalistisk design
+- **Problem:** Under rubriken på startsidan står det bara "Test.".
+- **Förslag:** Skriv en riktig ingress om caféet.
+
+### 9. Olika stavning av caféets namn
+- **Heuristik:** Konsekvens och standard
+- **Problem:** Rubriken på startsidan säger "Kafé Blixten", men loggan och resten av webbplatsen säger "Café Blixten".
+- **Förslag:** Skriv "Café Blixten" överallt.
+
+
 ## Det som fungerar bra
 
 - **Synlig systemstatus:** "Öppet nu / Stängt nu" visas, och aktiv sida är markerad i menyn.
