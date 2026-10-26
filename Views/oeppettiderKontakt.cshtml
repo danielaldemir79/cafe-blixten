@@ -1,6 +1,6 @@
 ﻿@using System.Globalization
 @using System.Text.RegularExpressions
-@using Umbraco.Cms.Core.Models.Blocks
+@using CafeBlixten.Helpers
 @using ContentModels = Umbraco.Cms.Web.Common.PublishedModels
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.OppettiderKontakt>
 
@@ -13,118 +13,20 @@
     var hittaOss = Model.Root().Children().FirstOrDefault(x => x.ContentType.Alias == "hittaOss");
     var adress = hittaOss?.Value<string>("adress");
 
-    // Veckodagar i samma ordning som DayOfWeek (söndag = 0)
-    var veckodagar = new[] { "Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag" };
-
-    var rader = (Model.Value<BlockListModel>("oppettider") ?? Enumerable.Empty<BlockListItem>())
-        .Select(block => new
-        {
-            Dag = block.Content.Value<string>("dag") ?? "",
-            Oppnar = block.Content.Value<string>("oppnar"),
-            Stanger = block.Content.Value<string>("stanger"),
-            Stangt = block.Content.Value<bool>("stangt")
-        })
-        .ToList();
-
-    // Tiden i Sverige, oavsett var servern står
-    var nu = DateTime.UtcNow;
-    try
-    {
-        nu = TimeZoneInfo.ConvertTimeFromUtc(nu, TimeZoneInfo.FindSystemTimeZoneById("Europe/Stockholm"));
-    }
-    catch (TimeZoneNotFoundException)
-    {
-        nu = DateTime.Now;
-    }
-
-    var idag = veckodagar[(int)nu.DayOfWeek];
-    var klockan = TimeOnly.FromDateTime(nu);
+    // Öppettider räknas ut i Helpers/Oppettider.cs, samma som startsidan och footern
+    var nu = Oppettider.NuISverige();
+    var idag = Oppettider.Veckodagar[(int)nu.DayOfWeek];
     var sv = new CultureInfo("sv-SE");
 
-    TimeOnly? Tid(string text) =>
-        TimeOnly.TryParseExact(text, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var tid) ? tid : null;
-
-    // Datumfältet (Date Only) kan ge DateOnly eller DateTime
-    DateTime? LasDatum(object? varde) => varde switch
-    {
-        DateOnly d => d.ToDateTime(TimeOnly.MinValue),
-        DateTime d when d > DateTime.MinValue => d.Date,
-        _ => null
-    };
-
-    // Avvikande öppettider (helgdagar och lov), bara dagens och kommande
-    var avvikande = (Model.Value<BlockListModel>("avvikandeOppettider") ?? Enumerable.Empty<BlockListItem>())
-        .Select(block => new
-        {
-            Namn = block.Content.Value<string>("namn") ?? "",
-            Fran = LasDatum(block.Content.Value("datum")),
-            Till = LasDatum(block.Content.Value("datumTill")),
-            Oppnar = block.Content.Value<string>("oppnar"),
-            Stanger = block.Content.Value<string>("stanger"),
-            Stangt = block.Content.Value<bool>("stangt"),
-            Kommentar = block.Content.Value<string>("kommentar")
-        })
-        .Where(a => a.Fran.HasValue && (a.Till ?? a.Fran)!.Value >= nu.Date)
-        .OrderBy(a => a.Fran)
-        .ToList();
+    var rader = Oppettider.Veckoschema(Model);
+    var avvikande = Oppettider.KommandeAvvikelser(Model, nu);
+    var (arOppet, statusText) = Oppettider.Status(nu, rader, avvikande);
 
     // På sidan visas bara det som börjar inom 30 dagar, så att listan hålls kort
-    var avvikandeSomVisas = avvikande.Where(a => a.Fran!.Value <= nu.Date.AddDays(30)).ToList();
+    var avvikandeSomVisas = avvikande.Where(a => a.Fran <= nu.Date.AddDays(30)).ToList();
 
     // Gäller en avvikelse idag flyttas "Idag" från veckoschemat till den raden
-    bool GallerIdag(DateTime? fran, DateTime? till) => nu.Date >= fran && nu.Date <= (till ?? fran);
-    var avvikelseIdag = avvikande.Any(a => GallerIdag(a.Fran, a.Till));
-
-    // Tider för ett visst datum: avvikande tider går före veckoschemat.
-    // Om flera passar (t.ex. en röd dag mitt i ett lov) vinner den som börjar senast.
-    (bool Stangt, string? Oppnar, string? Stanger)? TiderFor(DateTime datum)
-    {
-        var avvikelse = avvikande
-            .Where(a => datum.Date >= a.Fran!.Value && datum.Date <= (a.Till ?? a.Fran)!.Value)
-            .OrderByDescending(a => a.Fran)
-            .FirstOrDefault();
-
-        if (avvikelse != null)
-        {
-            return (avvikelse.Stangt, avvikelse.Oppnar, avvikelse.Stanger);
-        }
-
-        var rad = rader.FirstOrDefault(r => r.Dag == veckodagar[(int)datum.DayOfWeek]);
-        return rad == null ? null : (rad.Stangt, rad.Oppnar, rad.Stanger);
-    }
-
-    // Räkna ut "Öppet nu" eller "Stängt nu"
-    var arOppet = false;
-    var statusText = "";
-    var tiderIdag = TiderFor(nu);
-
-    if (tiderIdag is { Stangt: false } t && Tid(t.Oppnar ?? "") is TimeOnly oppnarIdag && Tid(t.Stanger ?? "") is TimeOnly stangerIdag)
-    {
-        if (klockan >= oppnarIdag && klockan < stangerIdag)
-        {
-            arOppet = true;
-            statusText = $"stänger {t.Stanger}";
-        }
-        else if (klockan < oppnarIdag)
-        {
-            statusText = $"öppnar {t.Oppnar}";
-        }
-    }
-
-    if (!arOppet && statusText == "")
-    {
-        for (var steg = 1; steg <= 7; steg++)
-        {
-            var datum = nu.AddDays(steg);
-
-            if (TiderFor(datum) is { Stangt: false } d && Tid(d.Oppnar ?? "") != null)
-            {
-                var dag = veckodagar[(int)datum.DayOfWeek];
-                statusText = steg == 1 ? $"öppnar i morgon {d.Oppnar}" : $"öppnar {dag.ToLower()} {d.Oppnar}";
-                break;
-            }
-        }
-    }
+    var avvikelseIdag = avvikande.Any(a => a.GallerDatum(nu));
 
     var telefonLank = string.IsNullOrWhiteSpace(telefon) ? null : Regex.Replace(telefon, @"[^\d+]", "");
 }
@@ -187,9 +89,9 @@
                 <ul>
                     @foreach (var a in avvikandeSomVisas)
                     {
-                        var fran = a.Fran!.Value;
-                        var till = (a.Till ?? a.Fran)!.Value;
-                        var galler = GallerIdag(a.Fran, a.Till);
+                        var fran = a.Fran;
+                        var till = a.Till;
+                        var galler = a.GallerDatum(nu);
 
                         <li class="find-page__day find-page__deviation@(galler ? " find-page__day--today" : "")">
                             <span>
