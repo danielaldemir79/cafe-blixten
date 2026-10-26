@@ -773,6 +773,56 @@ body {
 #Footer > .footer-container > .footer-copyright > .top-link > a > svg {
   margin-left: 0.5rem;
 }
+@media (max-width: 599px) {
+  #Footer > .footer-container > .footer-top {
+    display: none;
+  }
+  #Footer > .footer-container > .footer-bottom {
+    gap: 1.75rem;
+    padding: 2rem 1.5rem;
+  }
+  #Footer > .footer-container > .footer-bottom > .row {
+    padding: 0;
+  }
+  #Footer > .footer-container > .footer-bottom > .first-row > .logo {
+    justify-content: flex-start;
+    margin-bottom: 0;
+  }
+  #Footer > .footer-container > .footer-bottom > .first-row > .logo > a {
+    height: 48px;
+  }
+  #Footer > .footer-container > .footer-bottom > .first-row > .logo > a > img {
+    flex-basis: 48px;
+    width: 48px;
+  }
+  #Footer > .footer-container > .footer-bottom > .first-row > .logo > a > h1 {
+    margin-top: 0.25rem;
+    padding-left: 0.5rem;
+    font-size: 1.25rem;
+  }
+  #Footer > .footer-container > .footer-bottom > .first-row > .text {
+    display: none;
+  }
+  #Footer > .footer-container > .footer-bottom > .second-row > ul > li {
+    padding: 0.35rem 0;
+  }
+  #Footer > .footer-container > .footer-bottom > .second-row > p {
+    padding: 0.75rem 0 0.5rem;
+  }
+  #Footer > .footer-container > .footer-bottom > .third-row > div {
+    padding: 0.4rem 0;
+  }
+  #Footer > .footer-container > .footer-bottom > .fourth-row {
+    display: none;
+  }
+  #Footer > .footer-container > .footer-copyright {
+    padding: 1rem 1.5rem;
+    font-size: 0.875rem;
+  }
+  #Footer > .footer-container > .footer-copyright > div {
+    padding: 0.35rem 0;
+  }
+}
 
 #Breadcrumbs {
   position: relative;
