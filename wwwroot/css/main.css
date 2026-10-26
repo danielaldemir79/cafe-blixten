@@ -1451,11 +1451,6 @@ ul[role=list] {
   border: 0;
 }
 
-/* Breadcrumb behövs inte på själva menysidan */
-body:has(.menu-page) #Breadcrumbs {
-  display: none;
-}
-
 .menu-page {
   max-width: 1200px;
   margin: 0 auto clamp(2rem, 5vw, 4rem);
