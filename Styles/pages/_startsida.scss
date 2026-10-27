@@ -183,25 +183,11 @@ ul[role="list"] {
 
     @include m.for-size(tablet-portrait-up) {
       flex: 0 0 40%;
+      min-width: 0; // annars hindrar bildens egen bredd den från att krympa
       aspect-ratio: auto;
       min-height: 16rem;
     }
 
-    // Visas när ingen bild är vald i Umbraco
-    &--tom {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      aspect-ratio: auto;
-      min-height: 10rem;
-      background: linear-gradient(135deg, #f8f2e8 0%, rgba(201, 111, 74, 0.18) 100%);
-      color: m.color("secondary");
-
-      svg {
-        width: 5rem;
-        height: 5rem;
-      }
-    }
   }
 
   .news-card__content {

@@ -1,0 +1,72 @@
+@use "../abstracts/mixins" as m;
+
+// Textsidor som Cookies – en kolumn med lättläst radlängd
+.policy-page.hero {
+  display: block;
+}
+
+.policy-page {
+  &__content {
+    max-width: 46rem;
+  }
+
+  h1 {
+    margin-bottom: 1.75rem;
+    color: m.color(primary);
+    font-size: clamp(2.25rem, 4vw, 3.75rem);
+    line-height: 1.08;
+
+    &::after {
+      display: block;
+      width: 4rem;
+      height: 0.3rem;
+      margin-top: 1.25rem;
+      border-radius: 999px;
+      background-color: m.color(secondary);
+      content: "";
+    }
+  }
+
+  &__text {
+    display: grid;
+    gap: 1rem;
+    color: m.color(onyx);
+    font-size: 1.05rem;
+    line-height: 1.7;
+
+    > p:first-child {
+      color: m.color(primary);
+      font-size: 1.15rem;
+      font-weight: 500;
+    }
+
+    h2 {
+      margin-top: 1.5rem;
+      color: m.color(primary);
+      font-size: 1.6rem;
+      line-height: 1.2;
+    }
+
+    h3 {
+      margin-top: 0.5rem;
+      color: m.color(brown);
+      font-size: 1.2rem;
+    }
+
+    ul {
+      display: grid;
+      gap: 0.75rem;
+      padding-left: 1.25rem;
+      list-style: disc;
+    }
+
+    li::marker {
+      color: m.color(secondary);
+    }
+
+    a {
+      color: m.color(brown);
+      text-decoration: underline;
+    }
+  }
+}

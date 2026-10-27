@@ -7,63 +7,69 @@
 @{
   Layout = "layout.cshtml";
 
-  var blockList = Model.Value<BlockListModel>("produkter");
-
-  var grupper = blockList?
-      .Select(block => block.Content)
-      .GroupBy(produkt => produkt.Value<string>("kategori") ?? "Övrigt")
-      .ToList();
+  var kategorier = Model.Value<BlockListModel>("kategorier");
 }
-
 
 <section class="menu-page" aria-labelledby="menu-page-title">
   <section class="hero">
     <div class="hero-text">
-      <h1>Meny</h1>
+      <h1 id="menu-page-title">Meny</h1>
       <p class="hero-ingress">
         Något gott för varje stund – från nybryggt kaffe till lunch och fika.
       </p>
     </div>
   </section>
 
-  @if (grupper != null && grupper.Any())
+  @if (kategorier != null && kategorier.Any())
   {
-    for (var i = 0; i < grupper.Count; i++)
+    for (var i = 0; i < kategorier.Count; i++)
     {
-      var grupp = grupper[i];
+      var kategori = kategorier[i].Content;
+
+      var kategoriNamn = kategori.Value<string>("namn");
+      var kategoriBild = kategori.Value<MediaWithCrops>("bild");
+      var produkter = kategori.Value<BlockListModel>("produkter");
+
       <section class="menu-page__category" aria-labelledby="meny-kategori-@i">
-        <h2 id="meny-kategori-@i">@grupp.Key</h2>
+        <h2 id="meny-kategori-@i">@kategoriNamn</h2>
 
-        <ul class="menu-page__list">
-          @foreach (var produkt in grupp)
-          {
-            var namn = produkt.Value<string>("namn");
-            var pris = produkt.Value<decimal?>("pris");
-            var beskrivning = produkt.Value<string>("beskrivning");
-            var bild = produkt.Value<MediaWithCrops>("bild");
+        @if (kategoriBild != null)
+        {
+          <img class="menu-page__category-image" src="@kategoriBild.Url()" alt="" loading="lazy" />
+        }
 
-            <li class="menu-page__item@(bild != null ? " menu-page__item--has-image" : "")">
-              <div class="menu-page__item-header">
-                <h3 class="menu-page__item-name">@namn</h3>
+        @if (produkter != null && produkter.Any())
+        {
+          <ul class="menu-page__list">
+            @foreach (var produktBlock in produkter)
+            {
+              var produkt = produktBlock.Content;
+              var namn = produkt.Value<string>("namn");
+              var pris = produkt.Value<decimal?>("pris");
+              var beskrivning = produkt.Value<string>("beskrivning");
 
-                @if (pris.HasValue)
+              <li class="menu-page__item">
+                <div class="menu-page__item-header">
+                  <h3 class="menu-page__item-name">@namn</h3>
+
+                  @if (pris.HasValue)
+                  {
+                    <span class="menu-page__item-price">
+                      @pris.Value.ToString("0.##")&nbsp;kr
+                    </span>
+                  }
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(beskrivning))
                 {
-                  <span class="menu-page__item-price">@pris.Value.ToString("0.##")&nbsp;kr</span>
+                  <p class="menu-page__item-description">
+                    @beskrivning
+                  </p>
                 }
-              </div>
-
-              @if (!string.IsNullOrWhiteSpace(beskrivning))
-              {
-                <p class="menu-page__item-description">@beskrivning</p>
-              }
-
-              @if (bild != null)
-              {
-                <img class="menu-page__item-image" src="@bild.Url()" alt="" loading="lazy" />
-              }
-            </li>
-          }
-        </ul>
+              </li>
+            }
+          </ul>
+        }
       </section>
     }
   }

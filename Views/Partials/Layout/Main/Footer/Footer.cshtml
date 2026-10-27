@@ -10,6 +10,7 @@
   // ---- Kontaktuppgifter: telefon och e-post från "Öppettider & kontakt", adress från "Hitta oss" ----
   // (samma källor som oeppettiderKontakt.cshtml använder)
   var hittaOss = home.Children().FirstOrDefault(x => x.ContentType.Alias == "hittaOss");
+  var cookiesida = home.Children().FirstOrDefault(x => x.ContentType.Alias == "cookies");
   var telefon = kontaktsida?.Value<string>("telefon");
   var telefonLank = string.IsNullOrWhiteSpace(telefon)
     ? null
@@ -56,34 +57,20 @@
     i = j + 1;
   }
 
-  // "Öppet nu" / "Stängt nu" utifrån svensk tid
-  var nu = DateTime.UtcNow;
-  try
-  {
-    nu = TimeZoneInfo.ConvertTimeFromUtc(nu, TimeZoneInfo.FindSystemTimeZoneById("Europe/Stockholm"));
-  }
-  catch (TimeZoneNotFoundException)
-  {
-    nu = DateTime.Now;
-  }
+  // "Öppet nu" / "Stängt nu", inkl. avvikande tider
+  var nu = CafeBlixten.Helpers.Oppettider.NuISverige();
+  var arOppet = CafeBlixten.Helpers.Oppettider.ArOppetNu(kontaktsida, nu);
 
-  var veckodagar = new[] { "Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag" };
-  var idag = oppettider.FirstOrDefault(rad => rad.Dag == veckodagar[(int)nu.DayOfWeek]);
-  var klockan = TimeOnly.FromDateTime(nu);
-
-  var arOppet = idag != null
-    && !idag.Stangt
-    && TimeOnly.TryParse(idag.Oppnar, out var oppnar)
-    && TimeOnly.TryParse(idag.Stanger, out var stanger)
-    && klockan >= oppnar
-    && klockan < stanger;
+  // Dagens avvikelse, t.ex. höstlov
+  var dagensTider = CafeBlixten.Helpers.Oppettider.TiderIdag(kontaktsida, nu);
+  var dagensAvvikelse = string.IsNullOrWhiteSpace(dagensTider?.Namn) ? null : dagensTider;
 }
 
 <footer id="Footer" class="footer">
   <div class="footer-container">
     <div class="footer-top">
       <div class="left">
-        <h1>Sugen på en <span>laddad</span> kopp?</h1>
+        <h2>Sugen på en <span>laddad</span> kopp?</h2>
         <p>Välkommen in — vi har nybryggt och nybakat varje dag.
       </div>
       <div class="right">
@@ -98,7 +85,7 @@
         <div class="logo">
           <a href="/">
             <img src="/logo/Logo - White.svg" alt="Logo" />
-            <h1>Café Blixten</h1>
+            <span class="logo-name">Café Blixten</span>
           </a>
         </div>
         <div class="text">
@@ -108,13 +95,17 @@
         </div>
       </div>
       <div class="second-row row content-row">
-        <h3>Öppettider</h3>
+        <h2>Öppettider</h2>
         @if (grupper.Any())
         {
           <ul>
             @foreach (var grupp in grupper)
             {
               <li><span>@grupp.Dagar</span><span>@grupp.Tider</span></li>
+            }
+            @if (dagensAvvikelse != null)
+            {
+              <li><span>Idag (@dagensAvvikelse.Namn!.ToLower())</span><span>@dagensAvvikelse.Text</span></li>
             }
           </ul>
           <p class="@(arOppet ? "is-open" : "is-closed")">@(arOppet ? "Öppet nu" : "Stängt nu")</p>
@@ -129,7 +120,7 @@
         }
       </div>
       <div class="third-row row content-row">
-        <h3>Hitta oss</h3>
+        <h2>Hitta oss</h2>
         @if (adressRader.Length > 0)
         {
           <div>
@@ -159,7 +150,7 @@
         }
       </div>
       <div class="fourth-row row content-row">
-        <h3>Utforska</h3>
+        <h2>Utforska</h2>
         <ul>
           @foreach (var item in pages)
           {
@@ -191,7 +182,7 @@
         <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot preview-icon"><circle cx="12" cy="12" r="1"/></svg></span>
         <a href="#">Integritetspolicy</a>
         <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot preview-icon"><circle cx="12" cy="12" r="1"/></svg></span>
-        <a href="#">Cookies</a>
+        <a href="@(cookiesida?.Url() ?? "/cookies/")" aria-current="@(cookiesida != null && Model.Id == cookiesida.Id ? "page" : null)">Cookies</a>
       </div>
       <div class="top-link">
         <a class="back-to-top-link" href="#">Till toppen <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up preview-icon"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg></a>

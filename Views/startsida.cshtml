@@ -36,26 +36,21 @@
 	var primarTarget = heroKnapp?.Target;
 
 	// ---- Dagens öppettider från "Öppettider & kontakt" ----
-	var nu = DateTime.UtcNow;
-	try
-	{
-		nu = TimeZoneInfo.ConvertTimeFromUtc(nu, TimeZoneInfo.FindSystemTimeZoneById("Europe/Stockholm"));
-	}
-	catch (TimeZoneNotFoundException)
-	{
-		nu = DateTime.Now;
-	}
-	var veckodagar = new[] { "Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag" };
-	var dagensBlock = kontaktSida?.Value<BlockListModel>("oppettider")?
-		.Select(block => block.Content)
-		.FirstOrDefault(rad => rad.Value<string>("dag") == veckodagar[(int)nu.DayOfWeek]);
+	// Inkl. avvikande tider
+	var dagensTider = CafeBlixten.Helpers.Oppettider.TiderIdag(kontaktSida, CafeBlixten.Helpers.Oppettider.NuISverige());
 
 	string? idagText = null;
-	if (dagensBlock != null)
+	if (dagensTider != null)
 	{
-		idagText = dagensBlock.Value<bool>("stangt")
+		idagText = dagensTider.Stangt
 			? "Idag har vi stängt"
-			: $"Idag öppet {dagensBlock.Value<string>("oppnar")}–{dagensBlock.Value<string>("stanger")}";
+			: $"Idag öppet {dagensTider.Oppnar}–{dagensTider.Stanger}";
+
+		// T.ex. "(höstlov)"
+		if (!string.IsNullOrWhiteSpace(dagensTider.Namn))
+		{
+			idagText += $" ({dagensTider.Namn.ToLower(svenska)})";
+		}
 	}
 
 	// ---- Innehåll som hämtas automatiskt från sidorna under Hem ----
@@ -142,22 +137,21 @@
 	@if (veckansFika != null)
 	{
 		var fikaBild = veckansFika.Value<MediaWithCrops>("bild");
+		// Samma standardbild som på sidan Veckans fika (VeckansFika.cshtml)
+		var fikaBildUrl = fikaBild?.GetCropUrl(width: 800);
+		var fikaBildAlt = veckansFika.Value<string>("namn");
+		if (string.IsNullOrWhiteSpace(fikaBildUrl))
+		{
+			fikaBildUrl = "/images/cafe-blixten-kanelbullar.png";
+			fikaBildAlt = "Kaffe och nybakade kanelbullar";
+		}
 		var fikaPris = veckansFika.Value<decimal?>("pris");
 		var fikaNamn = veckansFika.Value<string>("namn");
 		var fikaBeskrivning = veckansFika.Value<string>("beskrivning");
 
 		<section class="startsida-sektion" aria-labelledby="rubrik-fika">
 			<article class="news-card startsida-fika">
-				@if (fikaBild != null)
-				{
-					<img class="startsida-fika__bild" src="@fikaBild.GetCropUrl(width: 800)" alt="@fikaNamn" />
-				}
-				else
-				{
-					<div class="startsida-fika__bild startsida-fika__bild--tom" aria-hidden="true">
-						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v2" /><path d="M14 2v2" /><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1" /><path d="M6 2v2" /></svg>
-					</div>
-				}
+				<img class="startsida-fika__bild" src="@fikaBildUrl" alt="@fikaBildAlt" />
 
 				<div class="news-card__content">
 					<span class="news-card__label" id="rubrik-fika">Veckans fika</span>

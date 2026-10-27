@@ -1,6 +1,6 @@
 ﻿@using System.Globalization
 @using System.Text.RegularExpressions
-@using Umbraco.Cms.Core.Models.Blocks
+@using CafeBlixten.Helpers
 @using ContentModels = Umbraco.Cms.Web.Common.PublishedModels
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.OppettiderKontakt>
 
@@ -13,68 +13,20 @@
     var hittaOss = Model.Root().Children().FirstOrDefault(x => x.ContentType.Alias == "hittaOss");
     var adress = hittaOss?.Value<string>("adress");
 
-    // Veckodagar i samma ordning som DayOfWeek (söndag = 0)
-    var veckodagar = new[] { "Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag" };
+    // Öppettider räknas ut i Helpers/Oppettider.cs, samma som startsidan och footern
+    var nu = Oppettider.NuISverige();
+    var idag = Oppettider.Veckodagar[(int)nu.DayOfWeek];
+    var sv = new CultureInfo("sv-SE");
 
-    var rader = (Model.Value<BlockListModel>("oppettider") ?? Enumerable.Empty<BlockListItem>())
-        .Select(block => new
-        {
-            Dag = block.Content.Value<string>("dag") ?? "",
-            Oppnar = block.Content.Value<string>("oppnar"),
-            Stanger = block.Content.Value<string>("stanger"),
-            Stangt = block.Content.Value<bool>("stangt")
-        })
-        .ToList();
+    var rader = Oppettider.Veckoschema(Model);
+    var avvikande = Oppettider.KommandeAvvikelser(Model, nu);
+    var (arOppet, statusText) = Oppettider.Status(nu, rader, avvikande);
 
-    // Tiden i Sverige, oavsett var servern står
-    var nu = DateTime.UtcNow;
-    try
-    {
-        nu = TimeZoneInfo.ConvertTimeFromUtc(nu, TimeZoneInfo.FindSystemTimeZoneById("Europe/Stockholm"));
-    }
-    catch (TimeZoneNotFoundException)
-    {
-        nu = DateTime.Now;
-    }
+    // På sidan visas bara det som börjar inom 30 dagar, så att listan hålls kort
+    var avvikandeSomVisas = avvikande.Where(a => a.Fran <= nu.Date.AddDays(30)).ToList();
 
-    var idag = veckodagar[(int)nu.DayOfWeek];
-    var klockan = TimeOnly.FromDateTime(nu);
-
-    TimeOnly? Tid(string text) =>
-        TimeOnly.TryParseExact(text, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var tid) ? tid : null;
-
-    // Räkna ut "Öppet nu" eller "Stängt nu"
-    var arOppet = false;
-    var statusText = "";
-    var dagensRad = rader.FirstOrDefault(r => r.Dag == idag);
-
-    if (dagensRad != null && !dagensRad.Stangt && Tid(dagensRad.Oppnar) is TimeOnly oppnarIdag && Tid(dagensRad.Stanger) is TimeOnly stangerIdag)
-    {
-        if (klockan >= oppnarIdag && klockan < stangerIdag)
-        {
-            arOppet = true;
-            statusText = $"stänger {dagensRad.Stanger}";
-        }
-        else if (klockan < oppnarIdag)
-        {
-            statusText = $"öppnar {dagensRad.Oppnar}";
-        }
-    }
-
-    if (!arOppet && statusText == "")
-    {
-        for (var steg = 1; steg <= 7; steg++)
-        {
-            var dag = veckodagar[((int)nu.DayOfWeek + steg) % 7];
-            var rad = rader.FirstOrDefault(r => r.Dag == dag);
-
-            if (rad != null && !rad.Stangt && Tid(rad.Oppnar) != null)
-            {
-                statusText = steg == 1 ? $"öppnar i morgon {rad.Oppnar}" : $"öppnar {dag.ToLower()} {rad.Oppnar}";
-                break;
-            }
-        }
-    }
+    // Gäller en avvikelse idag flyttas "Idag" från veckoschemat till den raden
+    var avvikelseIdag = avvikande.Any(a => a.GallerDatum(nu));
 
     var telefonLank = string.IsNullOrWhiteSpace(telefon) ? null : Regex.Replace(telefon, @"[^\d+]", "");
 }
@@ -109,7 +61,7 @@
             <ul>
                 @foreach (var rad in rader)
                 {
-                    var arIdag = rad.Dag == idag;
+                    var arIdag = rad.Dag == idag && !avvikelseIdag;
 
                     <li class="@(arIdag ? "find-page__day find-page__day--today" : "find-page__day")">
                         <span>
@@ -130,6 +82,48 @@
                     </li>
                 }
             </ul>
+
+            @if (avvikandeSomVisas.Any())
+            {
+                <h3 class="find-page__deviations-title">Avvikande öppettider</h3>
+                <ul>
+                    @foreach (var a in avvikandeSomVisas)
+                    {
+                        var fran = a.Fran;
+                        var till = a.Till;
+                        var galler = a.GallerDatum(nu);
+
+                        <li class="find-page__day find-page__deviation@(galler ? " find-page__day--today" : "")">
+                            <span>
+                                @a.Namn
+                                @if (galler)
+                                {
+                                    <span class="find-page__today">Idag</span>
+                                }
+                                <span class="find-page__deviation-date">
+                                    <time datetime="@fran.ToString("yyyy-MM-dd")">@fran.ToString("d MMMM", sv)</time>
+                                    @if (till > fran)
+                                    {
+                                        <span aria-hidden="true"> – </span><span class="visually-hidden"> till </span><time datetime="@till.ToString("yyyy-MM-dd")">@till.ToString("d MMMM", sv)</time>
+                                    }
+                                </span>
+                            </span>
+                            @if (a.Stangt)
+                            {
+                                <span>Stängt</span>
+                            }
+                            else
+                            {
+                                <span><time datetime="@a.Oppnar">@a.Oppnar</time><span aria-hidden="true">–</span><span class="visually-hidden"> till </span><time datetime="@a.Stanger">@a.Stanger</time></span>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(a.Kommentar))
+                            {
+                                <span class="find-page__deviation-note">@a.Kommentar</span>
+                            }
+                        </li>
+                    }
+                </ul>
+            }
         </div>
     }
 
