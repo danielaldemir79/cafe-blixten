@@ -1,7 +1,7 @@
 ﻿@using Umbraco.Cms.Web.Common.PublishedModels;
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
-	Layout = null;
+  Layout = null;
 
   var seoTitel = Model.Value<string>("seoTitel");
   var metabeskrivning = Model.Value<string>("metabeskrivning");
@@ -13,34 +13,42 @@
 
 <!DOCTYPE html>
 <html lang="sv">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>@sidtitel | Café Blixten</title>
 
-    @if (!string.IsNullOrWhiteSpace(metabeskrivning))
-    {
-        <meta name="description" content="@metabeskrivning.Trim()" />
-    }
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>@sidtitel | Café Blixten</title>
 
-		<script src="/js/main.js" asp-append-version="true" defer></script>
+  @if (!string.IsNullOrWhiteSpace(metabeskrivning))
+  {
+    <meta name="description" content="@metabeskrivning.Trim()" />
+  }
 
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-		<link rel="stylesheet" href="/css/main.css" asp-append-version="true" />
-	</head>
-	<body>
-		@await Html.PartialAsync("Layout/Sidebar/Sidebar")
-		<main id="Main">
-			@await Html.PartialAsync("Layout/Main/Header/Header")
-			<div class="main-container">
-				<div class="main-content">
-					@RenderBody()
-				</div>
-				@await Html.PartialAsync("Layout/Main/Footer/Footer")
-			</div>
-		</main>
-		@await Html.PartialAsync("Layout/Search/Search")
-	</body>
+  <script src="/js/main.js" asp-append-version="true" defer></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+  href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+  rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css" asp-append-version="true" />
+</head>
+
+<body>
+  <a class="skip-link" href="#Main">Hoppa till innehållet</a>
+
+  @await Html.PartialAsync("Layout/Sidebar/Sidebar")
+		
+  <main id="Main" tabindex="-1">
+    @await Html.PartialAsync("Layout/Main/Header/Header")
+    <div class="main-container">
+      <div class="main-content">
+        @RenderBody()
+      </div>
+      @await Html.PartialAsync("Layout/Main/Footer/Footer")
+    </div>
+  </main>
+  @await Html.PartialAsync("Layout/Search/Search")
+</body>
+
 </html>
