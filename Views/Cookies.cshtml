@@ -1,0 +1,22 @@
+﻿@using Umbraco.Cms.Core.Strings
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@{
+    Layout = "layout.cshtml";
+
+    var rubrik = Model.Value<string>("rubrik");
+    var text = Model.Value<IHtmlEncodedString>("text");
+}
+
+<article class="hero policy-page">
+    <div class="policy-page__content">
+        <h1>@(string.IsNullOrWhiteSpace(rubrik) ? Model.Name : rubrik)</h1>
+
+        @if (text != null)
+        {
+            <div class="policy-page__text">
+                @text
+            </div>
+        }
+    </div>
+</article>
