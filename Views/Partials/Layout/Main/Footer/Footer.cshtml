@@ -56,27 +56,13 @@
     i = j + 1;
   }
 
-  // "Öppet nu" / "Stängt nu" utifrån svensk tid
-  var nu = DateTime.UtcNow;
-  try
-  {
-    nu = TimeZoneInfo.ConvertTimeFromUtc(nu, TimeZoneInfo.FindSystemTimeZoneById("Europe/Stockholm"));
-  }
-  catch (TimeZoneNotFoundException)
-  {
-    nu = DateTime.Now;
-  }
+  // "Öppet nu" / "Stängt nu", inkl. avvikande tider
+  var nu = CafeBlixten.Helpers.Oppettider.NuISverige();
+  var arOppet = CafeBlixten.Helpers.Oppettider.ArOppetNu(kontaktsida, nu);
 
-  var veckodagar = new[] { "Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag" };
-  var idag = oppettider.FirstOrDefault(rad => rad.Dag == veckodagar[(int)nu.DayOfWeek]);
-  var klockan = TimeOnly.FromDateTime(nu);
-
-  var arOppet = idag != null
-    && !idag.Stangt
-    && TimeOnly.TryParse(idag.Oppnar, out var oppnar)
-    && TimeOnly.TryParse(idag.Stanger, out var stanger)
-    && klockan >= oppnar
-    && klockan < stanger;
+  // Dagens avvikelse, t.ex. höstlov
+  var dagensTider = CafeBlixten.Helpers.Oppettider.TiderIdag(kontaktsida, nu);
+  var dagensAvvikelse = string.IsNullOrWhiteSpace(dagensTider?.Namn) ? null : dagensTider;
 }
 
 <footer id="Footer" class="footer">
@@ -115,6 +101,10 @@
             @foreach (var grupp in grupper)
             {
               <li><span>@grupp.Dagar</span><span>@grupp.Tider</span></li>
+            }
+            @if (dagensAvvikelse != null)
+            {
+              <li><span>Idag (@dagensAvvikelse.Namn!.ToLower())</span><span>@dagensAvvikelse.Text</span></li>
             }
           </ul>
           <p class="@(arOppet ? "is-open" : "is-closed")">@(arOppet ? "Öppet nu" : "Stängt nu")</p>

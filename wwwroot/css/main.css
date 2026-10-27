@@ -1457,6 +1457,23 @@ ul[role=list] {
   font-size: 0.8rem;
   font-weight: 500;
 }
+.find-page__deviations-title {
+  margin: 1.5rem 0 0.5rem;
+  font-size: 1.1rem;
+}
+.find-page__deviation {
+  flex-wrap: wrap;
+}
+.find-page__deviation-date {
+  display: block;
+  font-size: 0.9rem;
+  color: #555555;
+}
+.find-page__deviation-note {
+  flex-basis: 100%;
+  font-size: 0.9rem;
+  font-style: italic;
+}
 .find-page__status {
   display: inline-flex;
   align-items: center;
@@ -1476,8 +1493,8 @@ ul[role=list] {
   background-color: #66bb6a;
 }
 .find-page__status--closed .find-page__status-dot {
-  border: 3px solid #6b6b6b;
-  background-color: #cfcfcf;
+  border: 3px solid #b3261e;
+  background-color: rgb(93.104418801%, 60.6951871658%, 58.8563655127%);
 }
 .find-page__map {
   grid-area: map;

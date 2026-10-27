@@ -1,3 +1,4 @@
+@use "sass:color";
 @use "../abstracts/mixins" as m;
 
 .find-page {
@@ -277,6 +278,28 @@
     font-weight: 500;
   }
 
+  &__deviations-title {
+    margin: 1.5rem 0 0.5rem;
+    font-size: 1.1rem;
+  }
+
+  // Datum och kommentar under namnet på avvikande dagar
+  &__deviation {
+    flex-wrap: wrap;
+  }
+
+  &__deviation-date {
+    display: block;
+    font-size: 0.9rem;
+    color: #555555;
+  }
+
+  &__deviation-note {
+    flex-basis: 100%;
+    font-size: 0.9rem;
+    font-style: italic;
+  }
+
   &__status {
     display: inline-flex;
     align-items: center;
@@ -298,9 +321,10 @@
     background-color: #66bb6a;
   }
 
+  // Samma röda färg som "Stängt nu" i footern
   &__status--closed &__status-dot {
-    border: 3px solid #6b6b6b;
-    background-color: #cfcfcf;
+    border: 3px solid #b3261e;
+    background-color: color.adjust(#b3261e, $lightness: 35%);
   }
 
   // Kartan går ända ut till kortets kant

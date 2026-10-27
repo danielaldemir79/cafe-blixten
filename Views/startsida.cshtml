@@ -36,26 +36,21 @@
 	var primarTarget = heroKnapp?.Target;
 
 	// ---- Dagens öppettider från "Öppettider & kontakt" ----
-	var nu = DateTime.UtcNow;
-	try
-	{
-		nu = TimeZoneInfo.ConvertTimeFromUtc(nu, TimeZoneInfo.FindSystemTimeZoneById("Europe/Stockholm"));
-	}
-	catch (TimeZoneNotFoundException)
-	{
-		nu = DateTime.Now;
-	}
-	var veckodagar = new[] { "Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag" };
-	var dagensBlock = kontaktSida?.Value<BlockListModel>("oppettider")?
-		.Select(block => block.Content)
-		.FirstOrDefault(rad => rad.Value<string>("dag") == veckodagar[(int)nu.DayOfWeek]);
+	// Inkl. avvikande tider
+	var dagensTider = CafeBlixten.Helpers.Oppettider.TiderIdag(kontaktSida, CafeBlixten.Helpers.Oppettider.NuISverige());
 
 	string? idagText = null;
-	if (dagensBlock != null)
+	if (dagensTider != null)
 	{
-		idagText = dagensBlock.Value<bool>("stangt")
+		idagText = dagensTider.Stangt
 			? "Idag har vi stängt"
-			: $"Idag öppet {dagensBlock.Value<string>("oppnar")}–{dagensBlock.Value<string>("stanger")}";
+			: $"Idag öppet {dagensTider.Oppnar}–{dagensTider.Stanger}";
+
+		// T.ex. "(höstlov)"
+		if (!string.IsNullOrWhiteSpace(dagensTider.Namn))
+		{
+			idagText += $" ({dagensTider.Namn.ToLower(svenska)})";
+		}
 	}
 
 	// ---- Innehåll som hämtas automatiskt från sidorna under Hem ----
