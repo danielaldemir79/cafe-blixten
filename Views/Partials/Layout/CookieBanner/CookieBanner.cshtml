@@ -1,0 +1,16 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@* Informerar besökaren om att webbplatsen använder cookies.
+   Dold från start (hidden) – main.js visar den om besökaren inte redan tryckt "OK". *@
+@{
+  var cookiesida = Model.Root().Children().FirstOrDefault(x => x.ContentType.Alias == "cookies");
+}
+<section id="CookieBanner" class="cookie-banner" role="region" aria-label="Information om cookies" hidden>
+  <p class="cookie-banner__text">
+    Vi använder cookies på webbplatsen.
+    @if (cookiesida != null)
+    {
+      <a class="cookie-banner__link" href="@cookiesida.Url()">Läs mer om vilka cookies vi använder</a>
+    }
+  </p>
+  <button type="button" id="CookieBannerAccept" class="cookie-banner__button">OK</button>
+</section>

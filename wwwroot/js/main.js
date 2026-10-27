@@ -233,4 +233,29 @@
       }
     }
   });
+  // ---------- Cookie-information ----------
+  var CookieBanner = document.getElementById("CookieBanner");
+  var CookieBannerAccept = document.getElementById("CookieBannerAccept");
+  var cookieKey = "cookieInfoAccepted";
+
+  function hasAcceptedCookies() {
+    try {
+      return localStorage.getItem(cookieKey) === "true";
+    } catch (e) {
+      return false; // t.ex. privat läge där lagring är blockerad
+    }
+  }
+
+  if (CookieBanner && CookieBannerAccept && !hasAcceptedCookies()) {
+    CookieBanner.hidden = false;
+
+    CookieBannerAccept.addEventListener("click", function () {
+      try {
+        localStorage.setItem(cookieKey, "true");
+      } catch (e) {
+        // går inte att spara – rutan döljs ändå för den här sidvisningen
+      }
+      CookieBanner.hidden = true;
+    });
+  }
 })();
