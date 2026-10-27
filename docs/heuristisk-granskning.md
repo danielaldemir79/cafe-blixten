@@ -3,7 +3,9 @@
 Vi har granskat webbplatsen utifrån Nielsens tio heuristiker. Kopplat till #26.
 
 **Datum:** 25 oktober 2026
-**Uppdaterad:** 26 oktober 2026
+**Uppdaterad:** 27 oktober 2026
+
+Nya sidor som läggs till efter detta datum kontrolleras i vår egen kontroll före presentationen.
 
 ## Problem vi hittade
 
@@ -11,13 +13,13 @@ Vi har granskat webbplatsen utifrån Nielsens tio heuristiker. Kopplat till #26.
 - **Heuristik:** Förebygga fel
 - **Problem:** Tillgänglighet, Integritetspolicy och Cookies i footern leder ingenstans.
 - **Förslag:** Skapa sidorna.
-- **Status:** Pågår (Textsida för de tre sidorna).
+- **Status:** Åtgärdat i #75 (Cookies) och #77 (Tillgänglighet och Integritetspolicy).
 
 ### 2. Ingen sida om tillgänglighet
 - **Heuristik:** Hjälp och dokumentation
 - **Problem:** Det finns ingen sida som berättar hur tillgänglig webbplatsen är.
 - **Förslag:** Skapa sidan Tillgänglighet.
-- **Status:** Pågår (Textsida för de tre sidorna).
+- **Status:** Åtgärdat i #77.
 
 ### 3. Flera H1 på varje sida
 - **Heuristik:** Konsekvens och standard
@@ -29,25 +31,25 @@ Vi har granskat webbplatsen utifrån Nielsens tio heuristiker. Kopplat till #26.
 - **Heuristik:** Konsekvens och standard
 - **Problem:** Pricken är röd i footern men grå på sidan Öppettider & kontakt.
 - **Förslag:** Samma färg överallt.
-- **Status:** Åtgärdas i #58.
+- **Status:** Åtgärdat i #58.
 
 ### 5. Fel år i footern
 - **Heuristik:** Matcha verkligheten
 - **Problem:** Det står "© Café Blixten 2022", vilket ser gammalt ut.
 - **Förslag:** Visa året automatiskt.
-- **Status:** Pågår (Textsida för de tre sidorna).
+- **Status:** Åtgärdat i #77.
 
 ### 6. Otydlig alt-text på loggan
 - **Heuristik:** Matcha verkligheten
 - **Problem:** En skärmläsare säger bara "Logo".
-- **Förslag:** Skriv "Café Blixten".
+- **Förslag:** Tom alt-text (alt=""), eftersom namnet redan står bredvid loggan.
 - **Status:** Kvar.
 
 ### 7. Favicon är inte vår logga
 - **Heuristik:** Känna igen hellre än minnas
 - **Problem:** Webbläsarfliken visar inte caféets logga.
 - **Förslag:** Gör en favicon av loggan.
-- **Status:** Kvar.
+- **Status:** Åtgärdat i #73.
 
 ### 8. Platshållartext på startsidan
 - **Heuristik:** Estetisk och minimalistisk design
@@ -61,11 +63,17 @@ Vi har granskat webbplatsen utifrån Nielsens tio heuristiker. Kopplat till #26.
 - **Förslag:** Skriv "Café Blixten" överallt.
 - **Status:** Åtgärdat i #55.
 
+### 10. Låg kontrast på knappen i cookie-rutan
+- **Heuristik:** Estetisk och minimalistisk design
+- **Problem:** Orange text på grön bakgrund på OK-knappen har för låg kontrast (ca 3:1, WCAG kräver 4,5:1).
+- **Förslag:** Mörk eller vit text på knappen.
+- **Status:** Kvar.
 
 ## Det som fungerar bra
 
 - **Synlig systemstatus:** "Öppet nu / Stängt nu" visas, och aktiv sida är markerad i menyn.
 - **Matcha verkligheten:** Enkla ord som "Hitta hit" och "Öppettider".
 - **Användarkontroll:** Loggan leder till startsidan, och det finns en länk "Till toppen".
+- **Användarkontroll:** "Hoppa till innehållet" låter tangentbordsanvändare hoppa förbi menyn.
 - **Effektivitet:** Telefonnummer och e-post går att klicka på.
 - **Hjälp vid fel:** Om öppettider saknas står det "Öppettiderna uppdateras snart".
