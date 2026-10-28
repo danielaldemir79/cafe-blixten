@@ -1,4 +1,5 @@
 ﻿@using System.Linq
+@using System.Collections.Generic
 @using Umbraco.Cms.Core.Models
 @using Umbraco.Cms.Core.Models.Blocks
 @using ContentModels = Umbraco.Cms.Web.Common.PublishedModels
@@ -44,9 +45,13 @@
             @foreach (var produktBlock in produkter)
             {
               var produkt = produktBlock.Content;
+
               var namn = produkt.Value<string>("namn");
               var pris = produkt.Value<decimal?>("pris");
               var beskrivning = produkt.Value<string>("beskrivning");
+
+              // Kostmärkningar från Umbraco
+              var kostmarkningar = produkt.Value<IEnumerable<string>>("kostmRkning");
 
               <li class="menu-page__item">
                 <div class="menu-page__item-header">
@@ -65,6 +70,18 @@
                   <p class="menu-page__item-description">
                     @beskrivning
                   </p>
+                }
+
+                @if (kostmarkningar != null && kostmarkningar.Any())
+                {
+                  <ul class="menu-page__dietary-labels" aria-label="Kostmärkningar">
+                    @foreach (var markning in kostmarkningar)
+                    {
+                      <li class="menu-page__dietary-label menu-page__dietary-label--@markning.ToLowerInvariant()">
+                        @markning
+                      </li>
+                    }
+                  </ul>
                 }
               </li>
             }
