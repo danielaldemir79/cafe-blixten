@@ -306,9 +306,12 @@
         justify-content: center;
 
         > a {
+          display: inline-block;
+          padding: 0.5rem 0.25rem; // större yta att trycka på i mobilen
           color: m.lighten("primary", 40%);
 
-          &:hover {
+          &:hover,
+          &[aria-current="page"] {
             color: m.color("secondary");
           }
         }
