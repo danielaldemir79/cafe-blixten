@@ -1688,11 +1688,59 @@ ul[role=list] {
   color: #304f80;
 }
 .menu-page {
+  /* Snabblänkar till kategorierna – följer med när man scrollar */
+}
+.menu-page__quicklinks {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  margin: 0 0 2.5rem;
+  padding: 0.85rem 0;
+  background-color: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(47, 62, 52, 0.1);
+}
+.menu-page__quicklinks ul {
+  display: flex;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0 0.25rem;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.menu-page__quicklinks ul::-webkit-scrollbar {
+  display: none;
+}
+.menu-page__quicklinks a {
+  display: inline-block;
+  padding: 0.5rem 1.1rem;
+  border: 1.5px solid #c96f4a;
+  border-radius: 999px;
+  color: #7d4d2e;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.menu-page__quicklinks a:hover, .menu-page__quicklinks a:focus-visible {
+  background-color: #c96f4a;
+  color: #fff;
+}
+.menu-page__quicklinks a:focus-visible {
+  outline: 3px solid #2f3e34;
+  outline-offset: 2px;
+}
+.menu-page {
   /* Kaffe, Lunch och Kampanj */
 }
 .menu-page__category {
   max-width: 52rem;
   margin-bottom: 4rem;
+  scroll-margin-top: 5rem;
+}
+.menu-page__category:focus {
+  outline: none;
 }
 .menu-page__category h2 {
   margin-bottom: 1rem;
@@ -1775,7 +1823,8 @@ ul[role=list] {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: 3rem;
   }
-  .menu-page .hero {
+  .menu-page .hero,
+  .menu-page .menu-page__quicklinks {
     grid-column: 1/-1;
   }
   .menu-page .menu-page__category {
@@ -1784,6 +1833,12 @@ ul[role=list] {
   }
 }
 
+/* Mjuk scroll vid klick på snabblänk (ej för den som valt reducerad rörelse) */
+@media (prefers-reduced-motion: no-preference) {
+  #Main > .main-container {
+    scroll-behavior: smooth;
+  }
+}
 .news-page {
   max-width: 1200px;
   margin: clamp(2rem, 5vw, 4rem) auto;
