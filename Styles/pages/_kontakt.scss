@@ -178,13 +178,13 @@
     padding: 0 1.75rem;
     border-radius: 999px;
     background-color: m.color(secondary);
-    color: m.color(primary);
+    color: #fff; // samma som .knapp på startsidan
     font-size: 1.2rem;
     font-weight: 700;
     text-decoration: none;
 
     &:hover {
-      background-color: m.lighten("secondary", 10%);
+      background-color: m.darken("secondary", 15%);
     }
 
     &:focus-visible {
