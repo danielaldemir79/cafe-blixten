@@ -99,7 +99,15 @@ Vi har bedömt varje fynd enligt Nielsens skala:
 - **Förslag:** Mörk eller vit text på knappen.
 - **Status:** Kvar.
 
-Några fynd (3, 6 och 10) är främst tillgänglighetsproblem (WCAG) och passar inte helt in i Nielsens heuristiker. Vi har placerat dem under den heuristik som ligger närmast.
+### Fynd 11: Olika textfärger i sidfoten
+- **Var:** Sidfoten (alla sidor)
+- **Heuristik:** 4. Konsekvens och standard
+- **Problem:** Texten i sidfoten hade olika färger. Adressen och öppettiderna var vita, men telefon, e-post och länkar var grönaktiga med för låg kontrast (ca 4:1, WCAG kräver 4,5:1).
+- **Allvarlighetsgrad:** 
+- **Förslag:** Vita rubriker och en ljusare grön färg för all övrig text och alla länkar.
+- **Status:** Åtgärdat i #82. Länkarna är också understrukna. Orange text vid hover och vit text på orange knappar har fortfarande lite för låg kontrast (Kvar).
+
+Några fynd (3, 6, 10 och 11) är främst tillgänglighetsproblem (WCAG) och passar inte helt in i Nielsens heuristiker. Vi har placerat dem under den heuristik som ligger närmast.
 
 ## Det som fungerar bra
 
