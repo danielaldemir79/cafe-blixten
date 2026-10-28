@@ -1655,6 +1655,39 @@ ul[role=list] {
   content: "";
 }
 .menu-page {
+  /* Kostmärkningar */
+}
+.menu-page__dietary-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+}
+.menu-page__dietary-label {
+  display: inline-block;
+  padding: 0.3rem 0.65rem;
+  border-radius: 0.375rem;
+  background-color: #e4efe4;
+  color: #294b37;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.menu-page__dietary-label--vegansk {
+  background-color: #e4efe4;
+  color: #294b37;
+}
+.menu-page__dietary-label--glutenfri {
+  background-color: #f8eed6;
+  color: #76531b;
+}
+.menu-page__dietary-label--laktosfri {
+  background-color: #e7edf8;
+  color: #304f80;
+}
+.menu-page {
   /* Kaffe, Lunch och Kampanj */
 }
 .menu-page__category {
@@ -1681,6 +1714,9 @@ ul[role=list] {
   margin: 1rem 0 1.5rem;
   object-fit: cover;
   border-radius: 0.75rem;
+}
+.menu-page {
+  /* Produktlista */
 }
 .menu-page__list {
   margin: 0;
