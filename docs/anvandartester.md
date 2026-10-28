@@ -11,15 +11,16 @@ kontaktuppgifterna och hur man hittar till caféet.
 ## Testpersoner
 
 - **Målgrupp:** Vuxna som går på café och inte har sett webbplatsen tidigare.
-- **Antal:** 3–5 personer, varav minst en från en annan grupp.
+- **Testpersoner:** Studenter från andra grupper, eftersom de inte har sett webbplatsen. De går också på café och liknar målgruppen.
+- Varav minst en från en annan grupp.
 - Helst minst en på mobil och en på dator.
 
 ## Roller
 
 | Roll | Ansvar | Person |
 |---|---|---|
-| Testledare | Läser upp uppgifterna och ställer frågorna | [namn] |
-| Antecknare | Skriver ner vad som händer | [namn] |
+| Testledare | Läser upp uppgifterna och ställer frågorna | Bestäms på lektion 7 |
+| Antecknare | Skriver ner vad som händer | Bestäms på lektion 7 |
 
 ## Introduktion (läses upp)
 
