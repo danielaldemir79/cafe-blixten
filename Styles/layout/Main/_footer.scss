@@ -167,6 +167,52 @@
         > .text {
           color: m.lighten("primary", 40%);
         }
+
+        // Sociala medier: runda ikonknappar under slogan
+        > .social-links {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+          margin-top: 1.5rem;
+          padding: 0;
+          list-style: none;
+
+          a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.75rem;
+            height: 2.75rem;
+            border: 1px solid m.lighten("primary", 15%);
+            border-radius: 50%;
+            color: m.color("smoke");
+            transition: color 0.2s, background-color 0.2s, border-color 0.2s, transform 0.2s;
+
+            &:hover,
+            &:focus-visible {
+              border-color: m.color("secondary");
+              background-color: m.color("secondary");
+              color: m.color("primary");
+            }
+
+            &:hover {
+              transform: translateY(-2px);
+            }
+
+            &:focus-visible {
+              outline: 2px solid m.color("smoke");
+              outline-offset: 3px;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+              transition: none;
+
+              &:hover {
+                transform: none;
+              }
+            }
+          }
+        }
       }
 
       > .second-row {
@@ -383,6 +429,10 @@
 
           > .text {
             display: none; // slogan
+          }
+
+          > .social-links {
+            margin-top: 1rem;
           }
         }
 
