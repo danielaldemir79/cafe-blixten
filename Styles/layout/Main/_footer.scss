@@ -290,6 +290,7 @@ $footer-muted: m.lighten("primary", 50%);
             align-items: center;
             justify-content: flex-start;
             color: $footer-muted;
+            text-decoration: underline;
 
             &:hover {
               color: m.color("secondary");

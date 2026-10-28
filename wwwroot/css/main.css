@@ -737,6 +737,7 @@ body {
   align-items: center;
   justify-content: flex-start;
   color: rgb(55.2761288001%, 66.0964202195%, 58.8828926066%);
+  text-decoration: underline;
 }
 #Footer > .footer-container > .footer-bottom > .third-row > div > a:hover {
   color: #c96f4a;
