@@ -1,6 +1,9 @@
 @use "sass:color";
 @use "../../abstracts/mixins" as m;
 
+// Länkar och sekundär text, ljus nog för kontrast 4,5:1
+$footer-muted: m.lighten("primary", 50%);
+
 #Footer {
   position: relative;
   background-color: m.darken("primary", 20%);
@@ -32,7 +35,7 @@
         > p {
           display: block;
           padding: 0.25rem 0;
-          color: m.lighten("primary", 40%);
+          color: $footer-muted;
         }
       }
 
@@ -54,10 +57,10 @@
           padding: 0.75rem 2rem;
           border-radius: 5rem;
           background-color: m.color("secondary");
-          color: m.color("primary");
+          color: #fff; // samma som .knapp på startsidan
 
           &:hover {
-            background-color: m.lighten("secondary", 5%);
+            background-color: m.darken("secondary", 15%);
           }
 
           > svg {
@@ -94,7 +97,7 @@
       > .row {
         flex: 1 0 auto;
         padding: 0 2rem;
-        color: m.color("smoke");
+        color: $footer-muted;
 
         &:first-child {
           flex: 0 0 25%;
@@ -102,6 +105,7 @@
 
         h2 {
           display: flex;
+          color: m.color("smoke");
           align-items: center;
           margin-bottom: 1rem;
 
@@ -165,7 +169,53 @@
         }
 
         > .text {
-          color: m.lighten("primary", 40%);
+          color: $footer-muted;
+        }
+
+        // Sociala medier: runda ikonknappar under slogan
+        > .social-links {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+          margin-top: 1.5rem;
+          padding: 0;
+          list-style: none;
+
+          a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.75rem;
+            height: 2.75rem;
+            border: 1px solid m.lighten("primary", 15%);
+            border-radius: 50%;
+            color: m.color("smoke");
+            transition: color 0.2s, background-color 0.2s, border-color 0.2s, transform 0.2s;
+
+            &:hover,
+            &:focus-visible {
+              border-color: m.color("secondary");
+              background-color: m.color("secondary");
+              color: m.color("primary");
+            }
+
+            &:hover {
+              transform: translateY(-2px);
+            }
+
+            &:focus-visible {
+              outline: 2px solid m.color("smoke");
+              outline-offset: 3px;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+              transition: none;
+
+              &:hover {
+                transform: none;
+              }
+            }
+          }
         }
       }
 
@@ -213,7 +263,9 @@
         }
 
         > a {
-          color: m.lighten("primary", 40%);
+          color: $footer-muted;
+          text-decoration: underline; // syns som länk, inte som en rad i listan
+          text-underline-offset: 0.2em;
 
           &:hover,
           &:focus-visible {
@@ -230,14 +282,15 @@
 
           > svg {
             margin-right: 1rem;
-            color: m.lighten("primary", 40%);
+            color: $footer-muted;
           }
 
           > a {
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            color: m.lighten("primary", 40%);
+            color: $footer-muted;
+            text-decoration: underline;
 
             &:hover {
               color: m.color("secondary");
@@ -255,10 +308,10 @@
               display: flex;
               align-items: center;
               justify-content: flex-start;
-              color: m.lighten("primary", 40%);
+              color: $footer-muted;
 
               &[aria-current="page"] {
-                color: m.color("secondary");
+                color: m.color("smoke"); // vit text, orange prick visar aktiv sida
 
                 &::before {
                   content: "";
@@ -286,7 +339,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 1.5rem 2rem;
-      color: m.lighten("primary", 40%);
+      color: $footer-muted;
       background-color: m.darken("primary", 40%);
 
       @include m.for-size(tablet-portrait-up) {
@@ -306,10 +359,16 @@
         justify-content: center;
 
         > a {
-          color: m.lighten("primary", 40%);
+          display: inline-block;
+          padding: 0.5rem 0.25rem; // större yta att trycka på i mobilen
+          color: $footer-muted;
 
           &:hover {
             color: m.color("secondary");
+          }
+
+          &[aria-current="page"] {
+            color: m.color("smoke");
           }
         }
 
@@ -380,6 +439,10 @@
 
           > .text {
             display: none; // slogan
+          }
+
+          > .social-links {
+            margin-top: 1rem;
           }
         }
 

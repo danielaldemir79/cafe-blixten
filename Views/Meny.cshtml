@@ -1,4 +1,5 @@
 ﻿@using System.Linq
+@using System.Collections.Generic
 @using Umbraco.Cms.Core.Models
 @using Umbraco.Cms.Core.Models.Blocks
 @using ContentModels = Umbraco.Cms.Web.Common.PublishedModels
@@ -8,6 +9,39 @@
   Layout = "layout.cshtml";
 
   var kategorier = Model.Value<BlockListModel>("kategorier");
+
+  // Ankare (#kaffe, #lunch ...) byggs från kategorinamnet i Umbraco,
+  // så snabblänkarna följer med automatiskt när nya kategorier skapas.
+  var kategoriAnkare = new List<string>();
+  if (kategorier != null)
+  {
+    for (var i = 0; i < kategorier.Count; i++)
+    {
+      var ankare = SkapaAnkare(kategorier[i].Content.Value<string>("namn"), i);
+      while (kategoriAnkare.Contains(ankare))
+      {
+        ankare += "-" + (i + 1);
+      }
+      kategoriAnkare.Add(ankare);
+    }
+  }
+}
+
+@functions {
+  private static string SkapaAnkare(string? namn, int index)
+  {
+    if (string.IsNullOrWhiteSpace(namn))
+    {
+      return $"kategori-{index + 1}";
+    }
+
+    var text = namn.Trim().ToLowerInvariant()
+      .Replace("å", "a").Replace("ä", "a").Replace("ö", "o").Replace("é", "e");
+
+    var slug = System.Text.RegularExpressions.Regex.Replace(text, "[^a-z0-9]+", "-").Trim('-');
+
+    return string.IsNullOrEmpty(slug) ? $"kategori-{index + 1}" : slug;
+  }
 }
 
 <section class="menu-page" aria-labelledby="menu-page-title">
@@ -20,6 +54,20 @@
     </div>
   </section>
 
+  @if (kategorier != null && kategorier.Count > 1)
+  {
+    <nav class="menu-page__quicklinks" aria-label="Hoppa till kategori">
+      <ul>
+        @for (var i = 0; i < kategorier.Count; i++)
+        {
+          <li>
+            <a href="#@kategoriAnkare[i]">@(kategorier[i].Content.Value<string>("namn"))</a>
+          </li>
+        }
+      </ul>
+    </nav>
+  }
+
   @if (kategorier != null && kategorier.Any())
   {
     for (var i = 0; i < kategorier.Count; i++)
@@ -30,7 +78,7 @@
       var kategoriBild = kategori.Value<MediaWithCrops>("bild");
       var produkter = kategori.Value<BlockListModel>("produkter");
 
-      <section class="menu-page__category" aria-labelledby="meny-kategori-@i">
+      <section class="menu-page__category" id="@kategoriAnkare[i]" aria-labelledby="meny-kategori-@i" tabindex="-1">
         <h2 id="meny-kategori-@i">@kategoriNamn</h2>
 
         @if (kategoriBild != null)
@@ -44,9 +92,13 @@
             @foreach (var produktBlock in produkter)
             {
               var produkt = produktBlock.Content;
+
               var namn = produkt.Value<string>("namn");
               var pris = produkt.Value<decimal?>("pris");
               var beskrivning = produkt.Value<string>("beskrivning");
+
+              // Kostmärkningar från Umbraco
+              var kostmarkningar = produkt.Value<IEnumerable<string>>("kostmRkning");
 
               <li class="menu-page__item">
                 <div class="menu-page__item-header">
@@ -65,6 +117,18 @@
                   <p class="menu-page__item-description">
                     @beskrivning
                   </p>
+                }
+
+                @if (kostmarkningar != null && kostmarkningar.Any())
+                {
+                  <ul class="menu-page__dietary-labels" aria-label="Kostmärkningar">
+                    @foreach (var markning in kostmarkningar)
+                    {
+                      <li class="menu-page__dietary-label menu-page__dietary-label--@markning.ToLowerInvariant()">
+                        @markning
+                      </li>
+                    }
+                  </ul>
                 }
               </li>
             }
