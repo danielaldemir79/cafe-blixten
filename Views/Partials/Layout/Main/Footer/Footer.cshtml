@@ -11,6 +11,9 @@
   // (samma källor som oeppettiderKontakt.cshtml använder)
   var hittaOss = home.Children().FirstOrDefault(x => x.ContentType.Alias == "hittaOss");
   var cookiesida = home.Children().FirstOrDefault(x => x.ContentType.Alias == "cookies");
+  // Tillgänglighet och Integritetspolicy (dokumenttypen Textsida)
+  var tillganglighet = home.Children().FirstOrDefault(x => x.ContentType.Alias == "textsida" && x.Name == "Tillgänglighet");
+  var integritetspolicy = home.Children().FirstOrDefault(x => x.ContentType.Alias == "textsida" && x.Name == "Integritetspolicy");
   var telefon = kontaktsida?.Value<string>("telefon");
   var telefonLank = string.IsNullOrWhiteSpace(telefon)
     ? null
@@ -175,13 +178,13 @@
     </div>
     <div class="footer-copyright">
       <div>
-        <p>© Café Blixten 2022</p>
+        <p>© Café Blixten @nu.Year</p>
       </div>
       <div class="accessibility-links">
-        <a href="#">Tillgänglighet</a>
-        <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot preview-icon"><circle cx="12" cy="12" r="1"/></svg></span>
-        <a href="#">Integritetspolicy</a>
-        <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot preview-icon"><circle cx="12" cy="12" r="1"/></svg></span>
+        <a href="@(tillganglighet?.Url() ?? "#")" aria-current="@(tillganglighet?.Id == Model.Id ? "page" : null)">Tillgänglighet</a>
+        <span aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot preview-icon"><circle cx="12" cy="12" r="1"/></svg></span>
+        <a href="@(integritetspolicy?.Url() ?? "#")" aria-current="@(integritetspolicy?.Id == Model.Id ? "page" : null)">Integritetspolicy</a>
+        <span aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot preview-icon"><circle cx="12" cy="12" r="1"/></svg></span>
         <a href="@(cookiesida?.Url() ?? "/cookies/")" aria-current="@(cookiesida != null && Model.Id == cookiesida.Id ? "page" : null)">Cookies</a>
       </div>
       <div class="top-link">

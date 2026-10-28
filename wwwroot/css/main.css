@@ -749,9 +749,11 @@ body {
   justify-content: center;
 }
 #Footer > .footer-container > .footer-copyright > .accessibility-links > a {
+  display: inline-block;
+  padding: 0.5rem 0.25rem;
   color: rgb(46.3313545602%, 59.3157042634%, 50.6594711279%);
 }
-#Footer > .footer-container > .footer-copyright > .accessibility-links > a:hover {
+#Footer > .footer-container > .footer-copyright > .accessibility-links > a:hover, #Footer > .footer-container > .footer-copyright > .accessibility-links > a[aria-current=page] {
   color: #c96f4a;
 }
 #Footer > .footer-container > .footer-copyright > .accessibility-links > span {
