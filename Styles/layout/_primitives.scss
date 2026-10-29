@@ -1,5 +1,3 @@
-// Gör att --gap och --min bara gäller elementet de sätts på,
-// och inte ärvs vidare till nästlade .stack/.grid/.split
 @property --gap {
   syntax: "*";
   inherits: false;
@@ -9,6 +7,9 @@
   syntax: "*";
   inherits: false;
 }
+
+// Ett par utility-klasser
+
 .stack {
   display: flex;
   flex-direction: column;

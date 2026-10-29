@@ -1,6 +1,8 @@
 
 
 (function () {
+
+  // För snabbare användning
   var ToggleSidebarButton = document.getElementById("ToggleSidebar");
   var SidebarCloseButton = document.getElementById("SidebarClose");
   var SearchClickArea = document.getElementById("SearchClickArea");
@@ -12,16 +14,19 @@
   var backToTopLink = document.getElementsByClassName("back-to-top-link")[0];
   var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  // Stäng sidebaren på mobila enheter
   function closeSidebar() {
     Sidebar.classList.remove("open");
   }
 
+  // Ifall man klickar på en navigeringslänk i sidebaren på mobila enheter, så stängs navigationen
   Sidebar.addEventListener("click", function (event) {
     if (event.target.closest("a")) {
       closeSidebar();
     }
   });
 
+  // Om sida ändras, stäng sidebaren/navigationen
   window.addEventListener("pageshow", function (event) {
     if (event.persisted) {
       closeSidebar();
@@ -34,7 +39,7 @@
     document.getElementById("Sidebar").classList.toggle("open");
   });
 
-  // Stäng sidomenyn på mobila enheter
+  // Stäng sidomenyn på mobila enheter, om man klickar på X:et
   SidebarCloseButton.addEventListener("click", function (event) {
     event.preventDefault();
     document.getElementById("Sidebar").classList.remove("open");
@@ -57,7 +62,8 @@
     Search.classList.add("open");
     SearchClickArea.setAttribute("aria-expanded", "true");
     document.body.style.overflow = "hidden"; // lås scroll bakom overlayen
-    // vänta tills overlayen är synlig innan fokus flyttas
+
+    // Vänta tills overlayen är synlig innan fokus flyttas
     requestAnimationFrame(function () {
       SearchInput.focus();
     });
@@ -108,9 +114,10 @@
   var SearchForm = Search.querySelector(".search-form");
   var SearchResults = document.getElementById("SearchResults");
   var SearchStatus = document.getElementById("SearchStatus");
-  var searchTimer = null;
+  var searchTimer = null; // Söktimer
   var searchController = null;
 
+  // Rensa sök
   function clearResults(message) {
     SearchResults.innerHTML = "";
     SearchStatus.textContent = message || "";
@@ -120,14 +127,17 @@
   function renderResults(items, term) {
     SearchResults.innerHTML = "";
 
+    // Ifall inget hittas
     if (items.length === 0) {
       SearchStatus.textContent = "Inga träffar för \u201d" + term + "\u201d";
       Search.classList.add("has-results");
       return;
     }
 
+    // Visa hur många träffar som har hittats
     SearchStatus.textContent = items.length === 1 ? "1 träff" : items.length + " träffar";
 
+    // För varje träff, visa en länk
     items.forEach(function (item) {
       var li = document.createElement("li");
       li.className = "search-result";
@@ -144,12 +154,14 @@
     Search.classList.add("has-results");
   }
 
+  // Kör och sök baserat på sökterm
   function runSearch(term) {
     if (searchController) searchController.abort(); // avbryt äldre sökning
     searchController = new AbortController();
 
     SearchStatus.textContent = "Söker…";
 
+    // Hämta från API:n ("Controllers/SearchController.cs")
     fetch("/api/search?q=" + encodeURIComponent(term), { signal: searchController.signal })
       .then(function (response) {
         if (!response.ok) throw new Error("HTTP " + response.status);
@@ -164,23 +176,25 @@
       });
   }
 
+  // NÄR man söker/skriver i input-fältet
   SearchInput.addEventListener("input", function () {
     var term = SearchInput.value.trim();
     clearTimeout(searchTimer);
 
+    // Om man bara angett 1 karaktär i sök-fältet, sök inte
     if (term.length < 2) {
       if (searchController) searchController.abort();
       clearResults();
       return;
     }
 
-    // vänta 250 ms efter senaste tangenttryckning innan vi söker
+    // Vänta 250 ms efter senaste tangenttryckning innan vi söker
     searchTimer = setTimeout(function () {
       runSearch(term);
     }, 250);
   });
 
-  // Enter: gå till första träffen i stället för en söksida
+  // Enter-knappen: gå till första träffen i stället för en söksida
   SearchForm.addEventListener("submit", function (event) {
     var first = SearchResults.querySelector("a");
     event.preventDefault();
@@ -233,6 +247,7 @@
       }
     }
   });
+
   // ---------- Cookie-information ----------
   var CookieBanner = document.getElementById("CookieBanner");
   var CookieBannerAccept = document.getElementById("CookieBannerAccept");
@@ -258,4 +273,5 @@
       CookieBanner.hidden = true;
     });
   }
+
 })();
