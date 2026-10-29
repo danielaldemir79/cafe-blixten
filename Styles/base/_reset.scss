@@ -1,11 +1,15 @@
+// Reset, så att allt är "återställt"
+
 @use "../abstracts/variables" as v;
 
+// Allt -- ingen margin eller padding på element, och allt ska vara "border-box" is "box-sizing."
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+// Body
 body {
   margin: 0;
   padding: 0;
@@ -13,15 +17,18 @@ body {
   overflow: hidden;
 }
 
+// Så att bilder inte blir större än sin behållare
 img,
 svg {
-  max-width: 100%; // bilder och ikoner får aldrig bli bredare än sin behållare
+  max-width: 100%;
 }
 
+// Ingen text-decoration på länkar som default
 a {
   text-decoration: none;
 }
 
+// Knapp-återställning
 button {
   margin: 0;
   padding: 0;
@@ -32,6 +39,7 @@ button {
   cursor: pointer;
 }
 
+// Input-fält-återställning
 input {
   margin: 0;
   padding: 0;
