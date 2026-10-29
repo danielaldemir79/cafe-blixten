@@ -1,6 +1,39 @@
-﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Strings
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.Jobb>
 @using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+
 @{
-	Layout = null;
+    Layout = "layout.cshtml";
+
+    var rubrik = Model.Value<string>("rubrik");
+    var text = Model.Value<IHtmlEncodedString>("text");
+    var bild = Model.Value<MediaWithCrops>("bild");
+    var bildUrl = bild?.Url();
+    var bildAlt = bild?.Name;
+
+    if (string.IsNullOrWhiteSpace(bildUrl))
+    {
+        bildUrl = "/images/cafe-blixten-jobba-hos-oss.jpg";
+        bildAlt = "Medarbetare bakom disken på Café Blixten";
+    }
 }
+
+<article class="hero about-page">
+    <div class="about-page__content">
+        <h1>@(string.IsNullOrWhiteSpace(rubrik) ? Model.Name : rubrik)</h1>
+
+        @if (text != null)
+        {
+            <div class="about-page__text">
+                @text
+            </div>
+        }
+    </div>
+
+    <div class="about-page__image">
+        <img src="@bildUrl"
+             alt="@bildAlt"
+             loading="lazy" />
+    </div>
+</article>
