@@ -1,5 +1,7 @@
 @use "../abstracts/mixins" as m;
 
+// För "Om oss"-sidan
+
 .about-page {
   &__content {
     max-width: 42rem;

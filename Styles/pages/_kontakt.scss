@@ -1,6 +1,8 @@
 @use "sass:color";
 @use "../abstracts/mixins" as m;
 
+// För "Hitta oss"-sidan
+
 .find-page {
   --pad-y: clamp(1.5rem, 3vw, 3rem);
   --pad-x: clamp(1.25rem, 4vw, 4rem);

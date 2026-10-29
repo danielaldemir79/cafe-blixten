@@ -1,8 +1,9 @@
 @use "../abstracts/mixins" as m;
 
+// Body:ns standardvärden
 body {
   display: grid;
-  min-height: 100vh;
+  min-height: 100vh; // Åtminstone 100vh i höjd
   max-height: 100%;
   grid-template-areas: "Main";
   grid-template-columns: minmax(0, 1fr); // får aldrig bli bredare än skärmen
@@ -15,7 +16,7 @@ body {
 
 #Main {
   grid-area: Main;
-  min-width: 0; // låter innehållet krympa i stället för att trycka ut sidan
+  min-width: 0; // Låter innehållet krympa i stället för att trycka ut sidan
 }
 
 #Sidebar {
