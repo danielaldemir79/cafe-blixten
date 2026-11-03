@@ -15,6 +15,13 @@
     var aktuellt = Model.Parent;
     var svenskKultur = CultureInfo.GetCultureInfo("sv-SE");
 
+    // Varning om evenemanget ligger när caféet har stängt
+    var kontaktsida = Model.Root().Children().FirstOrDefault(x => x.ContentType.Alias == "oppettiderKontakt");
+    var sluttid = Model.Value<string>("sluttid");
+    var varning = datum.HasValue
+        ? CafeBlixten.Helpers.Oppettider.EvenemangVarning(kontaktsida, datum.Value, CafeBlixten.Helpers.Oppettider.NuISverige(), sluttid)
+        : null;
+
     if (string.IsNullOrWhiteSpace(bildUrl))
     {
         bildUrl = "/images/cafe-blixten-livemusik.png";
@@ -38,9 +45,20 @@
         @if (datum.HasValue)
         {
             <time class="news-detail__date"
-                  datetime="@datum.Value.ToString("yyyy-MM-dd")">
-                @datum.Value.ToString("d MMMM yyyy", svenskKultur)
+                  datetime="@datum.Value.ToString("yyyy-MM-ddTHH:mm")">
+                @datum.Value.ToString("d MMMM yyyy", svenskKultur), @CafeBlixten.Helpers.Oppettider.Klockslag(datum.Value, sluttid)
             </time>
+        }
+
+        @if (varning != null)
+        {
+            <p class="news-detail__varning">
+                @varning
+                @if (kontaktsida != null)
+                {
+                    <a href="@kontaktsida.Url()">Se öppettider</a>
+                }
+            </p>
         }
 
         <img class="news-detail__image"

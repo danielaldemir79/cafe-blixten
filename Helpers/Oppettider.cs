@@ -92,6 +92,40 @@ public static class Oppettider
         return rad == null ? null : new Tider(rad.Stangt, rad.Oppnar, rad.Stanger);
     }
 
+    /// <summary>Tider för ett visst datum, t.ex. ett evenemang, direkt från sidan "Öppettider &amp; kontakt".</summary>
+    public static Tider? TiderForDatum(IPublishedContent? kontaktsida, DateTime datum, DateTime nu) =>
+        TiderFor(datum, Veckoschema(kontaktsida), KommandeAvvikelser(kontaktsida, nu));
+
+    /// <summary>Varning om ett kommande evenemang ligger när caféet har stängt, annars null.</summary>
+    public static string? EvenemangVarning(IPublishedContent? kontaktsida, DateTime datum, DateTime nu, string? sluttid = null)
+    {
+        if (datum < nu || TiderForDatum(kontaktsida, datum, nu) is not Tider tider)
+        {
+            return null;
+        }
+
+        if (tider.Stangt)
+        {
+            return string.IsNullOrWhiteSpace(tider.Namn)
+                ? "Obs! Caféet har stängt den här dagen."
+                : $"Obs! Caféet har stängt den här dagen ({tider.Namn}).";
+        }
+
+        var klockan = TimeOnly.FromDateTime(datum);
+        var slut = Tid(sluttid);
+        if (Tid(tider.Oppnar) is TimeOnly oppnar && Tid(tider.Stanger) is TimeOnly stanger
+            && (klockan < oppnar || klockan >= stanger || slut > stanger))
+        {
+            return $"Obs! Evenemanget ligger utanför caféets öppettider ({tider.Text}).";
+        }
+
+        return null;
+    }
+
+    /// <summary>"kl. 16:00–18:00" om sluttid finns, annars "kl. 16:00". Bryts inte mitt i.</summary>
+    public static string Klockslag(DateTime start, string? sluttid) =>
+        Tid(sluttid) is TimeOnly slut ? $"kl. {start:HH:mm}⁠–⁠{slut:HH:mm}" : $"kl. {start:HH:mm}";
+
     /// <summary>Dagens tider direkt från sidan "Öppettider &amp; kontakt".</summary>
     public static Tider? TiderIdag(IPublishedContent? kontaktsida, DateTime nu) =>
         TiderFor(nu, Veckoschema(kontaktsida), KommandeAvvikelser(kontaktsida, nu));

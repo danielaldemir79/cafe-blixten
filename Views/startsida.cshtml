@@ -198,8 +198,13 @@
 								@if (post.Datum.HasValue)
 								{
 									<time class="news-card__date" datetime="@post.Datum.Value.ToString("yyyy-MM-ddTHH:mm")">
-										@post.Datum.Value.ToString(post.DatumFormat, svenska)
+										@post.Datum.Value.ToString(post.DatumFormat, svenska)@if (post.Etikett == "Evenemang" && CafeBlixten.Helpers.Oppettider.Tid(post.Sida.Value<string>("sluttid")) is TimeOnly slut){<text>&#8288;–&#8288;@slut.ToString("HH:mm")</text>}
 									</time>
+								}
+								@if (post.Etikett == "Evenemang" && post.Datum.HasValue
+									&& CafeBlixten.Helpers.Oppettider.EvenemangVarning(kontaktSida, post.Datum.Value, CafeBlixten.Helpers.Oppettider.NuISverige(), post.Sida.Value<string>("sluttid")) is string varning)
+								{
+									<p class="news-card__varning">@varning</p>
 								}
 								@if (!string.IsNullOrWhiteSpace(post.Text))
 								{
