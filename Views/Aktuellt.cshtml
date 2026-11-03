@@ -11,10 +11,18 @@
     var ingress = Model.Value<string>("ingress");
     var svenskKultur = CultureInfo.GetCultureInfo("sv-SE");
 
-    var inlagg = Model.Children()
-        .Where(inlagg => inlagg.IsVisible())
-        .OrderByDescending(inlagg =>
-            inlagg.Value<DateTime?>("datum") ?? inlagg.CreateDate)
+    // Kommande evenemang först, sedan resten med nyaste överst
+    var nu = CafeBlixten.Helpers.Oppettider.NuISverige();
+    Func<IPublishedContent, bool> arKommande = p =>
+        p.ContentType.Alias == "event" && p.Value<DateTime?>("datum") >= nu;
+
+    var kontaktsida = Model.Root().Children().FirstOrDefault(x => x.ContentType.Alias == "oppettiderKontakt");
+
+    var synliga = Model.Children().Where(x => x.IsVisible()).ToList();
+    var inlagg = synliga.Where(arKommande)
+        .OrderBy(x => x.Value<DateTime?>("datum"))
+        .Concat(synliga.Where(x => !arKommande(x))
+            .OrderByDescending(x => x.Value<DateTime?>("datum") ?? x.CreateDate))
         .ToList();
 }
 
@@ -53,7 +61,9 @@
                     _ => null
                 };
 
-                var etikett = typ switch
+                var kommande = arKommande(post);
+
+                var etikett = kommande ? "Kommande evenemang" : typ switch
                 {
                     "nyttHosOss" => "Nyhet",
                     "event" => "Evenemang",
@@ -88,7 +98,7 @@
                     };
                 }
 
-                <article class="news-card">
+                <article class="news-card@(kommande ? " news-card--kommande" : "")">
                     @if (!string.IsNullOrWhiteSpace(bildUrl))
                     {
                         <img class="news-card__image"
@@ -106,10 +116,17 @@
 
                         @if (datum.HasValue)
                         {
+                            // Klockslag bara för evenemang
+                            var arEvent = typ == "event";
                             <time class="news-card__date"
-                                  datetime="@datum.Value.ToString("yyyy-MM-dd")">
-                                @datum.Value.ToString("d MMMM yyyy", svenskKultur)
+                                  datetime="@datum.Value.ToString(arEvent ? "yyyy-MM-ddTHH:mm" : "yyyy-MM-dd")">
+                                @datum.Value.ToString("d MMMM yyyy", svenskKultur)@(arEvent ? ", " + CafeBlixten.Helpers.Oppettider.Klockslag(datum.Value, post.Value<string>("sluttid")) : "")
                             </time>
+                        }
+
+                        @if (kommande && CafeBlixten.Helpers.Oppettider.EvenemangVarning(kontaktsida, datum!.Value, nu, post.Value<string>("sluttid")) is string varning)
+                        {
+                            <p class="news-card__varning">@varning</p>
                         }
 
                         @if (!string.IsNullOrWhiteSpace(beskrivning))
