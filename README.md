@@ -39,24 +39,66 @@ Alla utvecklar lokalt och har sin egen SQLite-databas och sitt eget administrat�
 - [x] GitHub Projects och Scrum-tavla skapade
 - [x] Arbetsuppgifter skapade och fördelade
 - [x] Gruppmedlemmarna inbjudna
-- [ ] Alla har verifierat att de kan starta projektet lokalt
+- [x] Alla har verifierat att de kan starta projektet lokalt
 
 ### Utveckling
 
-- [ ] Sidträd med minst fem sidor
-- [ ] Minst två egna innehållstyper
-- [ ] Minst en publicerad instans per innehållstyp
-- [ ] Razor-mallar och responsiv design med Sass
-- [ ] Roller och behörigheter konfigurerade och testade
-- [ ] SEO-fält, rubrikstruktur och interna länkar
+- [x] Sidträd med minst fem sidor
+- [x] Minst två egna innehållstyper
+- [x] Minst en publicerad instans per innehållstyp
+- [x] Razor-mallar och responsiv design med Sass
+- [x] Roller och behörigheter konfigurerade och testade
+- [x] SEO-fält, rubrikstruktur och interna länkar
 
 ### UX och redovisning
 
 - [ ] Nielsens tio heuristiker granskade
-- [ ] Användartester genomförda
+- [x] Användartester genomförda
 - [ ] Tangentbord och tillgänglighet testade
 - [ ] Problem och förbättringar dokumenterade
 - [ ] Alla kan demonstrera och motivera sin del
+
+### Aktuellt läge den 4 november 2026
+
+Projektets tekniska grundkrav är genomförda och sammanfogade med `main`.
+Webbplatsen har bland annat:
+
+- redigerbara sidor och innehållstyper för startsida, meny, aktuellt,
+  evenemang, Om oss, Hitta oss, öppettider, Jobba hos oss och galleri,
+- responsiv navigation och layout byggd med Razor och Sass,
+- meny med snabblänkar samt allergi- och kostmärkning,
+- sökning med fuzzy- och wildcard-stöd,
+- redigerbara ordinarie och avvikande öppettider,
+- evenemang med start- och sluttid, sortering och varning när tiden ligger
+  utanför öppettiderna,
+- SEO-fält, semantisk rubrikstruktur och interna länkar,
+- cookieinformation, hantering av samtycke för Google Maps, favicon,
+  sociala länkar och länk för att hoppa till huvudinnehållet.
+
+Umbracos standardgrupper används för rollerna:
+
+| Roll i uppgiften | Umbraco-grupp | Verifierad behörighet |
+|---|---|---|
+| Ansvarig | Administrators | Full åtkomst |
+| Redaktör | Editors | Kan hantera media samt skapa, redigera och publicera innehåll |
+| Skribent | Writers | Kan skapa och spara utkast men inte publicera |
+
+Rollerna verifierades med separata lokala testanvändare den 4 november.
+Användarkonton och lösenord lagras i den lokala databasen och ska inte
+versionshanteras eller delas genom uSync.
+
+Före redovisningen återstår att:
+
+- dokumentera den heuristiska granskningen enligt Nielsens tio heuristiker,
+- slutföra tangentbords- och tillgänglighetskontrollen med WAVE och Lighthouse,
+- sammanställa användartestets fynd och genomförda förbättringar,
+- besluta om startsidans bild efter återkopplingen från användartestet,
+- slutgranska innehåll, länkar, mobilvy, sökning, öppettider och cookieflöde,
+- genomföra uSync-import och sluttest på datorn som används vid presentationen,
+- förbereda den gemensamma demonstrationen och de individuella reflektionerna.
+
+Aktuell planering och ansvarsfördelning finns i GitHub-projektet
+[Café Blixten Scrum](https://github.com/users/danielaldemir79/projects/5).
 
 ## 3. Ansvarsfördelning
 
@@ -138,16 +180,18 @@ Efter varje sprint går vi igenom vilka uppgifter som blivit färdiga, vad som �
 
 GitHub Projects används också som underlag för att visa arbetsprocessen vid den muntliga redovisningen.
 
-## 6. Planerat sidträd
+## 6. Aktuellt sidträd
 
 - Startsida
-- Meny: Kaffe, Lunch, Kampanjer
-- Evenemang
+- Meny med kaffe, lunch och kampanjer
+- Aktuellt med nyheter, erbjudanden och evenemang
+- Veckans fika
 - Om oss
 - Hitta oss
 - Öppettider & Kontakt
 - Jobba hos oss
-- Aktuellt: Nyheter, Veckans fika, Erbjudanden, Evenemang
+- Galleri
+- Cookies och integritet
 
 Sidträdet kan justeras efter användartester. Undersidor ska återanvända gemensamma mallar där det är lämpligt.
 
@@ -200,4 +244,9 @@ Vi demonstrerar webbplatsen, förklarar våra tekniska och designmässiga val sa
 
 Vi visar även hur vi har organiserat arbetet med GitHub Projects, Issues, branches, Pull Requests och uSync.
 
-Målet är både en fungerande caféwebbplats och ett strukturerat grupparbete där varje medlem kan visa sin egen insats.
+Webbplatsens tekniska grundkrav är färdiga. När de återstående gransknings-,
+dokumentations- och presentationspunkterna i statusavsnittet är genomförda är
+projektet redo för redovisning.
+
+Målet är både en fungerande caféwebbplats och ett strukturerat grupparbete där
+varje medlem kan visa sin egen insats.
