@@ -75,36 +75,19 @@
                 var pris = post.Value<decimal?>("pris");
                 var bild = post.Value<MediaWithCrops>("bild");
 
-                var bildUrl = bild?.Url();
-                var bildAlt = bild?.Name;
-
-                if (string.IsNullOrWhiteSpace(bildUrl))
+                // Mediabild (webp, flera storlekar) – annars en standardbild per typ
+                var kortBild = CafeBlixten.Helpers.Bilder.FranMedia(bild, 800) ?? typ switch
                 {
-                    (bildUrl, bildAlt) = typ switch
-                    {
-                        "event" => (
-                            "/images/cafe-blixten-livemusik.png",
-                            "Mysig cafékväll med fika och livemusik"
-                        ),
-                        "nyttHosOss" => (
-                            "/images/cafe-blixten-hostmeny.png",
-                            "Höstfika med kaffe, bakverk och säsongens smaker"
-                        ),
-                        "veckansFika" => (
-                            "/images/cafe-blixten-kanelbullar.png",
-                            "Kaffe och nybakade kanelbullar"
-                        ),
-                        _ => (bildUrl, bildAlt)
-                    };
-                }
+                    "event" => CafeBlixten.Helpers.Bilder.Standard("cafe-blixten-livemusik", "Mysig cafékväll med fika och livemusik"),
+                    "nyttHosOss" => CafeBlixten.Helpers.Bilder.Standard("cafe-blixten-hostmeny", "Höstfika med kaffe, bakverk och säsongens smaker"),
+                    "veckansFika" => CafeBlixten.Helpers.Bilder.Standard("cafe-blixten-kanelbullar", "Kaffe och nybakade kanelbullar"),
+                    _ => null
+                };
 
                 <article class="news-card@(kommande ? " news-card--kommande" : "")">
-                    @if (!string.IsNullOrWhiteSpace(bildUrl))
+                    @if (kortBild != null)
                     {
-                        <img class="news-card__image"
-                            src="@bildUrl"
-                            alt="@bildAlt"
-                            loading="lazy" />
+                        <img class="news-card__image" src="@kortBild.Src" srcset="@kortBild.SrcSet" sizes="(max-width: 600px) 100vw, 400px" width="@kortBild.Bredd" height="@kortBild.Hojd" alt="@kortBild.Alt" loading="lazy" />
                     }
 
                     <div class="news-card__content">

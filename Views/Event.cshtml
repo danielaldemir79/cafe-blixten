@@ -10,8 +10,9 @@
     var beskrivning = Model.Value<string>("beskrivning");
     var datum = Model.Value<DateTime?>("datum");
     var bild = Model.Value<MediaWithCrops>("bild");
-    var bildUrl = bild?.Url();
-    var bildAlt = bild?.Name;
+    // Mediabild (webp, flera storlekar) – annars standardbilden i wwwroot/images
+    var bildInfo = CafeBlixten.Helpers.Bilder.FranMedia(bild, 1200)
+        ?? CafeBlixten.Helpers.Bilder.Standard("cafe-blixten-livemusik", "Mysig cafékväll med fika och livemusik");
     var aktuellt = Model.Parent;
     var svenskKultur = CultureInfo.GetCultureInfo("sv-SE");
 
@@ -22,11 +23,6 @@
         ? CafeBlixten.Helpers.Oppettider.EvenemangVarning(kontaktsida, datum.Value, CafeBlixten.Helpers.Oppettider.NuISverige(), sluttid)
         : null;
 
-    if (string.IsNullOrWhiteSpace(bildUrl))
-    {
-        bildUrl = "/images/cafe-blixten-livemusik.png";
-        bildAlt = "Mysig cafékväll med fika och livemusik";
-    }
 
 }
 
@@ -61,9 +57,7 @@
             </p>
         }
 
-        <img class="news-detail__image"
-            src="@bildUrl"
-            alt="@bildAlt" />
+        <img class="news-detail__image" src="@bildInfo.Src" srcset="@bildInfo.SrcSet" sizes="(max-width: 900px) 100vw, 800px" width="@bildInfo.Bredd" height="@bildInfo.Hojd" alt="@bildInfo.Alt" fetchpriority="high" />
 
         @if (!string.IsNullOrWhiteSpace(beskrivning))
         {

@@ -10,16 +10,12 @@
     var text = Model.Value<string>("text");
     var datum = Model.Value<DateTime?>("datum");
     var bild = Model.Value<MediaWithCrops>("bild");
-    var bildUrl = bild?.Url();
-    var bildAlt = bild?.Name;
+    // Mediabild (webp, flera storlekar) – annars standardbilden i wwwroot/images
+    var bildInfo = CafeBlixten.Helpers.Bilder.FranMedia(bild, 1200)
+        ?? CafeBlixten.Helpers.Bilder.Standard("cafe-blixten-hostmeny", "Höstfika med kaffe, bakverk och säsongens smaker");
     var aktuellt = Model.Parent;
     var svenskKultur = CultureInfo.GetCultureInfo("sv-SE");
 
-    if (string.IsNullOrWhiteSpace(bildUrl))
-    {
-      bildUrl = "/images/cafe-blixten-hostmeny.png";
-      bildAlt = "Höstfika med kaffe, bakverk och säsongens smaker";
-    }
 }
 
 <article class="news-detail" aria-labelledby="news-detail-title">
@@ -42,9 +38,7 @@
             </time>
         }
 
-        <img class="news-detail__image"
-            src="@bildUrl"
-            alt="@bildAlt" />
+        <img class="news-detail__image" src="@bildInfo.Src" srcset="@bildInfo.SrcSet" sizes="(max-width: 900px) 100vw, 800px" width="@bildInfo.Bredd" height="@bildInfo.Hojd" alt="@bildInfo.Alt" fetchpriority="high" />
 
         @if (!string.IsNullOrWhiteSpace(text))
         {
