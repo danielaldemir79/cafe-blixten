@@ -295,7 +295,7 @@ body {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 #Search .search-form:focus-within {
-  outline: 3px solid #c96f4a;
+  outline: 3px solid #a34725;
   outline-offset: 2px;
 }
 @media (min-width: 900px) {
@@ -340,7 +340,7 @@ body {
   background-color: rgb(28.6024464832%, 37.7308868502%, 31.6452599388%);
 }
 #Search .search-submit:focus-visible {
-  outline: 3px solid #c96f4a;
+  outline: 3px solid #a34725;
   outline-offset: 2px;
 }
 #Search .search-results-panel {
@@ -542,7 +542,7 @@ body {
   justify-content: center;
   padding: 0.75rem 2rem;
   border-radius: 5rem;
-  background-color: #c96f4a;
+  background-color: #a34725;
   color: #fff;
 }
 #Footer > .footer-container > .footer-top > .right > a:hover {
@@ -936,7 +936,7 @@ body {
   font-size: 0.75rem;
   line-height: 1rem;
   text-decoration: none;
-  color: #c96f4a;
+  color: #a34725;
 }
 
 .hero {
@@ -1068,7 +1068,7 @@ body {
   text-underline-offset: 0.2em;
 }
 .cookie-banner__link:hover {
-  color: #c96f4a;
+  color: #F3F3F3;
 }
 .cookie-banner__link:focus-visible {
   outline: 2px solid #F3F3F3;
@@ -1080,14 +1080,15 @@ body {
   padding: 0 1.75rem;
   border: 0;
   border-radius: 999px;
-  background-color: #c96f4a;
-  color: #2f3e34;
+  background-color: #a34725;
+  color: #fff;
   font-size: 1.1rem;
   font-weight: 700;
   cursor: pointer;
 }
 .cookie-banner__button:hover {
-  background-color: rgb(80.9411764706%, 49.1764705882%, 36.1176470588%);
+  background-color: #2f3e34;
+  outline: 2px solid #F3F3F3;
 }
 .cookie-banner__button:focus-visible {
   outline: 3px solid #F3F3F3;
@@ -1145,9 +1146,9 @@ ul[role=list] {
   align-items: center;
   justify-content: center;
   padding: 0.85rem 1.6rem;
-  border: 2px solid #c96f4a;
+  border: 2px solid #a34725;
   border-radius: 999px;
-  background-color: #c96f4a;
+  background-color: #a34725;
   color: #fff;
   font-family: "Fira Sans", sans-serif;
   font-weight: 500;
@@ -1155,8 +1156,8 @@ ul[role=list] {
   transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 .knapp:hover {
-  border-color: rgb(70.6028368794%, 35.4964539007%, 21.0638297872%);
-  background-color: rgb(70.6028368794%, 35.4964539007%, 21.0638297872%);
+  border-color: #2f3e34;
+  background-color: #2f3e34;
 }
 .knapp:focus-visible {
   outline: 3px solid #2f3e34;
@@ -1728,7 +1729,7 @@ ul[role=list] {
   transition: background-color 0.15s ease, color 0.15s ease;
 }
 .menu-page__quicklinks a:hover, .menu-page__quicklinks a:focus-visible {
-  background-color: #c96f4a;
+  background-color: #a34725;
   color: #fff;
 }
 .menu-page__quicklinks a:focus-visible {
@@ -2431,6 +2432,14 @@ ul[role=list] {
 
 .bg-name {
   background-color: #c96f4a;
+}
+
+.color-name {
+  color: #a34725;
+}
+
+.bg-name {
+  background-color: #a34725;
 }
 
 .color-name {
