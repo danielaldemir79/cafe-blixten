@@ -72,11 +72,10 @@ ul[role="list"] {
   text-decoration: none;
   transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 
-  &:hover {
-    border-color: m.color("primary");
-    background-color: m.color("primary");
-  }
-
+ &:hover {
+  border-color: m.darken("secondary-dark", 10%);
+  background-color: m.darken("secondary-dark", 10%);
+}
   &:focus-visible {
     outline: 3px solid m.color("primary");
     outline-offset: 3px;
