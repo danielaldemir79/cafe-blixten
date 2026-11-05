@@ -33,7 +33,7 @@
     width: 280px;
     left: auto;
     bottom: auto;
-    overflow-y: visible;
+    overflow-y: auto; // långa menyer scrollar även på desktop
     visibility: visible;
   }
 }

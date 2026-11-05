@@ -9,14 +9,10 @@
     var rubrik = Model.Value<string>("rubrik");
     var text = Model.Value<IHtmlEncodedString>("text");
     var bild = Model.Value<MediaWithCrops>("bild");
-    var bildUrl = bild?.Url();
-    var bildAlt = bild?.Name;
+    // Mediabild (webp, flera storlekar) – annars standardbilden i wwwroot/images
+    var bildInfo = CafeBlixten.Helpers.Bilder.FranMedia(bild, 1200)
+        ?? CafeBlixten.Helpers.Bilder.Standard("cafe-blixten-om-oss", "Café Blixtens varma cafémiljö med kaffe och nybakat fika");
 
-    if (string.IsNullOrWhiteSpace(bildUrl))
-    {
-        bildUrl = "/images/cafe-blixten-om-oss.png";
-        bildAlt = "Café Blixtens varma cafémiljö med kaffe och nybakat fika";
-    }
 }
 
 <section class="hero about-page">
@@ -32,8 +28,6 @@
     </div>
 
     <div class="about-page__image">
-        <img src="@bildUrl"
-             alt="@bildAlt"
-             loading="lazy" />
+        <img src="@bildInfo.Src" srcset="@bildInfo.SrcSet" sizes="(max-width: 900px) 100vw, 50vw" width="@bildInfo.Bredd" height="@bildInfo.Hojd" alt="" fetchpriority="high" />
     </div>
 </section>

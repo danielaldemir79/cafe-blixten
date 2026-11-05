@@ -23,6 +23,11 @@ svg {
   max-width: 100%;
 }
 
+// Bilder har width/height-attribut (mot layoutskift) – låt höjden följa bredden
+img {
+  height: auto;
+}
+
 // Ingen text-decoration på länkar som default
 a {
   text-decoration: none;
