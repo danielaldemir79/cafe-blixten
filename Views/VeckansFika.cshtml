@@ -9,15 +9,11 @@
     var beskrivning = Model.Value<string>("beskrivning");
     var pris = Model.Value<decimal?>("pris");
     var bild = Model.Value<MediaWithCrops>("bild");
-    var bildUrl = bild?.Url();
-    var bildAlt = bild?.Name;
+    // Mediabild (webp, flera storlekar) – annars standardbilden i wwwroot/images
+    var bildInfo = CafeBlixten.Helpers.Bilder.FranMedia(bild, 1200)
+        ?? CafeBlixten.Helpers.Bilder.Standard("cafe-blixten-kanelbullar", "Kaffe och nybakade kanelbullar");
     var aktuellt = Model.Parent;
 
-    if (string.IsNullOrWhiteSpace(bildUrl))
-    {
-      bildUrl = "/images/cafe-blixten-kanelbullar.png";
-      bildAlt = "Kaffe och nybakade kanelbullar";
-    }
 }
 
 <article class="news-detail" aria-labelledby="news-detail-title">
@@ -32,9 +28,7 @@
             @(string.IsNullOrWhiteSpace(namn) ? Model.Name : namn)
         </h1>
 
-        <img class="news-detail__image"
-             src="@bildUrl"
-             alt="@bildAlt" />
+        <img class="news-detail__image" src="@bildInfo.Src" srcset="@bildInfo.SrcSet" sizes="(max-width: 900px) 100vw, 800px" width="@bildInfo.Bredd" height="@bildInfo.Hojd" alt="" fetchpriority="high" />
 
         @if (!string.IsNullOrWhiteSpace(beskrivning))
         {

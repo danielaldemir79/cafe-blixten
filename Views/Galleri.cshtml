@@ -37,13 +37,15 @@
 				// Bildtext från mediatypen Image (alias "bildtext"). Tomt = ingen bildtext.
 				var bildtext = bild.Value<string>("bildtext");
 				var altText = string.IsNullOrWhiteSpace(bildtext) ? bild.Name : bildtext;
-				var bildUrl = stor
-					? bild.GetCropUrl(width: 1200, height: 900)
-					: bild.GetCropUrl(width: 800, height: 600);
+				var bildInfo = stor
+					? CafeBlixten.Helpers.Bilder.FranMedia(bild, 1200, 900, altText)!
+					: CafeBlixten.Helpers.Bilder.FranMedia(bild, 800, 600, altText)!;
+				// Lightboxen visar en stor webp i stället för originalfilen
+				var storUrl = CafeBlixten.Helpers.Bilder.FranMedia(bild, 1920)!.Src;
 
 				<li class="galleri__item@(stor ? " galleri__item--stor" : "")">
-					<a class="galleri__lank" href="@bild.MediaUrl()" data-bildtext="@bildtext">
-						<img src="@bildUrl" alt="@altText" loading="@(stor ? "eager" : "lazy")" />
+					<a class="galleri__lank" href="@storUrl" data-bildtext="@bildtext" aria-label="Visa större bild: @altText">
+						<img src="@bildInfo.Src" srcset="@bildInfo.SrcSet" sizes="@(stor ? "(max-width: 900px) 100vw, 66vw" : "(max-width: 600px) 100vw, 400px")" width="@bildInfo.Bredd" height="@bildInfo.Hojd" alt="" loading="@(stor ? "eager" : "lazy")" />
 						@if (!string.IsNullOrWhiteSpace(bildtext))
 						{
 							<span class="galleri__bildtext" aria-hidden="true">@bildtext</span>
@@ -63,7 +65,7 @@
 			<button type="button" class="lightbox__knapp lightbox__knapp--stang" aria-label="Stäng">&times;</button>
 		</dialog>
 
-		<script src="/js/galleri.js" asp-append-version="true" defer></script>
+		<script src="/js/galleri.min.js" asp-append-version="true" defer></script>
 	}
 	else
 	{
