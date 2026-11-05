@@ -44,8 +44,8 @@
 				var storUrl = CafeBlixten.Helpers.Bilder.FranMedia(bild, 1920)!.Src;
 
 				<li class="galleri__item@(stor ? " galleri__item--stor" : "")">
-					<a class="galleri__lank" href="@storUrl" data-bildtext="@bildtext">
-						<img src="@bildInfo.Src" srcset="@bildInfo.SrcSet" sizes="@(stor ? "(max-width: 900px) 100vw, 66vw" : "(max-width: 600px) 100vw, 400px")" width="@bildInfo.Bredd" height="@bildInfo.Hojd" alt="@bildInfo.Alt" loading="@(stor ? "eager" : "lazy")" />
+					<a class="galleri__lank" href="@storUrl" data-bildtext="@bildtext" aria-label="Visa större bild: @altText">
+						<img src="@bildInfo.Src" srcset="@bildInfo.SrcSet" sizes="@(stor ? "(max-width: 900px) 100vw, 66vw" : "(max-width: 600px) 100vw, 400px")" width="@bildInfo.Bredd" height="@bildInfo.Hojd" alt="" loading="@(stor ? "eager" : "lazy")" />
 						@if (!string.IsNullOrWhiteSpace(bildtext))
 						{
 							<span class="galleri__bildtext" aria-hidden="true">@bildtext</span>

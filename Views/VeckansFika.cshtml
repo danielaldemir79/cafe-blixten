@@ -28,7 +28,7 @@
             @(string.IsNullOrWhiteSpace(namn) ? Model.Name : namn)
         </h1>
 
-        <img class="news-detail__image" src="@bildInfo.Src" srcset="@bildInfo.SrcSet" sizes="(max-width: 900px) 100vw, 800px" width="@bildInfo.Bredd" height="@bildInfo.Hojd" alt="@bildInfo.Alt" fetchpriority="high" />
+        <img class="news-detail__image" src="@bildInfo.Src" srcset="@bildInfo.SrcSet" sizes="(max-width: 900px) 100vw, 800px" width="@bildInfo.Bredd" height="@bildInfo.Hojd" alt="" fetchpriority="high" />
 
         @if (!string.IsNullOrWhiteSpace(beskrivning))
         {
