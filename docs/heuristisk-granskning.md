@@ -3,7 +3,7 @@
 Vi har granskat webbplatsen utifrån Nielsens tio heuristiker. Kopplat till #26.
 
 **Datum:** 25 oktober 2026
-**Uppdaterad:** 27 oktober 2026
+**Uppdaterad:** 6 november 2026
 
 Nya sidor som läggs till efter detta datum kontrolleras i vår egen kontroll före presentationen.
 
@@ -65,7 +65,7 @@ Vi har bedömt varje fynd enligt Nielsens skala:
 - **Problem:** En skärmläsare säger bara "Logo".
 - **Allvarlighetsgrad:** 
 - **Förslag:** Tom alt-text (alt=""), eftersom namnet redan står bredvid loggan.
-- **Status:** Kvar.
+- **Status:** Åtgärdat i #98.
 
 ### Fynd 7: Favicon är inte vår logga
 - **Var:** 
@@ -97,7 +97,7 @@ Vi har bedömt varje fynd enligt Nielsens skala:
 - **Problem:** Orange text på grön bakgrund på OK-knappen har för låg kontrast (ca 3:1, WCAG kräver 4,5:1).
 - **Allvarlighetsgrad:** 
 - **Förslag:** Mörk eller vit text på knappen.
-- **Status:** Kvar.
+- **Status:** Åtgärdat i #99. Knappen har nu vit text på mörkare orange.
 
 ### Fynd 11: Olika textfärger i sidfoten
 - **Var:** Sidfoten (alla sidor)
@@ -105,9 +105,33 @@ Vi har bedömt varje fynd enligt Nielsens skala:
 - **Problem:** Texten i sidfoten hade olika färger. Adressen och öppettiderna var vita, men telefon, e-post och länkar var grönaktiga med för låg kontrast (ca 4:1, WCAG kräver 4,5:1).
 - **Allvarlighetsgrad:** 
 - **Förslag:** Vita rubriker och en ljusare grön färg för all övrig text och alla länkar.
-- **Status:** Åtgärdat i #82. Länkarna är också understrukna. Orange text vid hover och vit text på orange knappar har fortfarande lite för låg kontrast (Kvar).
+- **Status:** Åtgärdat i #82. Länkarna är också understrukna. Kontrasten på de orange knapparna förbättrades i #99.
 
-Några fynd (3, 6, 10 och 11) är främst tillgänglighetsproblem (WCAG) och passar inte helt in i Nielsens heuristiker. Vi har placerat dem under den heuristik som ligger närmast.
+### Fynd 12: Bilder i galleriet utan beskrivning
+- **Var:** Galleri
+- **Heuristik:** 2. Matcha verkligheten
+- **Problem:** En skärmläsare läste upp bildens filnamn, till exempel "pexels-igor-starkov-233202-1055054".
+- **Allvarlighetsgrad:** 
+- **Förslag:** Skriv en bildtext i Umbraco. Saknas den, läs "bild 1 av 3" i stället för filnamnet.
+- **Status:** Åtgärdat i #102.
+
+### Fynd 13: Menyknappen på mobil säger inte om menyn är öppen
+- **Var:** Menyknappen på mobil (alla sidor)
+- **Heuristik:** 1. Synlig systemstatus
+- **Problem:** En skärmläsare säger inte om menyn är öppen eller stängd.
+- **Allvarlighetsgrad:** 
+- **Förslag:** Lägg till aria-expanded på knappen.
+- **Status:** Åtgärdat i #102.
+
+### Fynd 14: Många länkar till samma sida, med olika namn
+- **Var:** Startsidan och sidfoten
+- **Heuristik:** 8. Estetisk och minimalistisk design, 4. Konsekvens och standard
+- **Problem:** På startsidan går fem länkar till sidan Hitta oss: i hero, i rutan "Välkommen in", överst i sidfoten, i menyn och under Utforska. Rutan "Välkommen in" upprepar dessutom sidfoten (samma text, adress och länkar). Samma sida heter ibland "Hitta hit" och ibland "Hitta oss".
+- **Allvarlighetsgrad:** 
+- **Förslag:** Ta bort rutan "Välkommen in" och använd namnet "Hitta oss" överallt.
+- **Status:** Kvar.
+
+Några fynd (3, 6, 10, 11, 12 och 13) är främst tillgänglighetsproblem (WCAG) och passar inte helt in i Nielsens heuristiker. Vi har placerat dem under den heuristik som ligger närmast.
 
 ## Det som fungerar bra
 
