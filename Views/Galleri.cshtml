@@ -36,7 +36,8 @@
 				
 				// Bildtext från mediatypen Image (alias "bildtext"). Tomt = ingen bildtext.
 				var bildtext = bild.Value<string>("bildtext");
-				var altText = string.IsNullOrWhiteSpace(bildtext) ? bild.Name : bildtext;
+				// Utan bildtext läses bildens nummer i stället för filnamnet
+				var altText = string.IsNullOrWhiteSpace(bildtext) ? $"bild {i + 1} av {bilder.Count}" : bildtext;
 				var bildInfo = stor
 					? CafeBlixten.Helpers.Bilder.FranMedia(bild, 1200, 900, altText)!
 					: CafeBlixten.Helpers.Bilder.FranMedia(bild, 800, 600, altText)!;

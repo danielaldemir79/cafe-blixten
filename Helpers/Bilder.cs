@@ -50,7 +50,7 @@ public static class Bilder
         // SVG och liknande saknar mått – skicka filen som den är
         if (originalBredd <= 0 || originalHojd <= 0)
         {
-            return new Bild(media.Url(), null, bredd, hojd, alt ?? media.Name);
+            return new Bild(media.Url(), null, bredd, hojd, alt ?? Alttext(media));
         }
 
         // Förstora aldrig en bild som är mindre än önskad bredd
@@ -79,6 +79,13 @@ public static class Bilder
             $"{Url(halv)} {halv}w, {Url(bredd)} {bredd}w",
             bredd,
             slutHojd,
-            alt ?? media.Name);
+            alt ?? Alttext(media));
+    }
+
+    // Bildtext på bilden i Umbraco, annars tom alt-text
+    private static string Alttext(MediaWithCrops media)
+    {
+        var bildtext = media.Value<string>("bildtext");
+        return string.IsNullOrWhiteSpace(bildtext) ? "" : bildtext;
     }
 }

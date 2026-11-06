@@ -39,6 +39,11 @@
     document.getElementById("Sidebar").classList.toggle("open");
   });
 
+  // Menyknappen berättar om sidomenyn är öppen eller stängd
+  new MutationObserver(function () {
+    ToggleSidebarButton.setAttribute("aria-expanded", Sidebar.classList.contains("open"));
+  }).observe(Sidebar, { attributes: true, attributeFilter: ["class"] });
+
   // Stäng sidomenyn på mobila enheter, om man klickar på X:et
   SidebarCloseButton.addEventListener("click", function (event) {
     event.preventDefault();
