@@ -1,0 +1,75 @@
+﻿@using Umbraco.Cms.Core.Models;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@{
+	Layout = "layout.cshtml";
+
+	var rubrik = Model.Value<string>("rubrik");
+	var ingress = Model.Value<string>("ingress");
+	var bilder = (Model.Value<IEnumerable<MediaWithCrops>>("bilder") ?? Enumerable.Empty<MediaWithCrops>()).ToList();
+}
+
+<article class="galleri">
+	<section class="hero">
+		<div class="hero-text">
+			<h1>@(string.IsNullOrWhiteSpace(rubrik) ? Model.Name : rubrik)</h1>
+
+			@if (!string.IsNullOrWhiteSpace(ingress))
+			{
+				<p class="galleri__ingress">@ingress</p>
+			}
+
+			@if (bilder.Any())
+			{
+				<span class="galleri__antal">@bilder.Count @(bilder.Count == 1 ? "bild" : "bilder")</span>
+			}
+		</div>
+	</section>
+
+	@if (bilder.Any())
+	{
+		<ul class="galleri__grid">
+			@for (var i = 0; i < bilder.Count; i++)
+			{
+				var bild = bilder[i];
+				var stor = i == 0;
+				
+				// Bildtext från mediatypen Image (alias "bildtext"). Tomt = ingen bildtext.
+				var bildtext = bild.Value<string>("bildtext");
+				// Utan bildtext läses bildens nummer i stället för filnamnet
+				var altText = string.IsNullOrWhiteSpace(bildtext) ? $"bild {i + 1} av {bilder.Count}" : bildtext;
+				var bildInfo = stor
+					? CafeBlixten.Helpers.Bilder.FranMedia(bild, 1200, 900, altText)!
+					: CafeBlixten.Helpers.Bilder.FranMedia(bild, 800, 600, altText)!;
+				// Lightboxen visar en stor webp i stället för originalfilen
+				var storUrl = CafeBlixten.Helpers.Bilder.FranMedia(bild, 1920)!.Src;
+
+				<li class="galleri__item@(stor ? " galleri__item--stor" : "")">
+					<a class="galleri__lank" href="@storUrl" data-bildtext="@bildtext" aria-label="Visa större bild: @altText">
+						<img src="@bildInfo.Src" srcset="@bildInfo.SrcSet" sizes="@(stor ? "(max-width: 900px) 100vw, 66vw" : "(max-width: 600px) 100vw, 400px")" width="@bildInfo.Bredd" height="@bildInfo.Hojd" alt="" loading="@(stor ? "eager" : "lazy")" />
+						@if (!string.IsNullOrWhiteSpace(bildtext))
+						{
+							<span class="galleri__bildtext" aria-hidden="true">@bildtext</span>
+						}
+					</a>
+				</li>
+			}
+		</ul>
+
+		<dialog class="lightbox" aria-label="Bildvisning">
+			<figure class="lightbox__figur">
+				<img class="lightbox__bild" src="" alt="" />
+				<figcaption class="lightbox__text"></figcaption>
+			</figure>
+			<button type="button" class="lightbox__knapp lightbox__knapp--forra" aria-label="Föregående bild">&#8249;</button>
+			<button type="button" class="lightbox__knapp lightbox__knapp--nasta" aria-label="Nästa bild">&#8250;</button>
+			<button type="button" class="lightbox__knapp lightbox__knapp--stang" aria-label="Stäng">&times;</button>
+		</dialog>
+
+		<script src="/js/galleri.min.js" asp-append-version="true" defer></script>
+	}
+	else
+	{
+		<p class="galleri__tom">Inga bilder ännu.</p>
+	}
+</article>

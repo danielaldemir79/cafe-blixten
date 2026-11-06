@@ -63,20 +63,19 @@ ul[role="list"] {
   align-items: center;
   justify-content: center;
   padding: 0.85rem 1.6rem;
-  border: 2px solid m.color("secondary");
+  border: 2px solid m.color("secondary-dark");
   border-radius: 999px;
-  background-color: m.color("secondary");
+  background-color: m.color("secondary-dark");
   color: #fff;
   font-family: v.$font-heading;
   font-weight: 500;
   text-decoration: none;
   transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 
-  &:hover {
-    border-color: m.darken("secondary", 15%);
-    background-color: m.darken("secondary", 15%);
-  }
-
+ &:hover {
+  border-color: m.darken("secondary-dark", 10%);
+  background-color: m.darken("secondary-dark", 10%);
+}
   &:focus-visible {
     outline: 3px solid m.color("primary");
     outline-offset: 3px;
@@ -183,11 +182,10 @@ ul[role="list"] {
 
     @include m.for-size(tablet-portrait-up) {
       flex: 0 0 40%;
-      min-width: 0; // annars hindrar bildens egen bredd den från att krympa
+      min-width: 0;
       aspect-ratio: auto;
       min-height: 16rem;
     }
-
   }
 
   .news-card__content {

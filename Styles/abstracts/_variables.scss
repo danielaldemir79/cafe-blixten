@@ -1,11 +1,16 @@
+// Färger
 $colors: (
   primary: #2f3e34,
   secondary: #c96f4a,
+  secondary-dark: #a34725,
   brown: #7d4d2e,
   onyx: #111111,
   smoke: #F3F3F3,
   mauve: #A08794,
 );
 
+// Font för headings (h1, h2, h3, ...)
 $font-heading: "Fira Sans", sans-serif;
+
+// Font för resten av sidan
 $font-body: "Roboto", sans-serif;

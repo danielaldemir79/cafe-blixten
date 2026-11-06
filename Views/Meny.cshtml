@@ -83,7 +83,8 @@
 
         @if (kategoriBild != null)
         {
-          <img class="menu-page__category-image" src="@kategoriBild.Url()" alt="" loading="lazy" />
+          var kategoriBildInfo = CafeBlixten.Helpers.Bilder.FranMedia(kategoriBild, 1200, alt: "")!;
+          <img class="menu-page__category-image" src="@kategoriBildInfo.Src" srcset="@kategoriBildInfo.SrcSet" sizes="(max-width: 900px) 100vw, 800px" width="@kategoriBildInfo.Bredd" height="@kategoriBildInfo.Hojd" alt="" loading="lazy" />
         }
 
         @if (produkter != null && produkter.Any())

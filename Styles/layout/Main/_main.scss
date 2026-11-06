@@ -1,10 +1,11 @@
 @use "../../abstracts/mixins" as m;
 
+// För #Main-elementet, där innehåll laddas, tillsammans med header:n och footer:n
+
 #Main {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  height: 100dvh;
+  // Höjden styrs av body-griden (skärmhöjden minus headern)
 
   > .main-container {
     flex: 1;

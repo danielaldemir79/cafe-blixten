@@ -1,21 +1,33 @@
 @use "../abstracts/mixins" as m;
 
+// Body:ns standardvärden
 body {
   display: grid;
-  min-height: 100vh;
-  max-height: 100%;
-  grid-template-areas: "Main";
+  height: 100vh;
+  height: 100dvh; // Exakt skärmhöjden – innehållet scrollar inuti .main-container
+  // Headern ligger först i HTML:en (för tab-ordningen) men visas till höger om sidomenyn
+  grid-template-areas:
+    "Header"
+    "Main";
   grid-template-columns: minmax(0, 1fr); // får aldrig bli bredare än skärmen
+  grid-template-rows: auto minmax(0, 1fr);
 
   @include m.for-size(tablet-landscape-up) {
-    grid-template-areas: "Sidebar Main";
+    grid-template-areas:
+      "Sidebar Header"
+      "Sidebar Main";
     grid-template-columns: 280px minmax(0, 1fr);
   }
 }
 
+#MainHeader {
+  grid-area: Header;
+}
+
 #Main {
   grid-area: Main;
-  min-width: 0; // låter innehållet krympa i stället för att trycka ut sidan
+  min-width: 0; // Låter innehållet krympa i stället för att trycka ut sidan
+  min-height: 0;
 }
 
 #Sidebar {

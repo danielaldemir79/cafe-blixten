@@ -91,6 +91,14 @@
   background-color: #ffffff;
   box-shadow: 0 1rem 2.5rem rgba(47, 62, 52, 0.1);
 
+  // Kommande evenemang syns tydligare
+  &--kommande {
+    .news-card__label {
+      background-color: m.color(primary);
+      color: #ffffff;
+    }
+  }
+
   &__image {
     display: block;
     width: 100%;
@@ -144,6 +152,15 @@
     margin-bottom: 0.75rem;
     color: m.color(brown);
     font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  &__varning {
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-left: 4px solid m.color(secondary);
+    background-color: rgba(201, 111, 74, 0.1);
+    color: m.color(brown);
     font-weight: 600;
   }
 
@@ -220,6 +237,26 @@
     margin-bottom: 1.5rem;
     color: m.color(brown);
     font-weight: 600;
+  }
+
+  &__varning {
+    margin-bottom: 1.5rem;
+    padding: 0.75rem 1rem;
+    border-left: 4px solid m.color(secondary);
+    background-color: rgba(201, 111, 74, 0.1);
+    color: m.color(brown);
+    font-weight: 600;
+
+    a {
+      color: m.color(brown);
+      text-decoration: underline;
+
+      &:focus-visible {
+        border-radius: 0.2rem;
+        outline: 3px solid m.color(secondary);
+        outline-offset: 0.25rem;
+      }
+    }
   }
 
   &__image {

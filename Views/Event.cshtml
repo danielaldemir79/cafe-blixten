@@ -10,16 +10,19 @@
     var beskrivning = Model.Value<string>("beskrivning");
     var datum = Model.Value<DateTime?>("datum");
     var bild = Model.Value<MediaWithCrops>("bild");
-    var bildUrl = bild?.Url();
-    var bildAlt = bild?.Name;
+    // Mediabild (webp, flera storlekar) – annars standardbilden i wwwroot/images
+    var bildInfo = CafeBlixten.Helpers.Bilder.FranMedia(bild, 1200)
+        ?? CafeBlixten.Helpers.Bilder.Standard("cafe-blixten-livemusik", "Mysig cafékväll med fika och livemusik");
     var aktuellt = Model.Parent;
     var svenskKultur = CultureInfo.GetCultureInfo("sv-SE");
 
-    if (string.IsNullOrWhiteSpace(bildUrl))
-    {
-        bildUrl = "/images/cafe-blixten-livemusik.png";
-        bildAlt = "Mysig cafékväll med fika och livemusik";
-    }
+    // Varning om evenemanget ligger när caféet har stängt
+    var kontaktsida = Model.Root().Children().FirstOrDefault(x => x.ContentType.Alias == "oppettiderKontakt");
+    var sluttid = Model.Value<string>("sluttid");
+    var varning = datum.HasValue
+        ? CafeBlixten.Helpers.Oppettider.EvenemangVarning(kontaktsida, datum.Value, CafeBlixten.Helpers.Oppettider.NuISverige(), sluttid)
+        : null;
+
 
 }
 
@@ -38,14 +41,23 @@
         @if (datum.HasValue)
         {
             <time class="news-detail__date"
-                  datetime="@datum.Value.ToString("yyyy-MM-dd")">
-                @datum.Value.ToString("d MMMM yyyy", svenskKultur)
+                  datetime="@datum.Value.ToString("yyyy-MM-ddTHH:mm")">
+                @datum.Value.ToString("d MMMM yyyy", svenskKultur), @CafeBlixten.Helpers.Oppettider.Klockslag(datum.Value, sluttid)
             </time>
         }
 
-        <img class="news-detail__image"
-            src="@bildUrl"
-            alt="@bildAlt" />
+        @if (varning != null)
+        {
+            <p class="news-detail__varning">
+                @varning
+                @if (kontaktsida != null)
+                {
+                    <a href="@kontaktsida.Url()">Se öppettider</a>
+                }
+            </p>
+        }
+
+        <img class="news-detail__image" src="@bildInfo.Src" srcset="@bildInfo.SrcSet" sizes="(max-width: 900px) 100vw, 800px" width="@bildInfo.Bredd" height="@bildInfo.Hojd" alt="" fetchpriority="high" />
 
         @if (!string.IsNullOrWhiteSpace(beskrivning))
         {

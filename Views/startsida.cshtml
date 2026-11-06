@@ -19,13 +19,8 @@
 	var heroBild = Model.Value<MediaWithCrops>("heroBild");
 	// Bild vald i Umbraco går först. Annars används standardbilden i wwwroot/images,
 	// så att alla får samma hero-bild direkt efter pull/import.
-	var heroBildUrl = heroBild?.GetCropUrl(width: 900);
-	var heroBildAlt = heroBild?.Name;
-	if (string.IsNullOrWhiteSpace(heroBildUrl))
-	{
-		heroBildUrl = "/images/pexels-nathanjhilton-30173526.jpg";
-		heroBildAlt = "Kafé med bardisk där gäster beställer vid kassan";
-	}
+	var hero = CafeBlixten.Helpers.Bilder.FranMedia(heroBild, 1200)
+		?? CafeBlixten.Helpers.Bilder.Standard("pexels-nathanjhilton-30173526", "Kafé med bardisk där gäster beställer vid kassan");
 	// Fungerar oavsett om Multi URL Picker har max 1 länk eller fler
 	var heroKnapp = Model.Value<Link>("heroKnapp")
 		?? Model.Value<IEnumerable<Link>>("heroKnapp")?.FirstOrDefault();
@@ -129,7 +124,7 @@
 		</div>
 
 		<div class="hero-bild">
-			<img src="@heroBildUrl" alt="@heroBildAlt" />
+			<img src="@hero.Src" srcset="@hero.SrcSet" sizes="(max-width: 900px) 100vw, 50vw" width="@hero.Bredd" height="@hero.Hojd" alt="@hero.Alt" fetchpriority="high" />
 		</div>
 	</section>
 
@@ -138,20 +133,15 @@
 	{
 		var fikaBild = veckansFika.Value<MediaWithCrops>("bild");
 		// Samma standardbild som på sidan Veckans fika (VeckansFika.cshtml)
-		var fikaBildUrl = fikaBild?.GetCropUrl(width: 800);
-		var fikaBildAlt = veckansFika.Value<string>("namn");
-		if (string.IsNullOrWhiteSpace(fikaBildUrl))
-		{
-			fikaBildUrl = "/images/cafe-blixten-kanelbullar.png";
-			fikaBildAlt = "Kaffe och nybakade kanelbullar";
-		}
+		var fika = CafeBlixten.Helpers.Bilder.FranMedia(fikaBild, 800, alt: veckansFika.Value<string>("namn"))
+			?? CafeBlixten.Helpers.Bilder.Standard("cafe-blixten-kanelbullar", "Kaffe och nybakade kanelbullar");
 		var fikaPris = veckansFika.Value<decimal?>("pris");
 		var fikaNamn = veckansFika.Value<string>("namn");
 		var fikaBeskrivning = veckansFika.Value<string>("beskrivning");
 
 		<section class="startsida-sektion" aria-labelledby="rubrik-fika">
 			<article class="news-card startsida-fika">
-				<img class="startsida-fika__bild" src="@fikaBildUrl" alt="@fikaBildAlt" />
+				<img class="startsida-fika__bild" src="@fika.Src" srcset="@fika.SrcSet" sizes="(max-width: 900px) 100vw, 400px" width="@fika.Bredd" height="@fika.Hojd" alt="@fika.Alt" loading="lazy" />
 
 				<div class="news-card__content">
 					<span class="news-card__label" id="rubrik-fika">Veckans fika</span>
@@ -184,13 +174,13 @@
 			<ul class="startsida-grid" role="list">
 				@foreach (var post in pagang)
 				{
-					var bild = post.Sida.Value<MediaWithCrops>("bild");
+					var bild = CafeBlixten.Helpers.Bilder.FranMedia(post.Sida.Value<MediaWithCrops>("bild"), 800, alt: "");
 
 					<li>
 						<article class="news-card">
 							@if (bild != null)
 							{
-								<img class="news-card__image" src="@bild.GetCropUrl(width: 600)" alt="" />
+								<img class="news-card__image" src="@bild.Src" srcset="@bild.SrcSet" sizes="(max-width: 600px) 100vw, 400px" width="@bild.Bredd" height="@bild.Hojd" alt="@bild.Alt" loading="lazy" />
 							}
 							<div class="news-card__content">
 								<span class="news-card__label">@post.Etikett</span>
@@ -198,8 +188,13 @@
 								@if (post.Datum.HasValue)
 								{
 									<time class="news-card__date" datetime="@post.Datum.Value.ToString("yyyy-MM-ddTHH:mm")">
-										@post.Datum.Value.ToString(post.DatumFormat, svenska)
+										@post.Datum.Value.ToString(post.DatumFormat, svenska)@if (post.Etikett == "Evenemang" && CafeBlixten.Helpers.Oppettider.Tid(post.Sida.Value<string>("sluttid")) is TimeOnly slut){<text>&#8288;–&#8288;@slut.ToString("HH:mm")</text>}
 									</time>
+								}
+								@if (post.Etikett == "Evenemang" && post.Datum.HasValue
+									&& CafeBlixten.Helpers.Oppettider.EvenemangVarning(kontaktSida, post.Datum.Value, CafeBlixten.Helpers.Oppettider.NuISverige(), post.Sida.Value<string>("sluttid")) is string varning)
+								{
+									<p class="news-card__varning">@varning</p>
 								}
 								@if (!string.IsNullOrWhiteSpace(post.Text))
 								{

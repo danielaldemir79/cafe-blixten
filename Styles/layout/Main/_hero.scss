@@ -1,3 +1,5 @@
+// CSS/SASS/SCSS för hero-komponenter (toppsektion, startbanner, introsektion, ...)
+
 @use "../../abstracts/mixins" as m;
 
 .hero {
@@ -50,5 +52,10 @@
       border-radius: 999px;
       background-color: m.color(secondary);
     }
+  }
+
+  .hero-bild {
+    border: 0.5rem solid #fff;
+    border-radius: 1.5rem;
   }
 }

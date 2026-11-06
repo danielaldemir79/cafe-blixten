@@ -1,6 +1,33 @@
-﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Strings
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.Jobb>
 @using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+
 @{
-	Layout = null;
+    Layout = "layout.cshtml";
+
+    var rubrik = Model.Value<string>("rubrik");
+    var text = Model.Value<IHtmlEncodedString>("text");
+    var bild = Model.Value<MediaWithCrops>("bild");
+    // Mediabild (webp, flera storlekar) – annars standardbilden i wwwroot/images
+    var bildInfo = CafeBlixten.Helpers.Bilder.FranMedia(bild, 1200)
+        ?? CafeBlixten.Helpers.Bilder.Standard("cafe-blixten-jobba-hos-oss", "Medarbetare bakom disken på Café Blixten");
+
 }
+
+<article class="hero about-page">
+    <div class="about-page__content">
+        <h1>@(string.IsNullOrWhiteSpace(rubrik) ? Model.Name : rubrik)</h1>
+
+        @if (text != null)
+        {
+            <div class="about-page__text">
+                @text
+            </div>
+        }
+    </div>
+
+    <div class="about-page__image">
+        <img src="@bildInfo.Src" srcset="@bildInfo.SrcSet" sizes="(max-width: 900px) 100vw, 50vw" width="@bildInfo.Bredd" height="@bildInfo.Hojd" alt="" fetchpriority="high" />
+    </div>
+</article>
