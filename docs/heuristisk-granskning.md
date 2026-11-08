@@ -131,6 +131,14 @@ Vi har bedömt varje fynd enligt Nielsens skala:
 - **Förslag:** Ta bort rutan "Välkommen in" och använd namnet "Hitta oss" överallt.
 - **Status:** Kvar.
 
+### Fynd 15: Rubriken på Om oss matchar inte menyn
+- **Var:** Om oss
+- **Heuristik:** 1. Synlig systemstatus, 4. Konsekvens och standard
+- **Problem:** På de andra sidorna är rubriken samma som namnet i menyn, till exempel Meny och Aktuellt. På Om oss är rubriken "Kaffe, gemenskap och en extra gnista", så det syns inte direkt var man är.
+- **Allvarlighetsgrad:** 1
+- **Förslag:** En liten etikett "Om oss" ovanför rubriken, som på evenemangen.
+- **Status:** Pågår (#100).
+
 Några fynd (3, 6, 10, 11, 12 och 13) är främst tillgänglighetsproblem (WCAG) och passar inte helt in i Nielsens heuristiker. Vi har placerat dem under den heuristik som ligger närmast.
 
 ## Det som fungerar bra
