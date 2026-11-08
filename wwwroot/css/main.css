@@ -1377,6 +1377,15 @@ ul[role=list] {
   background-color: #c96f4a;
   content: "";
 }
+.about-page__underrubrik {
+  margin: 0 0 1.5rem;
+  color: #2f3e34;
+  font-family: "Fira Sans", sans-serif;
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.25;
+  text-wrap: balance;
+}
 .about-page__text {
   display: grid;
   gap: 1rem;
