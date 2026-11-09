@@ -3,7 +3,7 @@
 Vi har granskat webbplatsen utifrån Nielsens tio heuristiker. Kopplat till #26.
 
 **Datum:** 25 oktober 2026
-**Uppdaterad:** 8 november 2026
+**Uppdaterad:** 9 november 2026
 
 Nya sidor som läggs till efter detta datum kontrolleras i vår egen kontroll före presentationen.
 
@@ -33,7 +33,7 @@ Vi har bedömt varje fynd enligt Nielsens skala:
 - **Problem:** Det finns ingen sida som berättar hur tillgänglig webbplatsen är.
 - **Allvarlighetsgrad:** 2
 - **Förslag:** Skapa sidan Tillgänglighet.
-- **Status:** Åtgärdat i #77.
+- **Status:** Åtgärdat i #77. Sidan uppdaterades i #105 (WCAG 2.2, inga kända brister).
 
 ### Fynd 3: Flera H1 på varje sida
 - **Var:** Alla sidor
@@ -137,9 +137,14 @@ Vi har bedömt varje fynd enligt Nielsens skala:
 - **Problem:** På de andra sidorna är rubriken samma som namnet i menyn, till exempel Meny och Aktuellt. På Om oss är rubriken "Kaffe, gemenskap och en extra gnista", så det syns inte direkt var man är.
 - **Allvarlighetsgrad:** 1
 - **Förslag:** En liten etikett "Om oss" ovanför rubriken, som på evenemangen.
-- **Status:** Pågår (#100).
+- **Status:** Åtgärdat i #104. Rubriken är nu "Om oss" och den gamla rubriken visas som underrubrik.
 
 Några fynd (3, 6, 10, 11, 12 och 13) är främst tillgänglighetsproblem (WCAG) och passar inte helt in i Nielsens heuristiker. Vi har placerat dem under den heuristik som ligger närmast.
+
+## Resultat med WAVE
+
+- **Startsidan, 23 oktober:** 1 fel och 10 kontrastfel.
+- **Startsidan, 8 november:** 0 kontrastfel, AIM-poäng 10 av 10.
 
 ## Det som fungerar bra
 
