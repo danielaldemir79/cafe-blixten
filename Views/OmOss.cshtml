@@ -17,7 +17,13 @@
 
 <section class="hero about-page">
     <div class="about-page__content">
-        <h1>@(string.IsNullOrWhiteSpace(rubrik) ? Model.Name : rubrik)</h1>
+        @* Sidans namn som rubrik, som på de andra sidorna *@
+        <h1>@Model.Name</h1>
+
+        @if (!string.IsNullOrWhiteSpace(rubrik) && rubrik != Model.Name)
+        {
+            <p class="about-page__underrubrik">@rubrik</p>
+        }
 
         @if (text != null)
         {
