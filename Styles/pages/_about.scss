@@ -1,4 +1,5 @@
 @use "../abstracts/mixins" as m;
+@use "../abstracts/variables" as v;
 
 // För "Om oss"-sidan
 
@@ -23,6 +24,17 @@
       background-color: m.color(secondary);
       content: "";
     }
+  }
+
+  // Rubriken från Umbraco visas under sidans namn
+  &__underrubrik {
+    margin: 0 0 1.5rem;
+    color: m.color(primary);
+    font-family: v.$font-heading;
+    font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+    font-weight: 600;
+    line-height: 1.25;
+    text-wrap: balance;
   }
 
   &__text {
